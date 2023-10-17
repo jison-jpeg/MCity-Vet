@@ -24,5 +24,6 @@ export default function App() {
       {/* footer */}
       {/* <Footer /> */}
     </BrowserRouter>
+    
   );
 }

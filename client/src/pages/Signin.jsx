@@ -1,9 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import Header from '../components/Header'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Google logo icon
 
 export default function Signin() {
+
+  useEffect(() => {
+    const dashboardStylesheet = document.getElementById('dashboard-stylesheet');
+    dashboardStylesheet.setAttribute('disabled', 'true');
+    
+    const dashboardBootstrap = document.getElementById('dashboard-bootstrap');
+    dashboardBootstrap.setAttribute('disabled', 'true');
+  }, []);
 
   return (
     <>

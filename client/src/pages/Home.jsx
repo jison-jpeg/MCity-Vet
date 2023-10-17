@@ -4,11 +4,6 @@ import Header from '../components/Header'
 
 export default function Home() {
 
-  useEffect(() => {
-    const dashboardStylesheet = document.getElementById('dashboard-stylesheet');
-    dashboardStylesheet.setAttribute('disabled', 'true');
-  }, []);
-
   return (
     <>
       {/*----------------------------------------------

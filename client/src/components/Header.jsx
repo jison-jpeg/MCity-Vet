@@ -1,6 +1,16 @@
-import React from 'react'
+// import React from 'react'
+import React, { useEffect } from 'react';
 
 export default function Header() {
+
+  useEffect(() => {
+    const dashboardStylesheet = document.getElementById('dashboard-stylesheet');
+    dashboardStylesheet.setAttribute('disabled', 'true');
+    
+    const dashboardBootstrap = document.getElementById('dashboard-bootstrap');
+    dashboardBootstrap.setAttribute('disabled', 'true');
+  }, []);
+  
   return (
 <header className="header">
  

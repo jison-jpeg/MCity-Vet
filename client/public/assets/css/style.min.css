@@ -5099,6 +5099,9 @@ body:not(.loaded) * {
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
 }
+.google-icon {
+  margin-right: 25px;
+}
 .btn-form {
   width: 100%;
   max-height: 55px;

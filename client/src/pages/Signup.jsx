@@ -1,9 +1,16 @@
-import React from 'react'
-import Header from '../components/Header'
+import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Google logo icon
 
 export default function Signup() {
+  useEffect(() => {
+    const dashboardStylesheet = document.getElementById('dashboard-stylesheet');
+    dashboardStylesheet.setAttribute('disabled', 'true');
+    
+    const dashboardBootstrap = document.getElementById('dashboard-bootstrap');
+    dashboardBootstrap.setAttribute('disabled', 'true');
+  }, []);
+
   return (
     <>
       <div className="loading-overlay">
@@ -90,8 +97,6 @@ export default function Signup() {
           </div>
         </div>
       </main>
-
-      <Header />
     </>
 
 
