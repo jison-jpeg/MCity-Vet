@@ -5,7 +5,7 @@ export default function DashboardSidebar( {toggleSidebar}) {
     <>
       {/* ======= Sidebar ======= */}
       <aside id="sidebar" className="sidebar">
-      <i className="bi bi-x-lg toggle-sidebar-btn d-block d-sm-block d-md-block d-lg-block d-xl-none" onClick={toggleSidebar} />
+      <i className="bi bi-x toggle-sidebar-btn d-block d-sm-block d-md-block d-lg-block d-xl-none" onClick={toggleSidebar} />
 
       <img src="assets/images/logo-mc.png" id="sidebar-logo" alt="" />
 
