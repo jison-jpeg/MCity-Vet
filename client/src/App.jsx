@@ -8,10 +8,7 @@ import Dashboard from './pages/Dashboard';
 export default function App() {
   return (
     <BrowserRouter>
-      {/* header */}
-      {/* <Header /> */}
-
-   
+    
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
@@ -20,9 +17,6 @@ export default function App() {
         {/* <Route path="/book-appointment" element={<BookAppointment />} /> */}
         
       </Routes>
-
-      {/* footer */}
-      {/* <Footer /> */}
     </BrowserRouter>
     
   );
