@@ -11,7 +11,7 @@ export default function DashboardSidebar( {toggleSidebar}) {
 
         <ul className="sidebar-nav" id="sidebar-nav">
           <li className="nav-item">
-            <a className="nav-link" href="index.html">
+            <a className="nav-link" href="/dashboard">
               <i className="bi bi-grid" />
               <span>Dashboard</span>
             </a>
@@ -37,7 +37,7 @@ export default function DashboardSidebar( {toggleSidebar}) {
               <li>
                 <a href="icons-bootstrap.html">
                   <i className="bi bi-circle" />
-                  <span>Bootstrap Icons</span>
+                  <span>Pending</span>
                 </a>
               </li>
               <li>
@@ -55,7 +55,7 @@ export default function DashboardSidebar( {toggleSidebar}) {
             </ul>
           </li>
           {/* End Icons Nav */}
-          <li className="nav-heading">Pages</li>
+         
           <li className="nav-item">
             <a className="nav-link collapsed" href="users-profile.html">
               <i className="bi bi-person" />
@@ -70,6 +70,7 @@ export default function DashboardSidebar( {toggleSidebar}) {
             </a>
           </li>
           {/* End F.A.Q Page Nav */}
+          <li className="nav-heading">SYSTEM</li>
           <li className="nav-item">
             <a className="nav-link collapsed" href="pages-contact.html">
               <i className="bi bi-envelope" />
