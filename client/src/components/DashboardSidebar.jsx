@@ -5,13 +5,13 @@ export default function DashboardSidebar( {toggleSidebar}) {
     <>
       {/* ======= Sidebar ======= */}
       <aside id="sidebar" className="sidebar">
-      <i className="bi bi-x-lg toggle-sidebar-btn d-block d-sm-block d-md-block d-lg-block d-xl-none" onClick={toggleSidebar} />
+      <i className="bi bi-x toggle-sidebar-btn d-block d-sm-block d-md-block d-lg-block d-xl-none" onClick={toggleSidebar} />
 
       <img src="assets/images/logo-mc.png" id="sidebar-logo" alt="" />
 
         <ul className="sidebar-nav" id="sidebar-nav">
           <li className="nav-item">
-            <a className="nav-link" href="index.html">
+            <a className="nav-link" href="/dashboard">
               <i className="bi bi-grid" />
               <span>Dashboard</span>
             </a>
@@ -19,45 +19,14 @@ export default function DashboardSidebar( {toggleSidebar}) {
           {/* End Dashboard Nav */}
 
           <li className="nav-item">
-            <a
-              className="nav-link collapsed"
-              data-bs-target="#icons-nav"
-              data-bs-toggle="collapse"
-              href="#"
-            >
-              <i className="bi bi-gem" />
+            <a className="nav-link collapsed" href="/appointments">
+              <i className="bi bi-person" />
               <span>Appointments</span>
-              <i className="bi bi-chevron-down ms-auto" />
             </a>
-            <ul
-              id="icons-nav"
-              className="nav-content collapse "
-              data-bs-parent="#sidebar-nav"
-            >
-              <li>
-                <a href="icons-bootstrap.html">
-                  <i className="bi bi-circle" />
-                  <span>Bootstrap Icons</span>
-                </a>
-              </li>
-              <li>
-                <a href="icons-remix.html">
-                  <i className="bi bi-circle" />
-                  <span>Remix Icons</span>
-                </a>
-              </li>
-              <li>
-                <a href="icons-boxicons.html">
-                  <i className="bi bi-circle" />
-                  <span>Boxicons</span>
-                </a>
-              </li>
-            </ul>
           </li>
-          {/* End Icons Nav */}
-          <li className="nav-heading">Pages</li>
+         
           <li className="nav-item">
-            <a className="nav-link collapsed" href="users-profile.html">
+            <a className="nav-link collapsed" href="/inventory">
               <i className="bi bi-person" />
               <span>Inventory</span>
             </a>
@@ -70,6 +39,7 @@ export default function DashboardSidebar( {toggleSidebar}) {
             </a>
           </li>
           {/* End F.A.Q Page Nav */}
+          <li className="nav-heading">SYSTEM</li>
           <li className="nav-item">
             <a className="nav-link collapsed" href="pages-contact.html">
               <i className="bi bi-envelope" />
