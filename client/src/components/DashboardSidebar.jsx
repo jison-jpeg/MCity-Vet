@@ -19,45 +19,14 @@ export default function DashboardSidebar( {toggleSidebar}) {
           {/* End Dashboard Nav */}
 
           <li className="nav-item">
-            <a
-              className="nav-link collapsed"
-              data-bs-target="#icons-nav"
-              data-bs-toggle="collapse"
-              href="#"
-            >
-              <i className="bi bi-gem" />
+            <a className="nav-link collapsed" href="/appointments">
+              <i className="bi bi-person" />
               <span>Appointments</span>
-              <i className="bi bi-chevron-down ms-auto" />
             </a>
-            <ul
-              id="icons-nav"
-              className="nav-content collapse "
-              data-bs-parent="#sidebar-nav"
-            >
-              <li>
-                <a href="icons-bootstrap.html">
-                  <i className="bi bi-circle" />
-                  <span>Pending</span>
-                </a>
-              </li>
-              <li>
-                <a href="icons-remix.html">
-                  <i className="bi bi-circle" />
-                  <span>Remix Icons</span>
-                </a>
-              </li>
-              <li>
-                <a href="icons-boxicons.html">
-                  <i className="bi bi-circle" />
-                  <span>Boxicons</span>
-                </a>
-              </li>
-            </ul>
           </li>
-          {/* End Icons Nav */}
          
           <li className="nav-item">
-            <a className="nav-link collapsed" href="users-profile.html">
+            <a className="nav-link collapsed" href="/inventory">
               <i className="bi bi-person" />
               <span>Inventory</span>
             </a>

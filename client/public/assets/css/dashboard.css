@@ -70,6 +70,14 @@ h6 {
   color: #283779;
 }
 
+.greetings h1{
+  font-size: 54px;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  font-weight: 100;
+  color: #ff594d;
+}
+
 /*--------------------------------------------------------------
 # Back to top button
 --------------------------------------------------------------*/
@@ -240,7 +248,7 @@ h6 {
   font-size: 18px;
   font-weight: 500;
   color: #012970;
-  font-family: "Poppins", sans-serif;
+  font-family: "Manrope";
 }
 
 .card-title span {
@@ -357,15 +365,24 @@ h6 {
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
+.btn-header {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 25px 0;
+  color: #012970;
+}
+
+
 .logo {
   line-height: 1;
 }
 
 @media (min-width: 1200px) {
   .logo {
-    width: 280px;
+    width: 305px;
   }
 }
+
 
 .logo img {
   max-height: 50px;
@@ -395,9 +412,10 @@ h6 {
 
 .header .toggle-sidebar-btn {
   font-size: 32px;
-  padding-left: 10px;
+  /* padding-left: 10px; */
   cursor: pointer;
   color: #012970;
+  
 }
 
 .header .search-bar {
@@ -855,9 +873,9 @@ h6 {
   background: #e0f8e9;
 }
 
-.dashboard .customers-card .card-icon {
-  color: #ff771d;
-  background: #ffecdf;
+.dashboard .default-card .card-icon {
+  color: #ff594d;
+  background: #ff594d45;
 }
 
 /* Activity */
