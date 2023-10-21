@@ -73,31 +73,20 @@ export default function SystemLogs() {
                                         <table className="table">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Record ID</th>
-                                                    <th scope="col">Appointment ID</th>
-                                                    <th scope="col">Date</th>
-                                                    <th scope="col">Client Name</th>
-                                                    <th scope="col">Animal</th>
-                                                    <th scope="col">Total</th>
-                                                    <th scope="col">Service</th>
-                                                    <th scope="col">Action</th>
+                                                    <th scope="col">Account ID</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Role</th>
+                                                    <th scope="col">Date and Time</th>
+                                                    <th scope="col">Activity</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>REC-abc123</td>
-                                                    <td>APP-abc123</td>
-                                                    <td>10/15/2023</td>
+                                                    <td>ADMIN-abc123</td>
                                                     <td>Jayson T.</td>
-                                                    <td>Cow</td>
-                                                    <td>2</td>
-                                                    <td>A.I</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-primary-dashboard-action btn-sm">View</button>
-                                                        <span> | </span>
-                                                        <button type="button" class="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                                                    </td>
-
+                                                    <td>Admin</td>
+                                                    <td>10/21/2023 - 12:00PM</td>
+                                                    <td>Added an Account</td>
                                                 </tr>
 
                                             </tbody>
