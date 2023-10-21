@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Google logo icon
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Signup() {
   const [formData, setFormData] = useState({}); // [1]
   const [error, setError] = useState(false); // [1
   const [loading, setLoading] = useState(false); // [1]
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value }); // [2]
@@ -33,6 +36,8 @@ export default function Signup() {
         setError(true);
         return;
       }
+      navigate('/signin')
+
     } catch (error) {
       setLoading(false);
       setError(true);
