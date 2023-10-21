@@ -3,7 +3,7 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 
 
-export default function Dashboard() {
+export default function AccountManagement() {
 
   // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -43,25 +43,22 @@ export default function Dashboard() {
       {/* ======= Main ======= */}
       <main id="main" className="main">
         <div className="pagetitle">
-          <h1>Dashboard</h1>
+          <h1>Account Management</h1>
           <nav>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <a href="/dashboard">Home</a>
               </li>
-              <li className="breadcrumb-item active">Dashboard</li>
+              <li className="breadcrumb-item active">Account Management</li>
             </ol>
           </nav>
         </div>
-
-        <div className='greetings'>
-          <h1>Hello, <span>Technician</span> !</h1>
-        </div>
+        <br />
         {/* End Page Title */}
 
         <section className="section dashboard">
           <div className="row">
-            <div className="col-lg-4">
+            <div className="col-lg-3">
               <div className="card info-card default-card">
                 <div className="filter">
                   <a className="icon" href="#" data-bs-toggle="dropdown">
@@ -90,7 +87,7 @@ export default function Dashboard() {
                 </div>
                 <div className="card-body">
                   <h5 className="card-title">
-                    Today's Appointments
+                    Admin
                   </h5>
                   <div className="d-flex align-items-center">
                     <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -106,7 +103,7 @@ export default function Dashboard() {
             </div>
 
 
-            <div className="col-lg-4">
+            <div className="col-lg-3">
               <div className="card info-card default-card">
                 <div className="filter">
                   <a className="icon" href="#" data-bs-toggle="dropdown">
@@ -135,7 +132,7 @@ export default function Dashboard() {
                 </div>
                 <div className="card-body">
                   <h5 className="card-title">
-                    Pending Appointments
+                    Technician
                   </h5>
                   <div className="d-flex align-items-center">
                     <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -151,7 +148,7 @@ export default function Dashboard() {
             </div>
 
 
-            <div className="col-lg-4">
+            <div className="col-lg-3">
               <div className="card info-card default-card">
                 <div className="filter">
                   <a className="icon" href="#" data-bs-toggle="dropdown">
@@ -180,7 +177,7 @@ export default function Dashboard() {
                 </div>
                 <div className="card-body">
                   <h5 className="card-title">
-                    Served Appointments
+                    Secretary
                   </h5>
                   <div className="d-flex align-items-center">
                     <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -196,6 +193,49 @@ export default function Dashboard() {
             </div>
 
 
+            <div className="col-lg-3">
+              <div className="card info-card default-card">
+                <div className="filter">
+                  <a className="icon" href="#" data-bs-toggle="dropdown">
+                    <i className="bi bi-three-dots" />
+                  </a>
+                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li className="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Today
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        This Month
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        This Year
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">
+                    Client
+                  </h5>
+                  <div className="d-flex align-items-center">
+                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i className="bi bi-clipboard-check" />
+                    </div>
+                    <div className="ps-3">
+                      <h6>145</h6>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* add data table */}
 
@@ -204,47 +244,33 @@ export default function Dashboard() {
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <h5 className="card-title">Appointments</h5>
+                  <h5 className="card-title">User Accounts</h5>
                   {/* Default Table */}
                   <div className="table-responsive-md">
                   <table className="table">
                     <thead>
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Schedule</th>
-                        <th scope="col">Client</th>
-                        <th scope="col">Animal</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">No. of Heads</th>
-                        <th scope="col">Services</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Account ID</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Created On</th>
                         <th scope="col">Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <th scope="row">1</th>
-                        <td>10/11/2023</td>
-                        <td>10/15/2023</td>
+                        <th scope="row">ABC123</th>
+                        <td>
+                        <span class="badge rounded-pill bg-danger">Admin</span>
+                        </td>
                         <td>Jayson T.</td>
+                        <td>jaysontadayca@gmail.com</td>
+                        <td>10/20/2023</td>
                         <td>
-                          <li>Cow</li>
-                          <li>Pig</li>
-                        </td>
-                        <td>3 Years Old</td>
-                        <td>
-                          <li>1</li>
-                          <li>3</li>
-                        </td>
-                        <td>A.I</td>
-                        <td>
-                          <span className="badge rounded-pill bg-success">Success</span>
-                        </td>
-                        <td>
-                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
+                          <button type="button" class="btn btn-primary-dashboard-action btn-sm">View</button>
                           <span> | </span>
-                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                          <button type="button" class="btn btn-secondary-dashboard-action btn-sm">Delete</button>
                         </td>
 
                       </tr>

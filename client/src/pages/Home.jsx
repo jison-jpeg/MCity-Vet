@@ -46,7 +46,7 @@ export default function Home() {
             <div className="banner intro-slide bg-section bg-section-1">
               <div className="container">
                 <div className="banner-content">
-                  <h1 className="banner-title">Doctors who treat with care.</h1>
+                  <h1 className="banner-title">Nurturing the Heart of Your Farm.</h1>
                   <p className="banner-info">
                     Our skilled doctors have tremendous experience with wide range
                     of diseases to serve the needs of our patients.
