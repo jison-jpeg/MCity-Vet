@@ -58,10 +58,10 @@ export default function Inventory() {
 
 
         <div className="btn-header">
-          <button type="button" class="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Item</button>
+          <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Item</button>
         </div>
 
-        <AddAppointment />
+        {/* <AddAppointment /> */}
 
         <section className="section dashboard">
           <div className="row">
@@ -93,9 +93,9 @@ export default function Inventory() {
                         <td>10/15/2023</td>
                         <td>10/20/2023</td>
                         <td>
-                          <button type="button" class="btn btn-primary-dashboard-action btn-sm">View</button>
+                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
                           <span> | </span>
-                          <button type="button" class="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
                         </td>
 
                       </tr>

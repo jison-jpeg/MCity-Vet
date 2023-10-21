@@ -60,7 +60,7 @@ export default function MedicalRecord() {
                 <div className="btn-header">
                     <button
                         type="button"
-                        class="btn btn-primary-dashboard btn-lg rounded-pill"
+                        className="btn btn-primary-dashboard btn-lg rounded-pill"
                         data-bs-toggle="modal"
                         data-bs-target="#addModal">Create Record
                     </button>
@@ -102,9 +102,9 @@ export default function MedicalRecord() {
                                                     <td>2</td>
                                                     <td>A.I</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-primary-dashboard-action btn-sm">View</button>
+                                                        <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
                                                         <span> | </span>
-                                                        <button type="button" class="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                                                        <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
                                                     </td>
 
                                                 </tr>

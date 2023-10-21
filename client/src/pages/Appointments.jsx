@@ -58,7 +58,7 @@ export default function Dashboard() {
 
 
         <div className="btn-header">
-          <button type="button" class="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Appointment</button>
+          <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Appointment</button>
         </div>
 
         <AddAppointment />
@@ -106,12 +106,12 @@ export default function Dashboard() {
                         </td>
                         <td>A.I</td>
                         <td>
-                          <span class="badge rounded-pill bg-success">Success</span>
+                          <span className="badge rounded-pill bg-success">Success</span>
                         </td>
                         <td>
-                          <button type="button" class="btn btn-primary-dashboard-action btn-sm">View</button>
+                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
                           <span> | </span>
-                          <button type="button" class="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
                         </td>
 
                       </tr>

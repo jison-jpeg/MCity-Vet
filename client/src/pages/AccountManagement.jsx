@@ -262,15 +262,15 @@ export default function AccountManagement() {
                       <tr>
                         <th scope="row">ABC123</th>
                         <td>
-                        <span class="badge rounded-pill bg-danger">Admin</span>
+                        <span className="badge rounded-pill bg-danger">Admin</span>
                         </td>
                         <td>Jayson T.</td>
                         <td>jaysontadayca@gmail.com</td>
                         <td>10/20/2023</td>
                         <td>
-                          <button type="button" class="btn btn-primary-dashboard-action btn-sm">View</button>
+                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
                           <span> | </span>
-                          <button type="button" class="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
                         </td>
 
                       </tr>

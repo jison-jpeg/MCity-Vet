@@ -5,11 +5,21 @@ export default function DashboardHeader({ toggleSidebar }) {
   return (
 
     <>
+
+      <div className="loading-overlay">
+        <div className="bounce-loader">
+          <div className="bounce1" />
+          <div className="bounce2" />
+          <div className="bounce3" />
+        </div>
+      </div>
+
+
       {/* ======= Header ======= */}
       <header id="header" className="header fixed-top d-flex align-items-center">
         <div className="d-flex align-items-center justify-content-between">
           <a href="/dashboard" className="logo d-flex align-items-center">
-            <img src="assets/images/logo-mc.png" alt="" className= "d-none d-xl-block" />
+            <img src="assets/images/logo-mc.png" alt="" className="d-none d-xl-block" />
             <span className="d-none d-xl-block">MCity Vet</span>
           </a>
           <i className="bi bi-list toggle-sidebar-btn" onClick={toggleSidebar} />
@@ -110,7 +120,7 @@ export default function DashboardHeader({ toggleSidebar }) {
               {/* End Notification Dropdown Items */}
             </li>
             {/* End Notification Nav */}
-   
+
             <li className="nav-item dropdown pe-3">
               <a
                 className="nav-link nav-profile d-flex align-items-center pe-0"

@@ -27,8 +27,8 @@ export default function AddItem() {
                                     <label htmlFor="schedule" className="form-label">
                                         Technician Name and Schedule
                                     </label>
-                                    <select id="inputState" className="form-select" required>
-                                        <option selected="" value={""}>Choose...</option>
+                                    <select id="inputState" className="form-select" defaultValue={""} required>
+                                        <option value={""}>Choose...</option>
                                         <option>...</option>
                                     </select>
                                 </div>

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
-import AddAppointment from '../components/modals/AddItem';
-
 
 export default function SystemLogs() {
 
@@ -57,8 +55,6 @@ export default function SystemLogs() {
 
                 <br />
                 
-                <AddAppointment />
-
                 <section className="section dashboard">
                     <div className="row">
 
@@ -86,7 +82,7 @@ export default function SystemLogs() {
                                                     <td>Jayson T.</td>
                                                     <td>Admin</td>
                                                     <td>10/21/2023 - 12:00PM</td>
-                                                    <td>Added an Account</td>
+                                                    <td>Added an</td>
                                                 </tr>
 
                                             </tbody>

@@ -21,14 +21,14 @@ export default function AddAppointment() {
                                     <label htmlFor="date" className="form-label">
                                         Date
                                     </label>
-                                    <input type="date" className="form-control" id="date" required/>
+                                    <input type="date" className="form-control" id="date" required />
                                 </div>
                                 <div className="col-md-6">
                                     <label htmlFor="schedule" className="form-label">
                                         Technician Name and Schedule
                                     </label>
-                                    <select id="inputState" className="form-select" required>
-                                        <option selected="" value={""}>Choose...</option>
+                                    <select id="inputState" className="form-select" defaultValue={""} required>
+                                        <option value={""}>Choose...</option>
                                         <option>...</option>
                                     </select>
                                 </div>
@@ -93,11 +93,11 @@ export default function AddAppointment() {
                                     <label htmlFor="inputZip" className="form-label">
                                         Phone Number
                                     </label>
-                                    <input type="phoneNumber" className="form-control" id="phoneNumber" placeholder='0912 345 6789'/>
+                                    <input type="phoneNumber" className="form-control" id="phoneNumber" placeholder='0912 345 6789' />
                                 </div>
 
-                               
-                                
+
+
                                 <div className="modal-footer">
                                     <button
                                         type="button"
