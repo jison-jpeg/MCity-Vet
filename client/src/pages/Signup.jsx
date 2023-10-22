@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Google logo icon
-import axios from 'axios';
+// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -21,12 +21,20 @@ export default function Signup() {
     try {
       setLoading(true);
       setError(false);
-  
-      const response = await axios.post('/backend/auth/signup', formData, {
+
+      const response = await fetch('/backend/auth/signin', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(formData),
       });
+  
+      // const response = await axios.post('/backend/auth/signup', formData, {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      // });
   
       const data = response.data;
   

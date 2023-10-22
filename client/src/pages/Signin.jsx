@@ -1,46 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Google logo icon
-import axios from 'axios';
+// import axios from 'axios';
+import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux'; 
 
 export default function Signin() {
 
-  const [formData, setFormData] = useState({}); // [1]
-  const [error, setError] = useState(false); // [1
-  const [loading, setLoading] = useState(false); // [1]
+  const [formData, setFormData] = useState({});
+  const {loading, error} = useSelector((state) => state.user);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value }); // [2]
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     try {
-      setLoading(true);
-      setError(false);
-  
-      const response = await axios.post('/backend/auth/signin', formData, {
+      dispatch(signinStart());
+      const response = await fetch('/backend/auth/signin', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(formData),
       });
+
+      // const response = await axios.post('/backend/auth/signin', formData, {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(formData),
+      // });
   
-      const data = response.data;
-  
-      setLoading(false);
-  
+      const data = await response.json();
       if (data.success === false) {
-        setError(true);
+        dispatch(signinFailure(data.message));
         return;
       }
+      dispatch(signinSuccess(data));
       navigate('/')
     } catch (error) {
-      setLoading(false);
-      setError(true);
+      dispatch(signinFailure(error));
     }
   };
 
@@ -100,13 +104,13 @@ export default function Signin() {
                   <input type="password" id='password' className="form-control" required onChange={handleChange} />
                 </div>
                 
-                <span className="term-privacy d-flex justify-content-center">{error && "Invalid email or password!"}</span>
+                <span className="term-privacy d-flex justify-content-center">{error ? error || 'Something went wrong!' : ''}</span>
 
                 <div className="btn-link">
                   <a href="#">Forgot password?</a>
                 </div>
                 <button disabled={loading} type="submit" className="btn btn-form btn-secondary-color">
-                <span>{loading ? 'Logging In...' : 'Sign In'}</span>
+                <span>{loading ? 'Signing In...' : 'Sign In'}</span>
                 </button>
 
                 <div className="term-privacy d-flex justify-content-center">
