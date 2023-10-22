@@ -38,7 +38,7 @@ export default function Signin() {
   
       const data = await response.json();
       if (data.success === false) {
-        dispatch(signinFailure(data.message));
+        dispatch(signinFailure(data));
         return;
       }
       dispatch(signinSuccess(data));
@@ -104,7 +104,7 @@ export default function Signin() {
                   <input type="password" id='password' className="form-control" required onChange={handleChange} />
                 </div>
                 
-                <span className="term-privacy d-flex justify-content-center">{error ? error || 'Something went wrong!' : ''}</span>
+                <span className="term-privacy d-flex justify-content-center">{error ? error.message || 'Something went wrong!' : ''}</span>
 
                 <div className="btn-link">
                   <a href="#">Forgot password?</a>
