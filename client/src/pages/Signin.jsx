@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Google logo icon
-// import axios from 'axios';
 import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux'; 
+import OAuth from '../components/OAuth';
 
 export default function Signin() {
 
@@ -117,9 +115,12 @@ export default function Signin() {
                   <span className="line-height-1">or </span>
                 </div>
 
-                <button type="submit" className="btn btn-form btn-primary-color">
+
+                <OAuth /> 
+
+                {/* <button type="submit" className="btn btn-form btn-primary-color">
                   <span> <FontAwesomeIcon icon={faGoogle} className='google-icon' /> Continue with Google</span>
-                </button>
+                </button> */}
 
                 <div className="term-privacy d-flex justify-content-center">
                   <span className="line-height-1">New to MCity Vet? </span>

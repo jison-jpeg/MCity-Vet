@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Google logo icon
-// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import OAuth from '../components/OAuth';
 
 
 export default function Signup() {
@@ -127,9 +125,13 @@ export default function Signup() {
             <div className="term-privacy d-flex justify-content-center">
               <span className="line-height-1">or</span>
             </div>
-            <button type="submit" className="btn btn-form btn-primary-color">
+
+            {/* <button type="submit" className="btn btn-form btn-primary-color">
               <span><FontAwesomeIcon icon={faGoogle} className='google-icon' /> Sign up with Google</span>
-            </button>
+            </button> */}
+
+            <OAuth />
+
             <div className="term-privacy d-flex justify-content-center">
               <span className="line-height-1">Already have an account?</span>
               <div className="btn-link">
