@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import DashboardHeader from '../components/DashboardHeader';
 
 export default function Home() {
 
@@ -19,9 +20,17 @@ export default function Home() {
       {/*----------------------------------------------
 	loading overlay - end
 	----------------------------------------------*/}
+
+      {/* <DashboardHeader />  */}
+
       <div className="page-wrapper">
+
+
         {/* Header.jsx */}
         <Header />
+
+
+
         <main className="main">
           {/*----------------------------------------------
 			hero slider - start
@@ -48,8 +57,7 @@ export default function Home() {
                 <div className="banner-content">
                   <h1 className="banner-title">Nurturing the Heart of Your Farm.</h1>
                   <p className="banner-info">
-                    Our skilled doctors have tremendous experience with wide range
-                    of diseases to serve the needs of our patients.
+                    Your livestock's well-being is our top priority, we're your partners in prosperity.
                   </p>
                   <div className="banner-actions">
                     <a
@@ -113,13 +121,7 @@ export default function Home() {
           <div className="bg-primary-color schedule-section">
             <div className="container">
               <div className="row position-relative">
-                <img
-                  src="assets/images/demos/demo-1/puzzle/puzzle-1.png"
-                  className="puzzle pr-0 pl-0"
-                  alt="Puzzle"
-                  width={160}
-                  height={217}
-                />
+
                 <div className="col-lg-5 offset-lg-0 col-md-8 col-sm-8 offset-sm-2 col-10 offset-1">
                   <div className="widget">
                     <h4 className="widget-title">

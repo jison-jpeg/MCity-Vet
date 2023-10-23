@@ -8,6 +8,8 @@ import Inventory from './pages/Inventory';
 import MedicalRecord from './pages/MedicalRecord';
 import AccountManagement from './pages/AccountManagement';
 import SystemLogs from './pages/SystemLogs';
+import BookAppointment from './pages/BookAppointment';
+import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
   return (
@@ -16,14 +18,17 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/signin" element={<Signin />} />     
-        <Route path="/dashboard" element={<Dashboard />} /> 
-        <Route path="/appointments" element={<Appointments />} />
-        <Route path="/inventory" element={<Inventory />} />
-        <Route path="/medical-record" element={<MedicalRecord />} />
-        <Route path="/account-management" element={<AccountManagement />} />
-        <Route path="/system-logs" element={<SystemLogs />} />
-        {/* <Route path="/book-appointment" element={<BookAppointment />} /> */}
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/book-appointment" element={<BookAppointment />} />
+    
+        <Route element={<PrivateRoute />} > 
+          <Route path="/dashboard" element={<Dashboard />} /> 
+          <Route path="/appointments" element={<Appointments />} />
+          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/medical-record" element={<MedicalRecord />} />
+          <Route path="/account-management" element={<AccountManagement />} />
+          <Route path="/system-logs" element={<SystemLogs />} />
+        </Route>
         
       </Routes>
     </BrowserRouter>

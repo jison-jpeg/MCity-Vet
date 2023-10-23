@@ -6,6 +6,7 @@ export default function BookAppointment() {
   return (
     <>
     <Header />
+    
 
     <main className="main">
   {/*----------------------------------------------
