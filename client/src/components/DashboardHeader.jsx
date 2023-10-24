@@ -1,6 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { signout } from '../redux/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function DashboardHeader({ toggleSidebar }) {
+  const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+
+  const handleSignout = async () => {
+    try {
+      await fetch('/api/auth/signout');
+      dispatch(signout())
+      navigate('/signin');
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
 
@@ -128,7 +145,7 @@ export default function DashboardHeader({ toggleSidebar }) {
                 data-bs-toggle="dropdown"
               >
                 <img
-                  src="assets/img/profile-img.jpg"
+                  src={currentUser?.profilePicture}
                   alt="Profile"
                   className="rounded-circle"
                 />
@@ -182,7 +199,7 @@ export default function DashboardHeader({ toggleSidebar }) {
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <a className="dropdown-item d-flex align-items-center" href="#">
+                  <a onClick={handleSignout} className="dropdown-item d-flex align-items-center" href="#">
                     <i className="bi bi-box-arrow-right" />
                     <span>Sign Out</span>
                   </a>

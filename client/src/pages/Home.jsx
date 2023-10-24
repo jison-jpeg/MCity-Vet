@@ -1,27 +1,12 @@
 import React, { useEffect } from 'react';
 import Footer from '../components/Footer'
 import Header from '../components/Header'
-import DashboardHeader from '../components/DashboardHeader';
 
 export default function Home() {
 
   return (
     <>
-      {/*----------------------------------------------
-	loading overlay - start
-	----------------------------------------------*/}
-      <div className="loading-overlay">
-        <div className="bounce-loader">
-          <div className="bounce1" />
-          <div className="bounce2" />
-          <div className="bounce3" />
-        </div>
-      </div>
-      {/*----------------------------------------------
-	loading overlay - end
-	----------------------------------------------*/}
-
-      {/* <DashboardHeader />  */}
+      
 
       <div className="page-wrapper">
 

@@ -1,20 +1,50 @@
 // import React from 'react'
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { signout } from '../redux/user/userSlice';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Header() {
+  const navigate = useNavigate();
+
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const dashboardStylesheet = document.getElementById('dashboard-stylesheet');
-    dashboardStylesheet.setAttribute('disabled', 'true');
+    if (dashboardStylesheet) {
+      dashboardStylesheet.setAttribute('disabled', 'true');
+    }
 
     const dashboardBootstrap = document.getElementById('dashboard-bootstrap');
-    dashboardBootstrap.setAttribute('disabled', 'true');
+    if (dashboardBootstrap) {
+      dashboardBootstrap.setAttribute('disabled', 'true');
+    }
   }, []);
+
+  const dispatch = useDispatch();
+
+  const handleSignout = async () => {
+    try {
+      await fetch('/api/auth/signout');
+      dispatch(signout())
+      navigate('/signin');
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <header className="header">
+
+      {/* Pre loader */}
+      <div className="loading-overlay">
+        <div className="bounce-loader">
+          <div className="bounce1" />
+          <div className="bounce2" />
+          <div className="bounce3" />
+        </div>
+      </div>
 
       <div className="header-middle sticky-header">
         <div className="header-left">
@@ -52,37 +82,6 @@ export default function Header() {
             <span>Book an Appointment</span>
           </a>
 
-          {/* <a href="/signin" className="btn btn-sm btn-secondary-color ls-0 btn-login">
-            <span>Sign in</span>
-          </a>
-          <a href="/signin" className="icon-alt"><i className="fas fa-user" /></a> */}
-
-          {/* <div className="dropdown menu icon-alt" id="profile-nav">
-            <input type="checkbox" className="dropdown-checkbox" id="dropdown-toggle" />
-            <label
-              className="profile-image-label dropdown-label"
-              htmlFor="dropdown-toggle"
-            >
-              <img src={currentUser?.profilePicture} alt="profile" width={50}
-                height={50} className='rounded-circle sf-with-ul' />
-            </label>
-
-            <div className="dropdown-content-container">
-              <a href="#" className="dropdown-content ">
-                Profile
-              </a>
-              <div className="arrow"></div>
-
-              <a href="#" className="dropdown-content">
-                Settings
-              </a>
-              <a href="#" className="dropdown-content">
-                Logout
-              </a>
-
-            </div>
-
-          </div> */}
 
           {currentUser ? (
             <div className="dropdown menu icon-alt" id="profile-nav">
@@ -104,8 +103,8 @@ export default function Header() {
                 <a href="#" className="dropdown-content">
                   Settings
                 </a>
-                <a href="#" className="dropdown-content">
-                  Logout
+                <a onClick={handleSignout} className="dropdown-content">
+                  Signout
                 </a>
 
               </div>
@@ -122,6 +121,7 @@ export default function Header() {
 
         </div>
       </div>
+
     </header>
 
 
