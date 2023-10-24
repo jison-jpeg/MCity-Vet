@@ -12,6 +12,7 @@ import BookAppointment from './pages/BookAppointment';
 import PrivateRoute from './components/PrivateRoute';
 import UserDashboard from './pages/UserDashboard';
 
+
 export default function App() {
   return (
     <BrowserRouter>

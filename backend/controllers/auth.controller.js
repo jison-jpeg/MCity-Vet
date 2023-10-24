@@ -37,6 +37,7 @@ export const signin = async (req, res, next) => {
 
 export const google = async (req, res, next) => {
     try {
+        console.log(req)
         const user = await User.findOne({ email: req.body.email });
         if (user) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
@@ -53,10 +54,18 @@ export const google = async (req, res, next) => {
             const generatedPassword =
                 Math.random().toString(36).slice(-8) +
                 Math.random().toString(36).slice(-8);
-            const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
-            const newUser = new User({
-                firstName: req.body.givenName,
-                lastName: req.body.familyName,
+                const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+                const displayName = req.body.name.split(' '); // Split the name by space
+                const firstName = displayName[0];
+                const lastName = displayName[1] || '';
+                const fullName = `${firstName} ${lastName}`.trim();
+
+                const newUser = new User({
+             
+                // displayName: req.body.name,
+                firstName, // Assign the first name
+                lastName, // Assign the last name
+                fullName, // Assign the full name
                 email: req.body.email,
                 password: hashedPassword,
                 profilePicture: req.body.photo,

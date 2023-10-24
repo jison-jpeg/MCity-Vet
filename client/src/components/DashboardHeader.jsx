@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { signout } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ export default function DashboardHeader({ toggleSidebar }) {
 
   const handleSignout = async () => {
     try {
-      await fetch('/api/auth/signout');
+      await fetch('/backend/auth/signout');
       dispatch(signout())
       navigate('/signin');
     } catch (error) {
@@ -150,14 +150,15 @@ export default function DashboardHeader({ toggleSidebar }) {
                   className="rounded-circle"
                 />
                 <span className="d-none d-md-block dropdown-toggle ps-2">
-                  K. Anderson
+                {currentUser?.firstName}
                 </span>
               </a>
               {/* End Profile Iamge Icon */}
               <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                 <li className="dropdown-header">
-                  <h6>Kevin Anderson</h6>
-                  <span>Web Designer</span>
+                  <h6>{currentUser?.firstName} {currentUser?.lastName}
+</h6>
+                  <span>Role</span>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
