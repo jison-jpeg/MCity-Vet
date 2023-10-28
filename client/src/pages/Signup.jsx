@@ -1,26 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OAuth from '../components/OAuth';
 
 
 export default function Signup() {
-  const [formData, setFormData] = useState({}); // [1]
-  const [error, setError] = useState(false); // [1
-  const [loading, setLoading] = useState(false); // [1]
+  const [formData, setFormData] = useState({});
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value }); // [2]
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     try {
       setLoading(true);
       setError(false);
-
-      const response = await fetch('/backend/auth/signin', {
+  
+      const res = await fetch('/backend/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,23 +26,16 @@ export default function Signup() {
         body: JSON.stringify(formData),
       });
   
-      // const response = await axios.post('/backend/auth/signup', formData, {
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      // });
-  
-      const data = response.data;
-  
+      const data = await res.json();
+      console.log(data);
       setLoading(false);
-  
       if (data.success === false) {
         setError(true);
         return;
       }
-      navigate('/signin')
-
-    } catch (error) {
+      navigate('/signin');
+    } catch (err) {
+      console.error(err);
       setLoading(false);
       setError(true);
     }
@@ -115,7 +106,7 @@ export default function Signup() {
             </div>
 
             <div className="term-privacy d-flex justify-content-center">
-              <span className="line-height-10">{error && "Email has been already exist!"}</span>
+              <span className="line-height-10">{error && <p>Something went wrong. Please try again later.</p>}</span>
             </div>
 
             <button disabled={loading} type="submit" className="btn btn-form btn-secondary-color">
@@ -126,9 +117,6 @@ export default function Signup() {
               <span className="line-height-1">or</span>
             </div>
 
-            {/* <button type="submit" className="btn btn-form btn-primary-color">
-              <span><FontAwesomeIcon icon={faGoogle} className='google-icon' /> Sign up with Google</span>
-            </button> */}
 
             <OAuth />
 

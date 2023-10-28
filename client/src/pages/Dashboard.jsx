@@ -271,7 +271,7 @@ export default function Dashboard() {
         <div className="copyright">
           © Copyright{" "}
           <strong>
-            <span>NiceAdmin</span>
+            <span>Troubleshooters</span>
           </strong>
           . All Rights Reserved
         </div>

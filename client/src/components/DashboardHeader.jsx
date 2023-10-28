@@ -158,7 +158,7 @@ export default function DashboardHeader({ toggleSidebar }) {
                 <li className="dropdown-header">
                   <h6>{currentUser?.firstName} {currentUser?.lastName}
 </h6>
-                  <span>Role</span>
+                  <span>{currentUser?.role}</span>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />

@@ -58,14 +58,11 @@ export const google = async (req, res, next) => {
                 const displayName = req.body.name.split(' '); // Split the name by space
                 const firstName = displayName[0];
                 const lastName = displayName[1] || '';
-                const fullName = `${firstName} ${lastName}`.trim();
-
                 const newUser = new User({
              
                 // displayName: req.body.name,
                 firstName, // Assign the first name
                 lastName, // Assign the last name
-                fullName, // Assign the full name
                 email: req.body.email,
                 password: hashedPassword,
                 profilePicture: req.body.photo,

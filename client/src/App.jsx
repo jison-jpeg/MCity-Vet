@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Appointments from './pages/Appointments';
 import Inventory from './pages/Inventory';
 import MedicalRecord from './pages/MedicalRecord';
+import Profile from './pages/Profile';
 import AccountManagement from './pages/AccountManagement';
 import SystemLogs from './pages/SystemLogs';
 import BookAppointment from './pages/BookAppointment';
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/medical-record" element={<MedicalRecord />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/account-management" element={<AccountManagement />} />
           <Route path="/system-logs" element={<SystemLogs />} />
         </Route>

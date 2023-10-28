@@ -54,6 +54,16 @@ export default function DashboardSidebar({ toggleSidebar }) {
           </li>
           {/* End Medical Record Page Nav */}
 
+          {/* User Page Nav */}
+          <li className="nav-heading">USER</li>
+          <li className="nav-item">
+          <a className={`nav-link ${location.pathname === '/profile' ? '' : 'collapsed'}`} href="/profile">
+              <i className="bi bi-card-list" />
+              <span>Profile</span>
+            </a>
+          </li>
+          {/* End User Page Nav */}
+
           {/* Account Management Page Nav */}
           <li className="nav-heading">SYSTEM</li>
           <li className="nav-item">
