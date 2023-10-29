@@ -4,9 +4,11 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Import 'ref' here
 import { app } from "../firebase";
+import { useDispatch } from 'react-redux';
+import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
 
 export default function Profile() {
-
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [image, setImage] = useState(undefined);
@@ -83,10 +85,32 @@ export default function Profile() {
     );
   };
 
-  
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+  // console.log(formData);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/backend/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data));
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error));
+    }
   };
 
   return (
@@ -117,7 +141,7 @@ export default function Profile() {
                     alt="Profile"
                     className="rounded-circle"
                   />
-                  <h2>{currentUser?.firstName} {currentUser?.lastName}</h2>
+                  <h2>{currentUser?.firstName} {currentUser?.lastName} {currentUser?.middleName ? currentUser.middleName[0] : ''}.</h2>
                   <h3>{currentUser?.role}</h3>
 
 
@@ -167,19 +191,24 @@ export default function Profile() {
                       <h5 className="card-title">Profile Details</h5>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label ">Full Name</div>
-                        <div className="col-lg-9 col-md-8">{currentUser?.firstName} {currentUser?.lastName}</div>
+                        <div className="col-lg-9 col-md-8">{currentUser?.lastName}, {currentUser?.firstName} {currentUser?.middleName}</div>
                       </div>
-
+                      <div className="row">
+                        <div className="col-lg-3 col-md-4 label">Birthday</div>
+                        <div className="col-lg-9 col-md-8">
+                        {currentUser?.birthdate}
+                        </div>
+                      </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Address</div>
                         <div className="col-lg-9 col-md-8">
-                          You don't have any address saved yet.
+                        {currentUser?.address}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Phone</div>
                         <div className="col-lg-9 col-md-8">
-                          You don't have any phone number saved yet.
+                        {currentUser?.phone}
                         </div>
                       </div>
                       <div className="row">
@@ -194,7 +223,7 @@ export default function Profile() {
                       id="profile-edit"
                     >
                       {/* Profile Edit Form */}
-                      <form>
+                      <form onSubmit={handleSubmit}>
 
                         <input type="file" ref={fileRef} hidden accept='image/*'
                           onChange={(e) => setImage(e.target.files[0])} />
@@ -268,7 +297,9 @@ export default function Profile() {
                               type="text"
                               className="form-control"
                               id="firstName"
-                              defaultValue={currentUser?.firstName}
+                              placeholder='Enter your first name'
+                              defaultValue={currentUser?.firstName} onChange={handleChange}
+
                             />
                           </div>
                         </div>
@@ -286,17 +317,55 @@ export default function Profile() {
                               type="text"
                               className="form-control"
                               id="lastName"
-                              defaultValue={currentUser?.lastName}
+                              placeholder='Enter your last name'
+                              defaultValue={currentUser?.lastName} onChange={handleChange}
+                              
                             />
                           </div>
                         </div>
 
 
-
+                        <div className="row mb-3">
+                          <label
+                            htmlFor="lastName"
+                            className="col-md-4 col-lg-3 col-form-label"
+                          >
+                            Middle Name
+                          </label>
+                          <div className="col-md-8 col-lg-9">
+                            <input
+                              name="middleName"
+                              type="text"
+                              className="form-control"
+                              id="middleName"
+                              placeholder='Optional'
+                              defaultValue={currentUser?.middleName} onChange={handleChange}
+                            />
+                          </div>
+                        </div>
 
                         <div className="row mb-3">
                           <label
                             htmlFor="Address"
+                            className="col-md-4 col-lg-3 col-form-label"
+                          >
+                            Birthdate
+                          </label>
+                          <div className="col-md-8 col-lg-9">
+                            <input
+                              name="address"
+                              type="date"
+                              className="form-control"
+                              id="birthdate"
+                              defaultValue={currentUser?.birthdate} onChange={handleChange}
+                            />
+                          </div>
+                        </div>
+
+
+                        <div className="row mb-3">
+                          <label
+                            htmlFor="address"
                             className="col-md-4 col-lg-3 col-form-label"
                           >
                             Address
@@ -306,14 +375,15 @@ export default function Profile() {
                               name="address"
                               type="text"
                               className="form-control"
-                              id="Address"
-                              defaultValue="A108 Adam Street, New York, NY 535022"
+                              id="address"
+                              placeholder='Enter your home address'
+                              defaultValue={currentUser?.address} onChange={handleChange}
                             />
                           </div>
                         </div>
                         <div className="row mb-3">
                           <label
-                            htmlFor="Phone"
+                            htmlFor="phone"
                             className="col-md-4 col-lg-3 col-form-label"
                           >
                             Phone
@@ -323,14 +393,15 @@ export default function Profile() {
                               name="phone"
                               type="text"
                               className="form-control"
-                              id="Phone"
-                              defaultValue="(436) 486-3538 x29071"
+                              id="phone"
+                              placeholder='09'
+                              defaultValue={currentUser?.phone} onChange={handleChange}
                             />
                           </div>
                         </div>
                         <div className="row mb-3">
                           <label
-                            htmlFor="Email"
+                            htmlFor="email"
                             className="col-md-4 col-lg-3 col-form-label"
                           >
                             Email
@@ -340,7 +411,7 @@ export default function Profile() {
                               name="email"
                               type="email"
                               className="form-control"
-                              id="Email"
+                              id="email"
                               defaultValue={currentUser?.email}
                               disabled
                             />
@@ -348,7 +419,7 @@ export default function Profile() {
                         </div>
 
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                          <button className="btn btn-primary" type="button">
+                          <button className="btn btn-primary" type="submit">
                             Save Changes
                           </button>
                         </div>

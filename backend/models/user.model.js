@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
     lastName: {
         type: String,
     },
+    middleName: {
+        type: String,
+    },
     email: {
         type: String,
         required: true,
@@ -17,6 +20,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    phone: {
+        type: String,
+    },
+    address: {
+        type: String,    },
+    gender: {
+        type: String,
+    },
+    birthdate: {
+        type: String,    },
     profilePicture: {
         type: String,
         default: 'https://cdn.stealthoptional.com/images/ncavvykf/stealth/f60441357c6c210401a1285553f0dcecc4c4489e-564x564.jpg?w=564&h=564&auto=format'
