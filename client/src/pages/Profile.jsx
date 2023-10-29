@@ -6,7 +6,6 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { app } from "../firebase";
 import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
-import { set } from 'mongoose';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -142,7 +141,7 @@ export default function Profile() {
                     alt="Profile"
                     className="rounded-circle"
                   />
-                  <h2>{currentUser?.firstName} {currentUser?.lastName} {currentUser?.middleName ? currentUser.middleName[0] : ''}.</h2>
+                  <h2>  {currentUser?.firstName} {currentUser?.lastName} {currentUser?.middleName ? ` ${currentUser.middleName[0]}.` : ''}</h2>
                   <h3>{currentUser?.role}</h3>
 
 
@@ -297,8 +296,8 @@ export default function Profile() {
                           </div>
                         }
 
-                        {/* <p>{error && "Something went wrong!"}</p>
-                        <p>{updateSuccess && "User is updated successfuly!"}</p> */}
+                        <p>{error && "Something went wrong!"}</p>
+                        <p>{updateSuccess && "User is updated successfuly!"}</p>
 
 
 
