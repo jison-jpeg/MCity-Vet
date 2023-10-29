@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 
@@ -34,6 +35,8 @@ export default function Dashboard() {
     dashboardBootstrap.removeAttribute('disabled');
   }, []);
 
+  const { currentUser } = useSelector((state) => state.user);
+
   return (
     <>
       <DashboardHeader toggleSidebar={toggleSidebar} />
@@ -55,7 +58,7 @@ export default function Dashboard() {
         </div>
 
         <div className='greetings'>
-          <h1>Hello, <span>Technician</span> !</h1>
+          <h1>Hello, <span>{currentUser?.firstName}</span> !</h1>
         </div>
         {/* End Page Title */}
 

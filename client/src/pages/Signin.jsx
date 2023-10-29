@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux'; 
@@ -27,12 +27,6 @@ export default function Signin() {
         body: JSON.stringify(formData),
       });
 
-      // const response = await axios.post('/backend/auth/signin', formData, {
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
   
       const data = await response.json();
       if (data.success === false) {

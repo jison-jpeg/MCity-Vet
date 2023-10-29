@@ -1,9 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Import 'ref' here
+import { app } from "../firebase";
 
 export default function Profile() {
+
+  const { currentUser } = useSelector((state) => state.user);
+  const fileRef = useRef(null);
+  const [image, setImage] = useState(undefined);
+  const [imagePercent, setImagePercent] = useState(0);
+  const [imageError, setImageError] = useState(false);
+  const [formData, setFormData] = useState({
+  });
 
   // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -34,7 +44,50 @@ export default function Profile() {
     dashboardBootstrap.removeAttribute('disabled');
   }, []);
 
-  const { currentUser } = useSelector((state) => state.user);
+  useEffect(() => {
+    if (image) {
+      handleFileUpload(image);
+    }
+  }, [image]);
+
+  const handleFileUpload = async (image) => {
+    if (image.size > 2 * 1024 * 1024) {
+      setImageError(true);
+      return;
+    }
+
+    if (!image.type.startsWith("image/")) {
+      setImageError(true);
+      return;
+    }
+
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + image.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setImagePercent(Math.round(progress));
+      },
+      (error) => {
+        setImageError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+          setFormData({ ...formData, profilePicture: downloadURL })
+        );
+      }
+    );
+  };
+
+  
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
   return (
     <>
@@ -67,7 +120,7 @@ export default function Profile() {
                   <h2>{currentUser?.firstName} {currentUser?.lastName}</h2>
                   <h3>{currentUser?.role}</h3>
 
-                  
+
                 </div>
               </div>
             </div>
@@ -94,15 +147,7 @@ export default function Profile() {
                         Edit Profile
                       </button>
                     </li>
-                    <li className="nav-item">
-                      <button
-                        className="nav-link"
-                        data-bs-toggle="tab"
-                        data-bs-target="#profile-settings"
-                      >
-                        Settings
-                      </button>
-                    </li>
+
                     <li className="nav-item">
                       <button
                         className="nav-link"
@@ -118,13 +163,13 @@ export default function Profile() {
                       className="tab-pane fade show active profile-overview"
                       id="profile-overview"
                     >
-                      
+
                       <h5 className="card-title">Profile Details</h5>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label ">Full Name</div>
                         <div className="col-lg-9 col-md-8">{currentUser?.firstName} {currentUser?.lastName}</div>
                       </div>
-                     
+
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Address</div>
                         <div className="col-lg-9 col-md-8">
@@ -150,6 +195,52 @@ export default function Profile() {
                     >
                       {/* Profile Edit Form */}
                       <form>
+
+                        <input type="file" ref={fileRef} hidden accept='image/*'
+                          onChange={(e) => setImage(e.target.files[0])} />
+
+
+                        {imageError ? (
+                          <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                            Error uploading image (file size must be less than 2 MB)
+                            <button
+                              type="button"
+                              className="btn-close"
+                              data-bs-dismiss="alert"
+                              aria-label="Close"
+                            />
+                          </div>
+                        ) : imagePercent > 0 && imagePercent < 100 ? (
+                          <div>
+                            <div className="progress mt-3">
+                              <div
+                                className="progress-bar"
+                                role="progressbar"
+                                style={{ width: `${imagePercent}%` }}
+                                aria-valuenow={imagePercent}
+                                aria-valuemin={0}
+                                aria-valuemax={100}
+                              >
+                                {imagePercent}%
+                              </div>
+                            </div>
+                            <br />
+                          </div>
+                        ) : imagePercent === 100 ? (
+                          <div className="alert alert-success alert-dismissible fade show" role="alert">
+                            Image uploaded successfully!
+                            <button
+                              type="button"
+                              className="btn-close"
+                              data-bs-dismiss="alert"
+                              aria-label="Close"
+                            />
+                          </div>
+                        ) : null}
+
+
+
+
                         <div className="row mb-3">
                           <label
                             htmlFor="profileImage"
@@ -158,112 +249,51 @@ export default function Profile() {
                             Profile Image
                           </label>
                           <div className="col-md-8 col-lg-9">
-                            <img src="assets/img/profile-img.jpg" alt="Profile" />
-                            <div className="pt-2">
-                              <a
-                                href="#"
-                                className="btn btn-primary btn-sm"
-                                title="Upload new profile image"
-                              >
-                                <i className="bi bi-upload" />
-                              </a>
-                              <a
-                                href="#"
-                                className="btn btn-danger btn-sm"
-                                title="Remove my profile image"
-                              >
-                                <i className="bi bi-trash" />
-                              </a>
-                            </div>
+                            <img src={formData.profilePicture || currentUser.profilePicture} alt="Profile"
+                              onClick={() => fileRef.current.click()}
+                            />
                           </div>
                         </div>
+
                         <div className="row mb-3">
                           <label
-                            htmlFor="fullName"
+                            htmlFor="firstName"
                             className="col-md-4 col-lg-3 col-form-label"
                           >
-                            Full Name
+                            First Name
                           </label>
                           <div className="col-md-8 col-lg-9">
                             <input
-                              name="fullName"
+                              name="firstName"
                               type="text"
                               className="form-control"
-                              id="fullName"
-                              defaultValue="Kevin Anderson"
+                              id="firstName"
+                              defaultValue={currentUser?.firstName}
                             />
                           </div>
                         </div>
+
                         <div className="row mb-3">
                           <label
-                            htmlFor="about"
+                            htmlFor="lastName"
                             className="col-md-4 col-lg-3 col-form-label"
                           >
-                            About
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <textarea
-                              name="about"
-                              className="form-control"
-                              id="about"
-                              style={{ height: 100 }}
-                              defaultValue={
-                                "Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde."
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="company"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Company
+                            Last Name
                           </label>
                           <div className="col-md-8 col-lg-9">
                             <input
-                              name="company"
+                              name="lastName"
                               type="text"
                               className="form-control"
-                              id="company"
-                              defaultValue="Lueilwitz, Wisoky and Leuschke"
+                              id="lastName"
+                              defaultValue={currentUser?.lastName}
                             />
                           </div>
                         </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="Job"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Job
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="job"
-                              type="text"
-                              className="form-control"
-                              id="Job"
-                              defaultValue="Web Designer"
-                            />
-                          </div>
-                        </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="Country"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Country
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="country"
-                              type="text"
-                              className="form-control"
-                              id="Country"
-                              defaultValue="USA"
-                            />
-                          </div>
-                        </div>
+
+
+
+
                         <div className="row mb-3">
                           <label
                             htmlFor="Address"
@@ -311,163 +341,25 @@ export default function Profile() {
                               type="email"
                               className="form-control"
                               id="Email"
-                              defaultValue="k.anderson@example.com"
+                              defaultValue={currentUser?.email}
+                              disabled
                             />
                           </div>
                         </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="Twitter"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Twitter Profile
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="twitter"
-                              type="text"
-                              className="form-control"
-                              id="Twitter"
-                              defaultValue="https://twitter.com/#"
-                            />
-                          </div>
-                        </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="Facebook"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Facebook Profile
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="facebook"
-                              type="text"
-                              className="form-control"
-                              id="Facebook"
-                              defaultValue="https://facebook.com/#"
-                            />
-                          </div>
-                        </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="Instagram"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Instagram Profile
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="instagram"
-                              type="text"
-                              className="form-control"
-                              id="Instagram"
-                              defaultValue="https://instagram.com/#"
-                            />
-                          </div>
-                        </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="Linkedin"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Linkedin Profile
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="linkedin"
-                              type="text"
-                              className="form-control"
-                              id="Linkedin"
-                              defaultValue="https://linkedin.com/#"
-                            />
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <button type="submit" className="btn btn-primary">
+
+                        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                          <button className="btn btn-primary" type="button">
                             Save Changes
                           </button>
                         </div>
+
+
+
+
                       </form>
                       {/* End Profile Edit Form */}
                     </div>
-                    <div className="tab-pane fade pt-3" id="profile-settings">
-                      {/* Settings Form */}
-                      <form>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="fullName"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Email Notifications
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="changesMade"
-                                defaultChecked=""
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="changesMade"
-                              >
-                                Changes made to your account
-                              </label>
-                            </div>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="newProducts"
-                                defaultChecked=""
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="newProducts"
-                              >
-                                Information on new products and services
-                              </label>
-                            </div>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="proOffers"
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="proOffers"
-                              >
-                                Marketing and promo offers
-                              </label>
-                            </div>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="securityNotify"
-                                defaultChecked=""
-                                disabled=""
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="securityNotify"
-                              >
-                                Security alerts
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <button type="submit" className="btn btn-primary">
-                            Save Changes
-                          </button>
-                        </div>
-                      </form>
-                      {/* End settings Form */}
-                    </div>
+
                     <div
                       className="tab-pane fade pt-3"
                       id="profile-change-password"
@@ -522,8 +414,8 @@ export default function Profile() {
                             />
                           </div>
                         </div>
-                        <div className="text-center">
-                          <button type="submit" className="btn btn-primary">
+                        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                          <button className="btn btn-primary" type="button">
                             Change Password
                           </button>
                         </div>

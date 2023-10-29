@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 export default function DashboardSidebar({ toggleSidebar }) {
   const location = useLocation();
+  const { currentUser } = useSelector((state) => state.user);
+  const isAdmin = currentUser.role === 'admin';
+
 
   return (
     <>
@@ -17,7 +21,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
           <li className="nav-heading">MENU</li>
           {/* Dashboard Nav */}
           <li className="nav-item">
-          <a className={`nav-link ${location.pathname === '/dashboard' ? '' : 'collapsed'}`} href="/dashboard">
+            <a className={`nav-link ${location.pathname === '/dashboard' ? '' : 'collapsed'}`} href="/dashboard">
 
               <i className="bi bi-grid" />
               <span>Dashboard</span>
@@ -27,7 +31,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
 
           {/* Appointment Page Nav */}
           <li className="nav-item">
-          <a className={`nav-link ${location.pathname === '/appointments' ? '' : 'collapsed'}`} href="/appointments">
+            <a className={`nav-link ${location.pathname === '/appointments' ? '' : 'collapsed'}`} href="/appointments">
 
               <i className="bi bi-person" />
               <span>Appointments</span>
@@ -57,7 +61,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
           {/* User Page Nav */}
           <li className="nav-heading">USER</li>
           <li className="nav-item">
-          <a className={`nav-link ${location.pathname === '/profile' ? '' : 'collapsed'}`} href="/profile">
+            <a className={`nav-link ${location.pathname === '/profile' ? '' : 'collapsed'}`} href="/profile">
               <i className="bi bi-card-list" />
               <span>Profile</span>
             </a>
@@ -65,22 +69,29 @@ export default function DashboardSidebar({ toggleSidebar }) {
           {/* End User Page Nav */}
 
           {/* Account Management Page Nav */}
-          <li className="nav-heading">SYSTEM</li>
-          <li className="nav-item">
-          <a className={`nav-link ${location.pathname === '/account-management' ? '' : 'collapsed'}`} href="/account-management">
-              <i className="bi bi-envelope" />
-              <span>Account Management</span>
-            </a>
-          </li>
-          {/* End Account Management Page Nav */}
+          {isAdmin && (
+            <div>
 
-          {/* System Logs Page Nav */}
-          <li className="nav-item">
-          <a className={`nav-link ${location.pathname === '/system-logs' ? '' : 'collapsed'}`} href="/system-logs">
-              <i className="bi bi-card-list" />
-              <span>System Logs</span>
-            </a>
-          </li>
+              <li className="nav-heading">SYSTEM</li>
+              <li className="nav-item">
+                <a className={`nav-link ${location.pathname === '/account-management' ? '' : 'collapsed'}`} href="/account-management">
+                  <i className="bi bi-envelope" />
+                  <span>Account Management</span>
+                </a>
+              </li>
+
+              {/* End Account Management Page Nav */}
+
+              {/* System Logs Page Nav */}
+              <li className="nav-item">
+                <a className={`nav-link ${location.pathname === '/system-logs' ? '' : 'collapsed'}`} href="/system-logs">
+                  <i className="bi bi-card-list" />
+                  <span>System Logs</span>
+                </a>
+              </li>
+
+            </div>
+          )}
           {/* End System Logs Page Nav */}
 
         </ul>
