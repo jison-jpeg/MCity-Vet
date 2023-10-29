@@ -6,17 +6,17 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { app } from "../firebase";
 import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { set } from 'mongoose';
 
 export default function Profile() {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [image, setImage] = useState(undefined);
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
-  const [formData, setFormData] = useState({
-  });
-
+  const [formData, setFormData] = useState({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -104,6 +104,7 @@ export default function Profile() {
       const data = await res.json();
       if (data.success === false) {
         dispatch(updateUserFailure(data));
+        setUpdateSuccess(true);
         return;
       }
       dispatch(updateUserSuccess(data));
@@ -196,19 +197,19 @@ export default function Profile() {
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Birthday</div>
                         <div className="col-lg-9 col-md-8">
-                        {currentUser?.birthdate}
+                          {currentUser?.birthdate}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Address</div>
                         <div className="col-lg-9 col-md-8">
-                        {currentUser?.address}
+                          {currentUser?.address}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Phone</div>
                         <div className="col-lg-9 col-md-8">
-                        {currentUser?.phone}
+                          {currentUser?.phone}
                         </div>
                       </div>
                       <div className="row">
@@ -268,6 +269,37 @@ export default function Profile() {
                         ) : null}
 
 
+                        {error &&
+                          <div>
+                            <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                              Something went wrong!
+                              <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"
+                              />
+                            </div>
+                          </div>
+                        }
+
+                        {updateSuccess &&
+                          <div>
+                            <div className="alert alert-success alert-dismissible fade show" role="alert">
+                              User is updated success!
+                              <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"
+                              />
+                            </div>
+                          </div>
+                        }
+
+                        {/* <p>{error && "Something went wrong!"}</p>
+                        <p>{updateSuccess && "User is updated successfuly!"}</p> */}
+
 
 
                         <div className="row mb-3">
@@ -319,7 +351,7 @@ export default function Profile() {
                               id="lastName"
                               placeholder='Enter your last name'
                               defaultValue={currentUser?.lastName} onChange={handleChange}
-                              
+
                             />
                           </div>
                         </div>
@@ -346,14 +378,14 @@ export default function Profile() {
 
                         <div className="row mb-3">
                           <label
-                            htmlFor="Address"
+                            htmlFor="birthdate"
                             className="col-md-4 col-lg-3 col-form-label"
                           >
                             Birthdate
                           </label>
                           <div className="col-md-8 col-lg-9">
                             <input
-                              name="address"
+                              name="birthdate"
                               type="date"
                               className="form-control"
                               id="birthdate"
