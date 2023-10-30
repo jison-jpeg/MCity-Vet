@@ -296,10 +296,6 @@ export default function Profile() {
                           </div>
                         }
 
-                        <p>{error && "Something went wrong!"}</p>
-                        <p>{updateSuccess && "User is updated successfuly!"}</p>
-
-
 
                         <div className="row mb-3">
                           <label

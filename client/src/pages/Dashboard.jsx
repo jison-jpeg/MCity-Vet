@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
+import TechStat from '../components/TechStat';
+import AccountStat from '../components/AccountStat';
 
 
 export default function Dashboard() {
@@ -36,6 +38,9 @@ export default function Dashboard() {
   }, []);
 
   const { currentUser } = useSelector((state) => state.user);
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  const isTechnicianOrSecretary = currentUser && (currentUser.role === 'technician' || currentUser.role === 'secretary');
+
 
   return (
     <>
@@ -64,143 +69,9 @@ export default function Dashboard() {
 
         <section className="section dashboard">
           <div className="row">
-            <div className="col-lg-4">
-              <div className="card info-card default-card">
-                <div className="filter">
-                  <a className="icon" href="#" data-bs-toggle="dropdown">
-                    <i className="bi bi-three-dots" />
-                  </a>
-                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li className="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        Today
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        This Month
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        This Year
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">
-                    Today's Appointments
-                  </h5>
-                  <div className="d-flex align-items-center">
-                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i className="bi bi-clipboard-plus" />
-                    </div>
-                    <div className="ps-3">
-                      <h6>145</h6>
-                      
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-
-            <div className="col-lg-4">
-              <div className="card info-card default-card">
-                <div className="filter">
-                  <a className="icon" href="#" data-bs-toggle="dropdown">
-                    <i className="bi bi-three-dots" />
-                  </a>
-                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li className="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        Today
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        This Month
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        This Year
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">
-                    Pending Appointments
-                  </h5>
-                  <div className="d-flex align-items-center">
-                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i className="bi bi-clock-history" />
-                    </div>
-                    <div className="ps-3">
-                      <h6>145</h6>
-                      
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <div className="col-lg-4">
-              <div className="card info-card default-card">
-                <div className="filter">
-                  <a className="icon" href="#" data-bs-toggle="dropdown">
-                    <i className="bi bi-three-dots" />
-                  </a>
-                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li className="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        Today
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        This Month
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        This Year
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">
-                    Served Appointments
-                  </h5>
-                  <div className="d-flex align-items-center">
-                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i className="bi bi-clipboard-check" />
-                    </div>
-                    <div className="ps-3">
-                      <h6>145</h6>
-                      
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-
-            {/* add data table */}
+            {isAdmin ? null : <TechStat />}
+            {isTechnicianOrSecretary ? null : <AccountStat />}
 
 
 
@@ -210,50 +81,50 @@ export default function Dashboard() {
                   <h5 className="card-title">Appointments</h5>
                   {/* Default Table */}
                   <div className="table-responsive-md">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Schedule</th>
-                        <th scope="col">Client</th>
-                        <th scope="col">Animal</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">No. of Heads</th>
-                        <th scope="col">Services</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>10/11/2023</td>
-                        <td>10/15/2023</td>
-                        <td>Jayson T.</td>
-                        <td>
-                          <li>Cow</li>
-                          <li>Pig</li>
-                        </td>
-                        <td>3 Years Old</td>
-                        <td>
-                          <li>1</li>
-                          <li>3</li>
-                        </td>
-                        <td>A.I</td>
-                        <td>
-                          <span className="badge rounded-pill bg-success">Success</span>
-                        </td>
-                        <td>
-                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                          <span> | </span>
-                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                        </td>
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Schedule</th>
+                          <th scope="col">Client</th>
+                          <th scope="col">Animal</th>
+                          <th scope="col">Age</th>
+                          <th scope="col">No. of Heads</th>
+                          <th scope="col">Services</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">1</th>
+                          <td>10/11/2023</td>
+                          <td>10/15/2023</td>
+                          <td>Jayson T.</td>
+                          <td>
+                            <li>Cow</li>
+                            <li>Pig</li>
+                          </td>
+                          <td>3 Years Old</td>
+                          <td>
+                            <li>1</li>
+                            <li>3</li>
+                          </td>
+                          <td>A.I</td>
+                          <td>
+                            <span className="badge rounded-pill bg-success">Success</span>
+                          </td>
+                          <td>
+                            <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
+                            <span> | </span>
+                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                          </td>
 
-                      </tr>
+                        </tr>
 
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>
                   </div>
                   {/* End Default Table Example */}
                 </div>
@@ -276,11 +147,10 @@ export default function Dashboard() {
           <strong>
             <span>Troubleshooters</span>
           </strong>
-          . All Rights Reserved
         </div>
         <div className="credits">
 
-          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+          All Rights Reserved
         </div>
       </footer>
       {/* End Footer */}

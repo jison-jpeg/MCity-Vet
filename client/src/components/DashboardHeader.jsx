@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { signout } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
+import Preloader from './Preloader';
 
 export default function DashboardHeader({ toggleSidebar }) {
   const { currentUser } = useSelector((state) => state.user);
@@ -23,13 +24,9 @@ export default function DashboardHeader({ toggleSidebar }) {
 
     <>
 
-      <div className="loading-overlay">
-        <div className="bounce-loader">
-          <div className="bounce1" />
-          <div className="bounce2" />
-          <div className="bounce3" />
-        </div>
-      </div>
+      
+      {/* Preloader */}
+      <Preloader />
 
 
       {/* ======= Header ======= */}

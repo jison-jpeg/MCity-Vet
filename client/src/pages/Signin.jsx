@@ -38,7 +38,7 @@ export default function Signin() {
       if (data.role === 'admin' || data.role === 'secretary' || data.role === 'technician') {
         navigate('/dashboard');
       } else {
-        navigate('/customer-dashboard');
+        navigate('/user-dashboard');
       }
     } catch (error) {
       dispatch(signinFailure(error));

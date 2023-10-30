@@ -24,12 +24,14 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     address: {
-        type: String,    },
+        type: String,
+    },
     gender: {
         type: String,
     },
     birthdate: {
-        type: String,    },
+        type: String,
+    },
     profilePicture: {
         type: String,
         default: 'https://cdn.stealthoptional.com/images/ncavvykf/stealth/f60441357c6c210401a1285553f0dcecc4c4489e-564x564.jpg?w=564&h=564&auto=format'
