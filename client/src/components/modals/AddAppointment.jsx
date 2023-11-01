@@ -1,13 +1,27 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 
 export default function AddAppointment() {
+    const [technicians, setTechnicians] = useState([]);
+
+    useEffect(() => {
+        // Fetch the list of technicians from your API
+        fetch('/backend/user/technicians') // Replace with the actual API endpoint
+            .then((response) => response.json())
+            .then((data) => {
+                setTechnicians(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching technicians: ', error);
+            });
+    }, []);
+
     return (
         <>
             <div className="modal fade" id="addModal" tabIndex={-1}>
                 <div className="modal-dialog modal-xl modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Vertically Centered</h5>
+                            <h5 className="modal-title">Book Appointment</h5>
                             <button
                                 type="button"
                                 className="btn-close"
@@ -19,17 +33,21 @@ export default function AddAppointment() {
                             <form className="row g-3">
                                 <div className="col-md-6">
                                     <label htmlFor="date" className="form-label">
-                                        Date
+                                        Date for your Appointment
                                     </label>
                                     <input type="date" className="form-control" id="date" required />
                                 </div>
                                 <div className="col-md-6">
-                                    <label htmlFor="schedule" className="form-label">
+                                    <label htmlFor="technician" className="form-label">
                                         Technician Name and Schedule
                                     </label>
-                                    <select id="inputState" className="form-select" defaultValue={""} required>
+                                    <select id="technician" className="form-select" defaultValue={""} required>
                                         <option value={""}>Choose...</option>
-                                        <option>...</option>
+                                        {technicians.map((technician) => (
+                                            <option key={technician._id} value={technician._id}>
+                                                {technician.firstName} {technician.lastName}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="col-md-3">

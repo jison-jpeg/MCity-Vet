@@ -1,12 +1,86 @@
 import User from '../models/user.model.js';
 import { errorHandler } from '../utils/error.js';
-import bcryptjs from 'bcryptjs';
+import bcryptjs from "bcryptjs";
 
 export const test = (req, res) => {
     res.json({
         message: 'API is working!',
     });
 }
+
+// Get All Users
+export const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// Get User Role Statistics
+export const getRoleStatistics = async (req, res, next) => {
+    try {
+        const roleStatistics = await User.aggregate([
+            { $group: { _id: '$role', count: { $sum: 1 } } },
+        ]);
+
+        const stats = {};
+        roleStatistics.forEach((entry) => {
+            stats[entry._id] = entry.count;
+        });
+
+        res.json(stats);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Get All Technicians
+export const getTechnicians = async (req, res, next) => {
+    try {
+        const technicians = await User.find({ role: 'technician' });
+        res.status(200).json(technicians);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Add User
+export const createUser = async (req, res, next) => {
+    const { firstName, lastName, email, password, middleName, role, address, gender, birthdate, phone } = req.body;
+
+    try {
+        // Check if the user with the provided email already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User with this email already exists" });
+        }
+
+        // Hash the password using bcrypt
+        const hashedPassword = await bcryptjs.hashSync(password, 12);
+
+        const newUser = new User({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            middleName,
+            role,
+            address,
+            gender,
+            birthdate,
+            phone,
+        });
+
+        await newUser.save();
+        res.status(201).json({ message: "User created successfully" });
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 // Update User
 export const updateUser = async (req, res, next) => {
@@ -23,7 +97,7 @@ export const updateUser = async (req, res, next) => {
             }
             return value;
         };
-    
+
         const updatedUser = await User.findByIdAndUpdate(
             req.params.id,
             {

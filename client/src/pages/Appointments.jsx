@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import AddAppointment from '../components/modals/AddAppointment';
-import TechStat from '../components/TechStat';
 
 
 export default function Dashboard() {
@@ -36,6 +36,9 @@ export default function Dashboard() {
     dashboardBootstrap.removeAttribute('disabled');
   }, []);
 
+  const { currentUser } = useSelector((state) => state.user);
+  const isCustomer = currentUser.role === 'customer';
+
   return (
     <>
       <DashboardHeader toggleSidebar={toggleSidebar} />
@@ -59,7 +62,7 @@ export default function Dashboard() {
 
 
         <div className="btn-header">
-          <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Appointment</button>
+          <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">{isCustomer ? 'Book Appointment' : 'Add Appointment'}</button>
         </div>
 
         <AddAppointment />

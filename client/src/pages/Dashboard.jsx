@@ -41,7 +41,6 @@ export default function Dashboard() {
   const isAdmin = currentUser && currentUser.role === 'admin';
   const isTechnicianOrSecretary = currentUser && (currentUser.role === 'technician' || currentUser.role === 'secretary');
 
-
   return (
     <>
       <DashboardHeader toggleSidebar={toggleSidebar} />
@@ -69,9 +68,12 @@ export default function Dashboard() {
 
         <section className="section dashboard">
           <div className="row">
-
-            {isAdmin ? null : <TechStat />}
-            {isTechnicianOrSecretary ? null : <AccountStat />}
+            {isAdmin && (
+              <>
+                {isAdmin ? null : <TechStat />}
+                {isTechnicianOrSecretary ? null : <AccountStat />}
+              </>
+            )}
 
 
 

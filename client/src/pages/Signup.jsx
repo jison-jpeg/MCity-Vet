@@ -8,8 +8,10 @@ export default function Signup() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+    // console.log(formData);
   }
 
   const handleSubmit = async (e) => {
@@ -35,7 +37,7 @@ export default function Signup() {
       }
       navigate('/signin');
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       setLoading(false);
       setError(true);
     }

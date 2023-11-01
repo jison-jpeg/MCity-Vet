@@ -163,36 +163,13 @@ export default function DashboardHeader({ toggleSidebar }) {
                 <li>
                   <a
                     className="dropdown-item d-flex align-items-center"
-                    href="users-profile.html"
+                    href="/profile"
                   >
                     <i className="bi bi-person" />
                     <span>My Profile</span>
                   </a>
                 </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a
-                    className="dropdown-item d-flex align-items-center"
-                    href="users-profile.html"
-                  >
-                    <i className="bi bi-gear" />
-                    <span>Account Settings</span>
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a
-                    className="dropdown-item d-flex align-items-center"
-                    href="pages-faq.html"
-                  >
-                    <i className="bi bi-question-circle" />
-                    <span>Need Help?</span>
-                  </a>
-                </li>
+               
                 <li>
                   <hr className="dropdown-divider" />
                 </li>

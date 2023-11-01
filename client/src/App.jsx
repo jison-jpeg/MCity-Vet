@@ -11,7 +11,7 @@ import AccountManagement from './pages/AccountManagement';
 import SystemLogs from './pages/SystemLogs';
 import BookAppointment from './pages/BookAppointment';
 import PrivateRoute from './components/PrivateRoute';
-import UserDashboard from './pages/UserDashboard';
+import NotFound from './pages/NotFound';
 
 
 export default function App() {
@@ -23,10 +23,11 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/book-appointment" element={<BookAppointment />} />
-    
+        <Route path="*" element={<NotFound />} />
+        
+        {/* Private Routes */}
         <Route element={<PrivateRoute />} > 
           <Route path="/dashboard" element={<Dashboard />} /> 
-          <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/medical-record" element={<MedicalRecord />} />

@@ -86,5 +86,16 @@ export const google = async (req, res, next) => {
 };
 
 export const signout = (req, res) => {
-    res.clearCookie('access_token').status(200).json('Signout success!');
+    const token = req.cookies.access_token;
+
+    // Verify the token
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            // Token is invalid or expired
+            res.status(401).json('Token is expired or invalid');
+        } else {
+            // Token is valid; clear the cookie
+            res.clearCookie('access_token').status(200).json('Signout success!');
+        }
+    });
 };

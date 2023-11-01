@@ -46,13 +46,13 @@ export default function Home() {
                   </p>
                   <div className="banner-actions">
                     <a
-                      href="appointment-step1.html"
+                      href="/book-appointment"
                       className="btn btn-secondary-color"
                     >
                       <span>Book an Appointment</span>
                     </a>
-                    <a href="how-it-works.html" className="btn">
-                      <span>Learn More</span>
+                    <a href="/dashboard" className="btn">
+                      <span>View my Appointment</span>
                     </a>
                   </div>
                 </div>

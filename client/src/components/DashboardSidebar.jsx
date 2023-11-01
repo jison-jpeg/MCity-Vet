@@ -6,6 +6,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
   const location = useLocation();
   const { currentUser } = useSelector((state) => state.user);
   const isAdmin = currentUser.role === 'admin';
+  const isCustomer = currentUser.role === 'customer';
 
 
   return (
@@ -19,12 +20,25 @@ export default function DashboardSidebar({ toggleSidebar }) {
         <ul className="sidebar-nav" id="sidebar-nav">
 
           <li className="nav-heading">MENU</li>
+
+          {/* Admin Dashboard Nav */}
+          {isAdmin && (
+          <li className="nav-item">
+            <a className={`nav-link ${location.pathname === '/dashboard' ? '' : 'collapsed'}`} href="/dashboard">
+
+              <i className="bi bi-grid" />
+              <span>{isCustomer ? 'Home' : 'Dashboard'}</span>
+            </a>
+          </li>
+          )}
+          {/* End Dashboard Nav */}
+
           {/* Dashboard Nav */}
           <li className="nav-item">
             <a className={`nav-link ${location.pathname === '/dashboard' ? '' : 'collapsed'}`} href="/dashboard">
 
               <i className="bi bi-grid" />
-              <span>Dashboard</span>
+              <span>{isCustomer ? 'Home' : 'Dashboard'}</span>
             </a>
           </li>
           {/* End Dashboard Nav */}
@@ -34,12 +48,12 @@ export default function DashboardSidebar({ toggleSidebar }) {
             <a className={`nav-link ${location.pathname === '/appointments' ? '' : 'collapsed'}`} href="/appointments">
 
               <i className="bi bi-person" />
-              <span>Appointments</span>
-            </a>
+              <span>{isCustomer ? 'My Appointment' : 'Appointments'}</span>            </a>
           </li>
           {/* End Appointment Page Nav */}
 
           {/* Inventory Page Nav */}
+          {isAdmin && (
           <li className="nav-item">
             <a className={`nav-link ${location.pathname === '/inventory' ? '' : 'collapsed'}`} href="/inventory">
 
@@ -47,6 +61,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
               <span>Inventory</span>
             </a>
           </li>
+          )}
           {/* End Inventory Page Nav */}
 
           {/* Medical Record Page Nav */}

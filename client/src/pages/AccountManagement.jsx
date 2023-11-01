@@ -5,6 +5,7 @@ import AccountStat from '../components/AccountStat';
 import AddAccount from '../components/modals/AddAccount';
 
 
+
 export default function AccountManagement() {
 
   // State to manage the sidebar visibility
@@ -34,6 +35,35 @@ export default function AccountManagement() {
 
     mainBootstrap.setAttribute('disabled', 'true');
     dashboardBootstrap.removeAttribute('disabled');
+  }, []);
+
+  const [accounts, setAccounts] = useState([]); // State to store account data
+
+  const getRoleBadgeColor = (role) => {
+    switch (role) {
+      case 'admin':
+        return 'bg-danger';
+      case 'secretary':
+        return 'bg-warning';
+      case 'technician':
+        return 'bg-success';
+      case 'customer':
+        return 'bg-secondary';
+      default:
+        return 'bg-secondary'; // Default to a color for unknown roles
+    }
+  };
+
+  
+  const fetchAccounts = () => {
+    fetch('/backend/user/all') // Replace with your actual API endpoint
+      .then((response) => response.json())
+      .then((data) => setAccounts(data))
+      .catch((error) => console.error('Error fetching accounts:', error));
+  };
+
+  useEffect(() => {
+    fetchAccounts(); // Fetch accounts when the component mounts
   }, []);
 
   return (
@@ -68,7 +98,7 @@ export default function AccountManagement() {
         <section className="section dashboard">
           <div className="row">
 
-            <AccountStat /> 
+            <AccountStat />
 
             {/* add data table */}
 
@@ -80,36 +110,39 @@ export default function AccountManagement() {
                   <h5 className="card-title">User Accounts</h5>
                   {/* Default Table */}
                   <div className="table-responsive-md">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Account ID</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Created On</th>
-                        <th scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">ABC123</th>
-                        <td>
-                        <span className="badge rounded-pill bg-danger">Admin</span>
-                        </td>
-                        <td>Jayson T.</td>
-                        <td>jaysontadayca@gmail.com</td>
-                        <td>10/20/2023</td>
-                        <td>
-                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                          <span> | </span>
-                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                        </td>
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Account ID</th>
+                          <th scope="col">Role</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Email</th>
+                          <th scope="col">Created On</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
 
-                      </tr>
+                      <tbody>
+                        {accounts.map((account) => (
+                          <tr key={account._id}>
+                            <th scope="row">{account._id}</th>
+                            <td>
+                              <span className={`badge rounded-pill ${getRoleBadgeColor(account.role)}`}>{account.role}</span>
+                            </td>
+                            <td>{account.firstName} {account.lastName}</td>
+                            <td>{account.email}</td>
+                            <td>{account.createdAt}</td>
+                            <td>
+                              <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
+                              <span> | </span>
+                              <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                            </td>
 
-                    </tbody>
-                  </table>
+                          </tr>
+                        ))}
+                      </tbody>
+
+                    </table>
                   </div>
                   {/* End Default Table Example */}
                 </div>
@@ -130,13 +163,12 @@ export default function AccountManagement() {
         <div className="copyright">
           © Copyright{" "}
           <strong>
-            <span>NiceAdmin</span>
+            <span>Troubleshooters</span>
           </strong>
-          . All Rights Reserved
         </div>
         <div className="credits">
 
-          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+          All Rights Reserved
         </div>
       </footer>
       {/* End Footer */}
