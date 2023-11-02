@@ -18,7 +18,7 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
     },
     patient: {
-        _id: mongoose.Schema.Types.ObjectId, // Add this line to include _id
+        _id: mongoose.Schema.Types.ObjectId, // Add this line to include __id
         typeOfAnimal: {
             type: String,
         },
@@ -42,7 +42,13 @@ const appointmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rescheduled', 'cancelled', 'completed'],
+        default: 'pending',
+    }
+}, {
+    timestamps: true // Add this to include createdAt and updatedAt timestamps
 });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);

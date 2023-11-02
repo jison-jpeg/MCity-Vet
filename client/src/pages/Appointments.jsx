@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import AddAppointment from '../components/modals/AddAppointment';
+import AppointmentTable from '../components/AppointmentTable';
 
 
 export default function Dashboard() {
@@ -38,6 +39,30 @@ export default function Dashboard() {
 
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if (!currentUser || !currentUser._id) {
+        console.error('User information is missing or incomplete');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/backend/user/${currentUser._id}/appointments`);
+        if (response.ok) {
+          const data = await response.json();
+          setAppointments(data);
+        } else {
+          console.error('Failed to fetch appointments');
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching appointments', error);
+      }
+    };
+
+    fetchAppointments();
+  }, [currentUser]);
 
   return (
     <>
@@ -75,7 +100,7 @@ export default function Dashboard() {
               <div className="card">
                 <div className="card-body">
                   <h5 className="card-title">Appointments</h5>
-                  {/* Default Table */}
+
                   <div className="table-responsive-md">
                     <table className="table">
                       <thead>
@@ -93,41 +118,47 @@ export default function Dashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>10/11/2023</td>
-                          <td>10/15/2023</td>
-                          <td>Jayson T.</td>
-                          <td>
-                            <li>Cow</li>
-                            <li>Pig</li>
-                          </td>
-                          <td>3 Years Old</td>
-                          <td>
-                            <li>1</li>
-                            <li>3</li>
-                          </td>
-                          <td>A.I</td>
-                          <td>
-                            <span className="badge rounded-pill bg-success">Success</span>
-                          </td>
-                          <td>
-                            <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                            <span> | </span>
-                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                          </td>
-
-                        </tr>
-
+                        {appointments.map((appointment, index) => (
+                          <tr key={appointment._id}>
+                            <th scope="row">{index + 1}</th>
+                            <td>{appointment.createdAt}</td>
+                            <td>{appointment.schedule}</td>
+                            <td>{`${appointment.firstName} ${appointment.lastName}`}</td>
+                            <td>{appointment.patient.typeOfAnimal}</td>
+                            <td>{appointment.patient.age}</td>
+                            <td>{appointment.patient.numberOfHeads}</td>
+                            <td>
+                              <ul>
+                                {appointment.patient.services.map((service, serviceIndex) => (
+                                  <li key={serviceIndex}>{service}</li>
+                                ))}
+                              </ul>
+                            </td>
+                            <td>
+                              <span className={`badge rounded-pill ${appointment.status === 'Success' ? 'bg-success' : 'bg-danger'}`}>
+                                {appointment.status}
+                              </span>
+                            </td>
+                            <td>
+                              <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
+                              <span> | </span>
+                              <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
+
+
+
                     </table>
                   </div>
-                  {/* End Default Table Example */}
+
                 </div>
               </div>
             </div>
 
 
+            {/* <AppointmentTable /> */}
 
 
           </div>
