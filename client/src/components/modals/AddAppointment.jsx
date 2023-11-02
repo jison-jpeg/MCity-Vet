@@ -12,6 +12,7 @@ export default function AddAppointment() {
         email: '',
         typeOfAnimal: '',
         numberOfHeads: '',
+        age: '',
         phoneNumber: '',
     });
 
@@ -45,8 +46,9 @@ export default function AddAppointment() {
             lastName: formData.lastName,
             phone: formData.phoneNumber,
             patient: {
-                type: formData.typeOfAnimal,
-                headCount: formData.numberOfHeads,
+                typeOfAnimal: formData.typeOfAnimal,
+                numberOfHeads: formData.numberOfHeads,
+                age: formData.age,
                 services: [],
                 address: formData.address,
                 landmark: formData.landmark,
@@ -89,6 +91,53 @@ export default function AddAppointment() {
                     </div>
                     <div className="modal-body">
                         <form className="row g-3" onSubmit={handleSubmit}>
+
+                            <div className="col-md-6">
+                                <label htmlFor="firstName" className="form-label">
+                                    First Name
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="firstName"
+                                    value={formData.firstName}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+
+                            <div className="col-md-6">
+                                <label htmlFor="lastName" className="form-label">
+                                    Last Name
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="lastName"
+                                    value={formData.lastName}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+
+                            <div className="col-md-6">
+                                <label htmlFor="technician" className="form-label">
+                                    Technician Name and Schedule
+                                </label>
+                                <select
+                                    id="technician"
+                                    className="form-select"
+                                    required
+                                    value={formData.technician}
+                                    onChange={handleInputChange}
+                                >
+                                    <option disabled value={''}>Choose...</option>
+                                    {technicians.map((technician) => (
+                                        <option key={technician._id} value={technician._id}>
+                                            {technician.firstName} {technician.lastName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
                             <div className="col-md-6">
                                 <label htmlFor="date" className="form-label">
                                     Date for your Appointment
@@ -102,51 +151,12 @@ export default function AddAppointment() {
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            {/* <div className="col-md-6">
-                                <label htmlFor="technician" className="form-label">
-                                    Technician Name and Schedule
-                                </label>
-                                <select
-                                    id="technician"
-                                    className="form-select"
-                                    defaultValue={''}
-                                    required
-                                    value={formData.technician}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value={''}>Choose...</option>
-                                    {technicians.map((technician) => (
-                                        <option key={technician._id} value={technician._id}>
-                                            {technician.firstName} {technician.lastName}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div> */}
+
+
+
+
+
                             <div className="col-md-3">
-                                <label htmlFor="firstName" className="form-label">
-                                    First Name
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="col-md-3">
-                                <label htmlFor="lastName" className="form-label">
-                                    Last Name
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="col-3">
                                 <label htmlFor="address" className="form-label">
                                     Address
                                 </label>
@@ -159,7 +169,8 @@ export default function AddAppointment() {
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            <div className="col-3">
+
+                            <div className="col-md-3">
                                 <label htmlFor="landmark" className="form-label">
                                     Landmark
                                 </label>
@@ -172,7 +183,8 @@ export default function AddAppointment() {
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            <div className="col-6">
+
+                            <div className="col-md-3">
                                 <label htmlFor="email" className="form-label">
                                     Email
                                 </label>
@@ -185,9 +197,24 @@ export default function AddAppointment() {
                                     onChange={handleInputChange}
                                 />
                             </div>
+
+                            <div className="col-md-3">
+                                <label htmlFor="inputZip" className="form-label">
+                                    Phone Number
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    id="phoneNumber"
+                                    placeholder='0912 345 6789'
+                                    value={formData.phoneNumber}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+
                             <div className="col-md-3">
                                 <label htmlFor="typeOfAnimal" className="form-label">
-                                    Type of Animal
+                                    Animal Type
                                 </label>
                                 <input
                                     type="text"
@@ -197,6 +224,20 @@ export default function AddAppointment() {
                                     onChange={handleInputChange}
                                 />
                             </div>
+
+                            <div className="col-md-3">
+                                <label htmlFor="typeOfAnimal" className="form-label">
+                                    Age
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    id="age"
+                                    value={formData.age}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+
                             <div className="col-md-3">
                                 <label htmlFor="numberOfHeads" className="form-label">
                                     Number of Heads
@@ -209,18 +250,13 @@ export default function AddAppointment() {
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            <div className="col-md-6">
-                                <label htmlFor="inputZip" className="form-label">
-                                    Phone Number
-                                </label>
-                                <input
-                                    type="phoneNumber"
-                                    className="form-control"
-                                    id="phoneNumber"
-                                    placeholder='0912 345 6789'
-                                    value={formData.phoneNumber}
-                                    onChange={handleInputChange}
-                                />
+
+                            <div className="col-md-3">
+                                <button type="button" className="btn btn-outline-primary">
+                                    Add More
+                                </button>
+
+
                             </div>
 
                             <div className="modal-footer">
@@ -235,6 +271,7 @@ export default function AddAppointment() {
                                     Save changes
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>
