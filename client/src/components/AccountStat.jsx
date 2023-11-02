@@ -7,7 +7,7 @@ export default function AccountStat() {
 
     useEffect(() => {
         // Fetch user role statistics from your backend API
-        fetch('/backend/user/role-stats')
+        fetch('/backend/technician/role-stats')
             .then((response) => response.json())
             .then((data) => {
                 setRoleStatistics(data);
@@ -22,10 +22,10 @@ export default function AccountStat() {
     };
 
     const roleIcons = {
-        admin: 'bi bi-people',
-        technician: 'bi bi-gear',
+        admin: 'bi bi-gear',
+        technician: 'bi bi-people',
         secretary: 'bi bi-file-earmark-text',
-        customer: 'bi bi-clipboard-check',
+        customer: 'bi bi-person',
     };
 
     // The fixed order of roles
@@ -74,7 +74,14 @@ export default function AccountStat() {
                                 </div>
                                 <div className="ps-3">
                                     {isLoading ? (
-                                        <p>Loading...</p>
+                                        <div
+                                            className="spinner-border"
+                                            style={{ width: 50, height: 50 }}
+                                            role="status"
+                                        >
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+
                                     ) : (
                                         <h6>{roleStatistics[role]}</h6>
                                     )}

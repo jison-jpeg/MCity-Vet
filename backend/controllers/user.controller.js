@@ -1,4 +1,5 @@
 import User from '../models/user.model.js';
+import Appointment from "../models/appointment.model.js";
 import { errorHandler } from '../utils/error.js';
 import bcryptjs from "bcryptjs";
 
@@ -13,35 +14,6 @@ export const getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find();
         res.status(200).json(users);
-    } catch (error) {
-        next(error);
-    }
-};
-
-
-// Get User Role Statistics
-export const getRoleStatistics = async (req, res, next) => {
-    try {
-        const roleStatistics = await User.aggregate([
-            { $group: { _id: '$role', count: { $sum: 1 } } },
-        ]);
-
-        const stats = {};
-        roleStatistics.forEach((entry) => {
-            stats[entry._id] = entry.count;
-        });
-
-        res.json(stats);
-    } catch (error) {
-        next(error);
-    }
-};
-
-// Get All Technicians
-export const getTechnicians = async (req, res, next) => {
-    try {
-        const technicians = await User.find({ role: 'technician' });
-        res.status(200).json(technicians);
     } catch (error) {
         next(error);
     }
@@ -121,3 +93,35 @@ export const updateUser = async (req, res, next) => {
         next(error);
     }
 };
+
+// Delete User
+
+// export const deleteUser = async (req, res, next) => {
+//     if (req.user.id !== req.params.id) {
+//         return next(errorHandler(401, 'You can delete only your account!'));
+//     }
+//     try {
+//         await User.findByIdAndDelete(req.params.id);
+//         res.status(200).json({ message: 'User has been deleted...' });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+// Get Appointments by User
+export const getAppointmentsByUser = async (req, res, next) => {
+    const { id } = req.params;
+  
+    try {
+      // Find all appointments created by the specified user
+      const appointments = await Appointment.find({ createdBy: id });
+  
+      if (appointments.length === 0) {
+        return res.status(404).json({ message: "No appointments found for this user." });
+      }
+  
+      res.status(200).json(appointments);
+    } catch (error) {
+      next(error);
+    }
+  };

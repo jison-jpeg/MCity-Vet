@@ -5,6 +5,8 @@ import cors from 'cors';
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import patientRoutes from './routes/patient.route.js';
+import technicianRoutes from './routes/technician.route.js';
+import appointmentRoutes from './routes/appointment.route.js';
 import cookieParser from 'cookie-parser';
 // import path from 'path';
 dotenv.config();
@@ -29,6 +31,8 @@ app.listen(3000, () => {
 app.use("/backend/user", userRoutes);
 app.use("/backend/auth", authRoutes);
 app.use("/backend/patient", patientRoutes);
+app.use("/backend/appointment", appointmentRoutes);
+app.use("/backend/technician", technicianRoutes);
 
 
 app.use((error, req, res, next) => {
