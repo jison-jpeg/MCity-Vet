@@ -72,7 +72,7 @@ export const getAppointmentsByTechnician = async (req, res, next) => {
 // Create Appointment
 export const createAppointment = async (req, res, next) => {
   try {
-    const { schedule, technicianName, firstName, lastName, phone, patient } = req.body;
+    const { schedule, technicianName, firstName, lastName, phone, patient, services } = req.body;
 
     const createdByUserId = req.user.id;
 
@@ -84,6 +84,7 @@ export const createAppointment = async (req, res, next) => {
       lastName,
       phone,
       patient,
+      services,
       createdBy: createdByUserId,
     });
 

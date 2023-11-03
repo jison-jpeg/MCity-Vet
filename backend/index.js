@@ -6,6 +6,8 @@ import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import technicianRoutes from './routes/technician.route.js';
 import appointmentRoutes from './routes/appointment.route.js';
+import serviceRoutes from './routes/service.route.js';
+
 import cookieParser from 'cookie-parser';
 // import path from 'path';
 dotenv.config();
@@ -31,6 +33,7 @@ app.use("/backend/user", userRoutes);
 app.use("/backend/auth", authRoutes);
 app.use("/backend/appointment", appointmentRoutes);
 app.use("/backend/technician", technicianRoutes);
+app.use("/backend/service", serviceRoutes);
 
 
 app.use((error, req, res, next) => {

@@ -21,18 +21,6 @@ export default function DashboardSidebar({ toggleSidebar }) {
 
           <li className="nav-heading">MENU</li>
 
-          {/* Admin Dashboard Nav */}
-          {isAdmin && (
-          <li className="nav-item">
-            <a className={`nav-link ${location.pathname === '/dashboard' ? '' : 'collapsed'}`} href="/dashboard">
-
-              <i className="bi bi-grid" />
-              <span>{isCustomer ? 'Home' : 'Dashboard'}</span>
-            </a>
-          </li>
-          )}
-          {/* End Dashboard Nav */}
-
           {/* Dashboard Nav */}
           <li className="nav-item">
             <a className={`nav-link ${location.pathname === '/dashboard' ? '' : 'collapsed'}`} href="/dashboard">

@@ -91,6 +91,27 @@ export default function AddAppointment() {
         }
     };
 
+    const handleServiceChange = (event) => {
+        const { id, checked } = event.target;
+
+        setFormData((prevFormData) => {
+            if (checked) {
+                // If the checkbox is checked, add the service id to the array
+                return {
+                    ...prevFormData,
+                    services: [...prevFormData.services, id],
+                };
+            } else {
+                // If the checkbox is unchecked, remove the service id from the array
+                return {
+                    ...prevFormData,
+                    services: prevFormData.services.filter((serviceId) => serviceId !== id),
+                };
+            }
+        });
+    };
+
+
     return (
         <div className="modal fade" id="addModal" tabIndex={-1}>
             <div className="modal-dialog modal-xl modal-dialog-centered">
@@ -277,13 +298,22 @@ export default function AddAppointment() {
                                 <label htmlFor="services" className="form-label">
                                     Services
                                 </label>
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" id="services" />
-                                    <label className="form-check-label" >
-                                        Example checkbox
-                                    </label>
-                                </div>
+                                {services.map((service) => (
+                                    <div key={service._id} className="form-check">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            id={service._id}
+                                            checked={formData.services.includes(service._id)}
+                                            onChange={handleServiceChange}
+                                        />
+                                        <label className="form-check-label" htmlFor={service._id}>
+                                            {service.serviceType}
+                                        </label>
+                                    </div>
+                                ))}
                             </div>
+
 
                             <div className="modal-footer">
                                 <button
