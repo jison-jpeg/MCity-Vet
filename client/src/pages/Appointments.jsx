@@ -38,6 +38,8 @@ export default function Dashboard() {
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
   const [appointments, setAppointments] = useState([]);
+  const [hasPendingAppointment, setHasPendingAppointment] = useState(false);
+
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -50,9 +52,15 @@ export default function Dashboard() {
         const response = await fetch(`/backend/user/${currentUser._id}/appointments`);
         if (response.ok) {
           const data = await response.json();
+
+          // Check for pending appointments
+          const hasPending = data.some(appointment => appointment.status === 'Pending');
+          setHasPendingAppointment(hasPending);
+
           setAppointments(data);
+          // console.log(data)
         } else {
-          console.error('Failed to fetch appointments');
+          console.error('Failed to fetch appointments. No Appointments found.');
         }
       } catch (error) {
         console.error('An error occurred while fetching appointments', error);
@@ -71,7 +79,7 @@ export default function Dashboard() {
       {/* ======= Main ======= */}
       <main id="main" className="main">
         <div className="pagetitle">
-          <h1>Appointments</h1>
+        {isCustomer ? <h1>My Appointments</h1> : <h1>Appointments</h1>}
           <nav>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
@@ -85,8 +93,32 @@ export default function Dashboard() {
 
 
         <div className="btn-header">
-          <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">{isCustomer ? 'Book Appointment' : 'Add Appointment'}</button>
-        </div>
+  {isCustomer ? (
+    hasPendingAppointment ? (
+      <p>You have a pending appointment. Cannot make a new appointment at this time.</p>
+    ) : (
+      <button
+        type="button"
+        className="btn btn-primary-dashboard btn-lg rounded-pill"
+        data-bs-toggle="modal"
+        data-bs-target="#addModal"
+      >
+        Book Appointment
+      </button>
+    )
+  ) : (
+    <button
+      type="button"
+      className="btn btn-primary-dashboard btn-lg rounded-pill"
+      data-bs-toggle="modal"
+      data-bs-target="#addModal"
+    >
+      Create Appointment
+    </button>
+  )}
+</div>
+
+
 
         <AddAppointment />
 

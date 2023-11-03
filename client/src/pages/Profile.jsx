@@ -133,7 +133,7 @@ export default function Profile() {
         {/* End Page Title */}
         <section className="section profile">
           <div className="row">
-            <div className="col-xl-4">
+            <div className="col-xl-12">
               <div className="card">
                 <div className="card-body profile-card pt-4 d-flex flex-column align-items-center">
                   <img
@@ -148,7 +148,7 @@ export default function Profile() {
                 </div>
               </div>
             </div>
-            <div className="col-xl-8">
+            <div className="col-xl-12">
               <div className="card">
                 <div className="card-body pt-3">
                   {/* Bordered Tabs */}

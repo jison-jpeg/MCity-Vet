@@ -8555,7 +8555,7 @@ input[type="password"] {
 .blog.blog-doctor figure {
   margin-right: 3rem;
 }
-.blog.blog-doctor .blog-content .doctor-name {
+.blog.blog-doctor .blog-content .technician-name {
   line-height: 3.4rem;
 }
 .blog.blog-doctor .blog-content .ratings,
@@ -10150,7 +10150,7 @@ input[type="password"] {
 .doctor-filter-section span {
   font-weight: 500;
 }
-.doctor-filter-section .doctor-Availability {
+.doctor-filter-section .technician-Availability {
   margin-bottom: 0;
 }
 @media (max-width: 991px) {

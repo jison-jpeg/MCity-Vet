@@ -91,6 +91,7 @@ export default function AddAppointment() {
         }
     };
 
+    console.log('formData:', formData);
     const handleServiceChange = (event) => {
         const { id, checked } = event.target;
 

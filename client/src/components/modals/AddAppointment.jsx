@@ -18,29 +18,22 @@ export default function AddAppointment() {
         phoneNumber: '',
     });
 
-
     useEffect(() => {
-        // Fetch the list of technicians from your API
-        fetch('/backend/technician/all')
-            .then((response) => response.json())
-            .then((data) => {
-                setTechnicians(data);
-            })
-            .catch((error) => {
-                console.error('Error fetching technicians: ', error);
-            });
-    }, []);
+        const fetchData = async () => {
+            try {
+                const [technicianResponse, serviceResponse] = await Promise.all([
+                    fetch('/backend/technician/all').then((response) => response.json()),
+                    fetch('/backend/service/all').then((response) => response.json()),
+                ]);
 
-    useEffect(() => {
-        // Fetch the list of services from your API
-        fetch('/backend/service/all')
-            .then((response) => response.json())
-            .then((data) => {
-                setServices(data);
-            })
-            .catch((error) => {
-                console.error('Error fetching services: ', error);
-            });
+                setTechnicians(technicianResponse);
+                setServices(serviceResponse);
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     const handleInputChange = (event) => {
@@ -64,7 +57,7 @@ export default function AddAppointment() {
                 typeOfAnimal: formData.typeOfAnimal,
                 numberOfHeads: formData.numberOfHeads,
                 age: formData.age,
-                services: [],
+                services: formData.services,
                 address: formData.address,
                 landmark: formData.landmark,
             },
@@ -88,6 +81,21 @@ export default function AddAppointment() {
             }
         } catch (error) {
             console.error('Error creating appointment:', error);
+        }
+    };
+
+    const handleServiceChange = (event) => {
+        const { name, checked } = event.target;
+        if (checked) {
+            setFormData({
+                ...formData,
+                services: [...formData.services, name],
+            });
+        } else {
+            setFormData({
+                ...formData,
+                services: formData.services.filter((service) => service !== name),
+            });
         }
     };
 
@@ -277,12 +285,18 @@ export default function AddAppointment() {
                                 <label htmlFor="services" className="form-label">
                                     Services
                                 </label>
-                                <div className="form-check">
-                                    <input className="form-check-input" type="checkbox" id="services" />
-                                    <label className="form-check-label" >
-                                        Example checkbox
-                                    </label>
-                                </div>
+                                {services.map((service) => (
+                                    <div key={service._id} className="form-check">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            id={`service_${service._id}`}
+                                            name={service.serviceType} // Use service.serviceType as the name attribute
+                                            onChange={handleServiceChange}
+                                        />
+                                        <label className="form-check-label">{service.serviceType}</label>
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="modal-footer">

@@ -3,19 +3,36 @@ import { useNavigate } from 'react-router-dom';
 import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import OAuth from '../components/OAuth';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Signin() {
 
+  const key = '6LeW5u8oAAAAACoTjVXDIKpFpi0lSBSyFZOcCCfC'
+  const [captcha, setCaptcha] = useState(false);
+  const [captchaError, setCaptchaError] = useState("");
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const onChange = (value) => {
+    console.log("Captcha value:", value);
+    setCaptcha(true);
+  }
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!captcha) {
+      console.log("Please complete the reCAPTCHA.");
+      setCaptchaError("Please complete the reCAPTCHA.");
+      return;
+    }
+    setCaptchaError("");
 
     try {
       dispatch(signinStart());
@@ -35,7 +52,7 @@ export default function Signin() {
       }
 
       dispatch(signinSuccess(data));
-        navigate('/dashboard');
+      navigate('/dashboard');
     } catch (error) {
       dispatch(signinFailure(error));
     }
@@ -97,7 +114,13 @@ export default function Signin() {
                   <input type="password" id='password' className="form-control" required onChange={handleChange} />
                 </div>
 
-                <span className="term-privacy d-flex justify-content-center">{error ? error.message || 'Something went wrong!' : ''}</span>
+                {error && (
+                  <span className="term-privacy d-flex justify-content-center">{error.message || 'Something went wrong!'}</span>
+                )}
+                {captchaError && (
+                  <span className="term-privacy d-flex justify-content-center">{captchaError}</span>
+                )}
+
 
                 <div className="btn-link">
                   <a href="#">Forgot password?</a>
@@ -113,9 +136,12 @@ export default function Signin() {
 
                 <OAuth />
 
-                {/* <button type="submit" className="btn btn-form btn-primary-color">
-                  <span> <FontAwesomeIcon icon={faGoogle} className='google-icon' /> Continue with Google</span>
-                </button> */}
+                <div className=" pt-4 d-flex flex-column align-items-center">
+                  <ReCAPTCHA
+                    sitekey={key}
+                    onChange={onChange}
+                  />
+                </div>
 
                 <div className="term-privacy d-flex justify-content-center">
                   <span className="line-height-1">New to MCity Vet? </span>

@@ -104,7 +104,6 @@ h4,
 h5,
 h6 {
   font-family: "Manrope";
-
 }
 
 /*--------------------------------------------------------------
@@ -136,7 +135,7 @@ h6 {
   color: #283779;
 }
 
-.greetings h1{
+.greetings h1 {
   font-size: 54px;
   margin-top: 20px;
   margin-bottom: 40px;
@@ -438,7 +437,6 @@ h6 {
   color: #012970;
 }
 
-
 .logo {
   line-height: 1;
 }
@@ -448,7 +446,6 @@ h6 {
     width: 305px;
   }
 }
-
 
 .logo img {
   max-height: 50px;
@@ -481,7 +478,6 @@ h6 {
   /* padding-left: 10px; */
   cursor: pointer;
   color: #012970;
-  
 }
 
 .header .search-bar {
@@ -551,7 +547,7 @@ h6 {
   list-style: none;
 }
 
-.header-nav>ul {
+.header-nav > ul {
   margin: 0;
   padding: 0;
 }
@@ -711,14 +707,18 @@ h6 {
   cursor: pointer;
   color: #899bbd;
   position: absolute;
-    right: 0;
+  right: 0;
 }
 
 #sidebar-logo {
   margin: 45px 60px;
   max-width: 50%;
   max-height: 50%;
+}
 
+#book-appointment-button {
+  margin-top: 60px;
+  margin-bottom: 60px;
 }
 
 @media (max-width: 1199px) {
@@ -738,7 +738,6 @@ h6 {
 }
 
 @media (min-width: 1200px) {
-
   #main,
   #footer {
     margin-left: 300px;
@@ -752,7 +751,6 @@ h6 {
 }
 
 @media (min-width: 1200px) {
-
   .toggle-sidebar #main,
   .toggle-sidebar #footer {
     margin-left: 0;
@@ -992,7 +990,7 @@ h6 {
 }
 
 /* News & Updates */
-.dashboard .news .post-item+.post-item {
+.dashboard .news .post-item + .post-item {
   margin-top: 15px;
 }
 
@@ -1258,7 +1256,7 @@ h6 {
   padding: 12px 15px;
 }
 
-.contact .php-email-form button[type=submit] {
+.contact .php-email-form button[type="submit"] {
   background: #4154f1;
   border: 0;
   padding: 10px 30px;
@@ -1267,7 +1265,7 @@ h6 {
   border-radius: 4px;
 }
 
-.contact .php-email-form button[type=submit]:hover {
+.contact .php-email-form button[type="submit"]:hover {
   background: #5969f3;
 }
 
