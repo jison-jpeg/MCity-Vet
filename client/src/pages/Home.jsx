@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import FacebookMsg from '../components/FacebookMsg';
 
 export default function Home() {
 
@@ -746,16 +747,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          {/*----------------------------------------------
-			blog preview section - end
-			----------------------------------------------*/}
-          {/*----------------------------------------------
-			cta section - start
-			----------------------------------------------*/}
-          {/* 
-				background image is added through css and can be modified in the _sections.scss file
-				the image is added to the .bg-section-5 class.
-			*/}
+         
           <div className="banner banner-simple cta-section cta-section-1 bg-section bg-section-5">
             <div className="container">
               <div className="row">
@@ -788,9 +780,8 @@ export default function Home() {
               />
             </div>
           </div>
-          {/*----------------------------------------------
-			cta section - end
-			----------------------------------------------*/}
+
+          <FacebookMsg />
         </main>
 
         <Footer />
