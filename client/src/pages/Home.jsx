@@ -781,7 +781,7 @@ export default function Home() {
             </div>
           </div>
 
-          <FacebookMsg />
+          {/* <FacebookMsg /> */}
         </main>
 
         <Footer />

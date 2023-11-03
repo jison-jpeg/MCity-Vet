@@ -7,23 +7,30 @@ import authRoutes from './routes/auth.route.js';
 import technicianRoutes from './routes/technician.route.js';
 import appointmentRoutes from './routes/appointment.route.js';
 import serviceRoutes from './routes/service.route.js';
-
 import cookieParser from 'cookie-parser';
-// import path from 'path';
+import path from 'path';
 dotenv.config();
-
-
-const app = express();
-
-app.use(express.json());
-app.use(cookieParser())
-app.use(cors());
 
 mongoose.connect(process.env.MONGODB_URL).then(() => {
     console.log('Connected to MongoDB');5
 }).catch(error => {
     console.log(error);
 });
+
+const __dirname = path.resolve();
+
+const app = express();
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
+
+app.use(express.json());
+app.use(cookieParser())
+app.use(cors());
+
+
 
 app.listen(3000, () => {
     console.log('Server listening on port 3000');
