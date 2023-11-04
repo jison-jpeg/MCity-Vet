@@ -98,7 +98,7 @@ export default function Signin() {
 
 
         <main className="main">
-          <div className="height-100vh login-section position-relative bg-section bg-section-17">
+          <div className="height-100vh login-section position-relative bg-section bg-section-signin">
             <form onSubmit={handleSubmit} className="sign-form">
               <div className="form-heading text-center">
                 <h4 className="sub-title ls-n-20 line-height-1 mb-2">Welcome back!</h4>
@@ -155,7 +155,7 @@ export default function Signin() {
             </form>
             <div className="foreground-img">
               <img
-                src="assets/images/backgrounds/background-1-fore.png"
+                src="assets/img/signin/background-1-fore.png"
                 alt="image"
               />
             </div>

@@ -11,7 +11,7 @@ import { verifyToken } from '../utils/verifyUser.js';
 const router = express.Router();
 
 router.get('/', test);
-router.get('/all', verifyToken, getTechnicians);
+router.get('/all', getTechnicians);
 router.get('/role-stats', getRoleStatistics);
 
 

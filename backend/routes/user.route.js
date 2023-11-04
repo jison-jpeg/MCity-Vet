@@ -4,6 +4,7 @@ import {
   updateUser,
   createUser,
   getAllUsers,
+  deleteUser,
   // getRoleStatistics,
   // getTechnicians,
   getAppointmentsByUser,
@@ -19,6 +20,6 @@ router.get('/all', verifyToken, getAllUsers);
 router.get('/:id/appointments', verifyToken, getAppointmentsByUser);
 router.post('/create', verifyToken, createUser);
 router.post('/update/:id', verifyToken, updateUser);
-// router.delete('/delete/:id', verifyToken, deleteUser);
+router.delete('/delete/:id', verifyToken, deleteUser);
 
 export default router;

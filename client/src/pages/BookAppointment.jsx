@@ -1,18 +1,37 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import TechnicianList from '../components/TechnicianList'
 
 export default function BookAppointment() {
+  const [technicians, setTechnicians] = useState([]);
+
+  useEffect(() => {
+    // Fetch technician data here
+    const fetchTechnicians = async () => {
+      try {
+        const response = await fetch('/backend/technician/all');
+        if (response.ok) {
+          const technicianData = await response.json();
+          setTechnicians(technicianData);
+        } else {
+          console.error('Error fetching technicians:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching technicians:', error);
+      }
+    };
+
+    fetchTechnicians();
+  }, []);
+
   return (
     <>
     <Header />
     
 
     <main className="main">
-  {/*----------------------------------------------
-		    page header - start
-		    ----------------------------------------------*/}
+
   <div className="page-header bg-more-light">
     <div className="container">
       <h2 className="page-title">Book appointment</h2>
@@ -28,18 +47,13 @@ export default function BookAppointment() {
       </nav>
     </div>
   </div>
-  {/*----------------------------------------------
-		    page header - end
-		    ----------------------------------------------*/}
-  {/*----------------------------------------------
-		    step bar - start
-		    ----------------------------------------------*/}
  
- <div className="bg-secondary-color">
+ 
+<div className="bg-secondary-color">
   <div className="container">
     <div className="step-bar">
       <div className="steps-progress">
-        <div className="progress-indicator" style={{ width: "0%" }} />
+        <div className="progress-indicator" style={{width: '0%'}} />
       </div>
       <ul className="nav-step">
         <li className="nav-item active">
@@ -65,11 +79,9 @@ export default function BookAppointment() {
   </div>
 </div>
 
-  {/*----------------------------------------------
-		    step bar - end
-		    ----------------------------------------------*/}
 
-  <div className="container doctor-filter-section padding-small">
+
+  <div className="container technician-filter-section padding-small">
     <div className="row d-flex justify-content-center">
       <div className="col-lg-12 col-sm-8 col-10">
         <h2 className="ls-n-20 line-height-1 mb-3">Select a Technician</h2>
@@ -77,7 +89,7 @@ export default function BookAppointment() {
     </div>
     <div className="row d-flex justify-content-center">
       <div className="col-lg-12 col-sm-8 col-10">
-        <div className="doctor-filter-form d-xl-flex mb-4">
+        <div className="technician-filter-form d-xl-flex mb-4">
 
           <div className="filter-item">
             <span>on</span>
@@ -99,11 +111,11 @@ export default function BookAppointment() {
     </div>
     <div className="row d-flex justify-content-center">
       <div className="col-lg-12 col-sm-8 col-10">
-        <span>Showing available doctors on Decmber 21, 2020</span>
+        <span>Showing available technicians on Decmber 21, 2020</span>
       </div>
     </div>
 
-    <TechnicianList />
+    <TechnicianList technicians={technicians} />
 
     <div className="pagination mt-5 justify-content-start">
       <a className="active" href="#">1</a>

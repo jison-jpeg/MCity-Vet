@@ -112,19 +112,19 @@ export default function Home() {
                       Working hours
                     </h4>
                     <p className="widget-desc">
-                      Please check below for our working hours throughout the week
+                      Below are our working hours throughout the week
                       excluding national holidays.
                     </p>
                     <div className="widget-hours">
                       <span>Monday — Friday</span>
                       <span className="time">
-                        9:00<sup>AM</sup> — 10:00<sup>PM</sup>
+                        8:00<sup>AM</sup> — 5:00<sup>PM</sup>
                       </span>
                     </div>
                     <div className="widget-hours">
                       <span>Saturday — Sunday</span>
                       <span className="time">
-                        10:00<sup>AM</sup> — 9:00<sup>PM</sup>
+                        10:00<sup>AM</sup> — 5:00<sup>PM</sup>
                       </span>
                     </div>
                   </div>
@@ -141,22 +141,17 @@ export default function Home() {
                       panel of expert doctors.
                     </p>
                     <a
-                      href="doctors.html"
+                      href="/book-appointment"
                       className="btn btn-sm btn-secondary-color btn-secondary-color-1 ls-0"
                     >
-                      <span>Meet Our Doctors</span>
+                      <span>Meet Our Technicians</span>
                     </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          {/*----------------------------------------------
-			schedule section - end
-			----------------------------------------------*/}
-          {/*----------------------------------------------
-			disease section - start
-			----------------------------------------------*/}
+        
           <div className="container disease-section">
             <div className="row d-flex justify-content-center">
               <div className="col-lg-12 col-md-8 col-sm-8 col-10">

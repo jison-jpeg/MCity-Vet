@@ -144,7 +144,6 @@ export default function AccountManagement() {
 
                     </table>
                   </div>
-                  {/* End Default Table Example */}
                 </div>
               </div>
             </div>

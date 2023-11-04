@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 export const signup = async (req, res, next) => {
     const { firstName, lastName, email, password } = req.body;
     const hashedPassword = bcryptjs.hashSync(password, 12);
-    const newUser = new User({ firstName, lastName, email, password: hashedPassword });
+    const newUser = new User({ firstName, lastName, email, role: 'customer', password: hashedPassword });
     try {
         await newUser.save()
         res.status(201).json({ message: "User created successfully" });
@@ -23,7 +23,7 @@ export const signin = async (req, res, next) => {
         const validPassword = bcryptjs.compareSync(password, validUser.password);
         if (!validPassword) return next(errorHandler(401, "Invalid email or password!"));
         
-        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: validUser._id, role: validUser.role }, process.env.JWT_SECRET);
         const { password: hashedPassword, ...rest } = validUser._doc;
         const expiryDate = new Date(Date.now() + 3600000);
 
