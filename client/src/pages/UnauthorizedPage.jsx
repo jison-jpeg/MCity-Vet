@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-export default function NotFound() {
+export default function UnauthorizedPage() {
 
   useEffect(() => {
     const mainStylesheet = document.getElementById('main-stylesheet');
@@ -17,18 +17,17 @@ export default function NotFound() {
   }, []);
 
   return (
-    <>
-      <div className="page-wrapper">
-        <main className='main'>
+    <div className="page-wrapper">
+        <main className='main error-401'>
           <div className="container">
-            <section className="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
-              <h1>404</h1>
-              <h2 className='text-center'>The page you are looking for doesn't exist.</h2>
+            <section className="section error-401 min-vh-100 d-flex flex-column align-items-center justify-content-center">
+              <h1>401</h1>
+              <h2 className='text-center'>You don't have permission to access this page.</h2>
               <a className="btn" href="/">
                 Back to home
               </a>
               <img
-                src="assets/img/not-found.svg"
+                src="assets/img/unauthorized.svg"
                 className="img-fluid py-5"
                 alt="Page Not Found"
               />
@@ -37,7 +36,5 @@ export default function NotFound() {
           </div>
         </main>
       </div>
-    </>
-
   )
 }

@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const navigate = useNavigate();
-
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const dashboardStylesheet = document.getElementById('dashboard-stylesheet');
@@ -22,7 +22,6 @@ export default function Header() {
     }
   }, []);
 
-  const dispatch = useDispatch();
 
   const handleSignout = async () => {
     try {
@@ -76,12 +75,10 @@ export default function Header() {
 
             </ul>
           </nav>
-          {/* End .main-nav */}
 
-          <a href="/book-appointment" className="btn btn-sm btn-primary-color ls-0">
-            <span>Book an Appointment</span>
+          <a href={currentUser ? '/dashboard' : '/book-appointment'} className="btn btn-sm btn-primary-color ls-0">
+            <span>{currentUser ? 'Dashboard' : 'Book an Appointment'}</span>
           </a>
-
 
           {currentUser ? (
             <div className="dropdown menu icon-alt" id="profile-nav">

@@ -11,11 +11,8 @@ export default function Home() {
 
       <div className="page-wrapper">
 
-
         {/* Header.jsx */}
         <Header />
-
-
 
         <main className="main">
           {/*----------------------------------------------
@@ -35,7 +32,7 @@ export default function Home() {
 				}'
           >
             {/* 
-					background image is added through css and can be modified in the _sections.scss file
+					background image is added through css and can be modified in the style.min.css file
 					the image is added to the .bg-section-1 class.
 				*/}
             <div className="banner intro-slide bg-section bg-section-1">

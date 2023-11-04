@@ -18,7 +18,7 @@ export default function AppointmentTable({ appointments }) {
 
 
             {appointments.length === 0 ? (
-              <div className="card-body profile-card pt-4 d-flex flex-column align-items-center">
+              <div className="card-body pt-4 d-flex flex-column align-items-center">
 
                 <img src="assets/images/cow.gif" alt="" />
                 <div className="text-center">
