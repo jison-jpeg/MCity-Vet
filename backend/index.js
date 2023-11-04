@@ -1,7 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import cors from 'cors';
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import technicianRoutes from './routes/technician.route.js';
@@ -17,7 +16,6 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser())
-app.use(cors());
 
 mongoose.connect(process.env.MONGODB_URL).then(() => {
     console.log('Connected to MongoDB');5
