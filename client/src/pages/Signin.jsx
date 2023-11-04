@@ -1,14 +1,68 @@
-import React, { useEffect } from 'react';
-import Header from '../components/Header'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGoogle } from '@fortawesome/free-brands-svg-icons'; // Import the Google logo icon
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import OAuth from '../components/OAuth';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Signin() {
+
+  const key = '6LeW5u8oAAAAACoTjVXDIKpFpi0lSBSyFZOcCCfC'
+  const [captcha, setCaptcha] = useState(false);
+  const [captchaError, setCaptchaError] = useState("");
+  const [formData, setFormData] = useState({});
+  const { loading, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const onChange = (value) => {
+    console.log("Captcha value:", value);
+    setCaptcha(true);
+  }
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!captcha) {
+      console.log("Please complete the reCAPTCHA.");
+      setCaptchaError("Please complete the reCAPTCHA.");
+      return;
+    }
+    setCaptchaError("");
+
+    try {
+      dispatch(signinStart());
+      const response = await fetch('/backend/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+
+      const data = await response.json();
+      if (data.success === false) {
+        dispatch(signinFailure(data));
+        return;
+      }
+
+      dispatch(signinSuccess(data));
+      navigate('/dashboard');
+    } catch (error) {
+      dispatch(signinFailure(error));
+    }
+  };
+
 
   useEffect(() => {
     const dashboardStylesheet = document.getElementById('dashboard-stylesheet');
     dashboardStylesheet.setAttribute('disabled', 'true');
-    
+
     const dashboardBootstrap = document.getElementById('dashboard-bootstrap');
     dashboardBootstrap.setAttribute('disabled', 'true');
   }, []);
@@ -45,7 +99,7 @@ export default function Signin() {
 
         <main className="main">
           <div className="height-100vh login-section position-relative bg-section bg-section-17">
-            <form className="sign-form">
+            <form onSubmit={handleSubmit} className="sign-form">
               <div className="form-heading text-center">
                 <h4 className="sub-title ls-n-20 line-height-1 mb-2">Welcome back!</h4>
                 <span className="heading-desc">Sign in to continue to MCity Vet.</span>
@@ -53,31 +107,41 @@ export default function Signin() {
               <div className="form-content">
                 <div className="input-group input-light">
                   <h6 className="input-title">Email</h6>
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="example@gmail.com"
-                    required=""
-                  />
+                  <input type="email" id='email' className="form-control" placeholder="example@gmail.com" required onChange={handleChange} />
                 </div>
                 <div className="input-group input-light">
                   <h6 className="input-title">Password</h6>
-                  <input type="password" className="form-control" required="" />
+                  <input type="password" id='password' className="form-control" required onChange={handleChange} />
                 </div>
+
+                {error && (
+                  <span className="term-privacy d-flex justify-content-center">{error.message || 'Something went wrong!'}</span>
+                )}
+                {captchaError && (
+                  <span className="term-privacy d-flex justify-content-center">{captchaError}</span>
+                )}
+
+
                 <div className="btn-link">
                   <a href="#">Forgot password?</a>
                 </div>
-                <button type="submit" className="btn btn-form btn-secondary-color">
-                  <span>Continue</span>
+                <button disabled={loading} type="submit" className="btn btn-form btn-secondary-color">
+                  <span>{loading ? 'Signing In...' : 'Sign In'}</span>
                 </button>
 
                 <div className="term-privacy d-flex justify-content-center">
                   <span className="line-height-1">or </span>
                 </div>
 
-                <button type="submit" className="btn btn-form btn-primary-color">
-                  <span> <FontAwesomeIcon icon={faGoogle} className='google-icon' /> Continue with Google</span>
-                </button>
+
+                <OAuth />
+
+                <div className=" pt-4 d-flex flex-column align-items-center">
+                  <ReCAPTCHA
+                    sitekey={key}
+                    onChange={onChange}
+                  />
+                </div>
 
                 <div className="term-privacy d-flex justify-content-center">
                   <span className="line-height-1">New to MCity Vet? </span>

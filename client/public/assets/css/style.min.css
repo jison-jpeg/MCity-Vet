@@ -2665,6 +2665,7 @@ body {
 }
 ::selection {
   background-color: #283779;
+  font-weight: 500;
   color: #fff;
 }
 @-webkit-keyframes rotating {
@@ -2756,7 +2757,7 @@ h6,
 h1,
 .h1 {
   font-size: 8rem;
-  line-height: 10rem;
+  line-height: 8rem;
 }
 @media (max-width: 991px) {
   h1,
@@ -3379,6 +3380,8 @@ sup {
   margin-left: 2rem;
   display: none;
 }
+
+
 .menu,
 .menu ul {
   margin: 0;
@@ -3574,6 +3577,85 @@ ul.sub-menu li.li-with-arrow i.fa-caret-right {
 .menu li.active > a {
   color: #283779;
 }
+
+.dropdown {
+  display: inline-block;
+  margin-left: 15px;
+  font-weight: 600;
+  font-family: "Manrope";
+
+
+}
+#profile-nav img{
+  border: 5px solid #ff594dff;
+  transition: border-color 0.3s;
+
+}
+
+#profile-nav img:hover {
+  border-color: #283779; /* Change the border color to blue when hovered */
+}
+
+/* Hidden checkbox input for triggering dropdown */
+.dropdown-checkbox {
+  display: none;
+}
+
+/* Label for the checkbox */
+.profile-image-label {
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Circle image style with blue border */
+.profile-image {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #3498db;
+  border-radius: 50%;
+  cursor: pointer;
+  
+}
+
+.arrow {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #b2dded;
+  position: absolute;
+  top: -10px;
+  right: 15px;
+}
+
+/* Dropdown content container */
+.dropdown-content-container {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  border-radius: 5px;
+  z-index: 1;
+  top: 100%;
+  right: 0;
+  margin-top: 15px;
+  border: 2px solid #b2dded;
+}
+
+/* Dropdown items */
+.dropdown-content {
+  padding: 25px 50px;
+  display: block;
+  color: #333;
+  text-decoration: none;
+  /* padding: 10px 0; */
+}
+
+/* Show the dropdown content when the checkbox is checked */
+.dropdown-checkbox:checked + .dropdown-label + .dropdown-content-container {
+  display: block;
+}
+
 .demo-list {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -4386,6 +4468,7 @@ ul.sub-menu li.li-with-arrow i.fa-caret-right {
 .appear-animate {
   opacity: 0;
 }
+
 .animated {
   -webkit-animation-duration: 1s;
   -webkit-animation-fill-mode: both;
@@ -5182,12 +5265,16 @@ body:not(.loaded) * {
 }
 .intro-slide.banner .banner-content .banner-title {
   margin-bottom: 2.4rem;
+  /* margin-left: -160px; */
   margin-left: -2px;
+
 }
 .intro-slide.banner .banner-content .banner-info {
   font-size: 2rem;
   line-height: 3.4rem;
   letter-spacing: 0.03em;
+  /* margin-left: -160px; */
+
 }
 @media (max-width: 991px) {
   .intro-slide.banner .banner-content .banner-info {
@@ -8468,7 +8555,7 @@ input[type="password"] {
 .blog.blog-doctor figure {
   margin-right: 3rem;
 }
-.blog.blog-doctor .blog-content .doctor-name {
+.blog.blog-doctor .blog-content .technician-name {
   line-height: 3.4rem;
 }
 .blog.blog-doctor .blog-content .ratings,
@@ -9334,7 +9421,7 @@ input[type="password"] {
   }
 }
 .bg-section-1 {
-  background-image: url("../images/demos/demo-1/banner/banner-hero-1.jpg");
+  background-image: url("../images/demos/demo-1/banner/banner-hero-1.png");
   background-position: 50% top;
 }
 .bg-section-2 {
@@ -9388,10 +9475,10 @@ input[type="password"] {
   background-image: url("../images/demos/demo-7/banner/banner-big-2.jpg");
 }
 .bg-section-17 {
-  background-image: url("../images/backgrounds/background-1.jpg");
+  background-image: url("../images/backgrounds/background-1.png");
 }
 .bg-section-18 {
-  background-image: url("../images/backgrounds/background-2.jpg");
+  background-image: url("../images/backgrounds/background-2.png");
 }
 .bg-section-19 {
   background-image: url("../images/demos/demo-4/slide/slide-1.jpg");
@@ -9452,10 +9539,10 @@ input[type="password"] {
     background-image: url("../images/demos/demo-7/banner/banner-big-2-back.jpg");
   }
   .bg-section-17 {
-    background-image: url("../images/backgrounds/background-1-back.jpg");
+    background-image: url("../images/backgrounds/background-1-back.png");
   }
   .bg-section-18 {
-    background-image: url("../images/backgrounds/background-2-back.jpg");
+    background-image: url("../images/backgrounds/background-2-back.png");
   }
   .bg-section-19 {
     background-image: url("../images/demos/demo-4/slide/slide-back.jpg");
@@ -10063,7 +10150,7 @@ input[type="password"] {
 .doctor-filter-section span {
   font-weight: 500;
 }
-.doctor-filter-section .doctor-Availability {
+.doctor-filter-section .technician-Availability {
   margin-bottom: 0;
 }
 @media (max-width: 991px) {
@@ -10296,7 +10383,7 @@ input[type="password"] {
   }
 }
 .login-section .sign-form {
-  max-width: 100%;
+  max-width: 30%;
 }
 @media (max-width: 991px) {
   .login-section {

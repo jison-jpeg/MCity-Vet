@@ -1,0 +1,136 @@
+import Appointment from "../models/appointment.model.js";
+
+export const test = (req, res) => {
+  res.json({
+    message: "API is working!",
+  });
+};
+
+// Get All Appointments
+export const getAllAppointments = async (req, res, next) => {
+  try {
+    const appointments = await Appointment.find();
+    res.status(200).json(appointments);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Appointment by ID
+export const getAppointmentById = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const appointment = await Appointment.findById(id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.status(200).json(appointment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Appointments by User
+export const getAppointmentsByUser = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Find all appointments created by the specified user
+    const appointments = await Appointment.find({ createdBy: id });
+
+    if (appointments.length === 0) {
+      return res.status(404).json({ message: "No appointments found for this user." });
+    }
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get Appointments by Technician
+export const getAppointmentsByTechnician = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    // Find all appointments assigned to the specified technician
+    const appointments = await Appointment.find({ technicianName: id });
+
+    if (appointments.length === 0) {
+      return res.status(404).json({ message: "No appointments found for this technician." });
+    }
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+// Create Appointment
+export const createAppointment = async (req, res, next) => {
+  try {
+    const { schedule, technicianName, firstName, lastName, phone, patient, services } = req.body;
+
+    const createdByUserId = req.user.id;
+
+    // Create a new appointment instance, including the patient object
+    const newAppointment = await Appointment.create({
+      schedule,
+      technicianName,
+      firstName,
+      lastName,
+      phone,
+      patient,
+      services,
+      createdBy: createdByUserId,
+    });
+
+    res.status(201).json(newAppointment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update Appointment
+export const updateAppointment = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const appointment = await Appointment.findById(id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updatedAppointment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+// Delete Appointment
+export const deleteAppointment = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const appointment = await Appointment.findByIdAndDelete(id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.status(200).json(appointment);
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import AddAppointment from '../components/modals/AddAppointment';
+import AppointmentTable from '../components/AppointmentTable';
 
 
 export default function Dashboard() {
 
-  // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Function to toggle the sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -35,6 +35,41 @@ export default function Dashboard() {
     dashboardBootstrap.removeAttribute('disabled');
   }, []);
 
+  const { currentUser } = useSelector((state) => state.user);
+  const isCustomer = currentUser.role === 'customer';
+  const [appointments, setAppointments] = useState([]);
+  const [hasPendingAppointment, setHasPendingAppointment] = useState(false);
+
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if (!currentUser || !currentUser._id) {
+        console.error('User information is missing or incomplete');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/backend/user/${currentUser._id}/appointments`);
+        if (response.ok) {
+          const data = await response.json();
+
+          // Check for pending appointments
+          const hasPending = data.some(appointment => appointment.status === 'Pending');
+          setHasPendingAppointment(hasPending);
+
+          setAppointments(data);
+          // console.log(data)
+        } else {
+          console.error('Failed to fetch appointments. No Appointments found.');
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching appointments', error);
+      }
+    };
+
+    fetchAppointments();
+  }, [currentUser]);
+
   return (
     <>
       <DashboardHeader toggleSidebar={toggleSidebar} />
@@ -44,7 +79,7 @@ export default function Dashboard() {
       {/* ======= Main ======= */}
       <main id="main" className="main">
         <div className="pagetitle">
-          <h1>Appointments</h1>
+        {isCustomer ? <h1>My Appointments</h1> : <h1>Appointments</h1>}
           <nav>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
@@ -58,74 +93,40 @@ export default function Dashboard() {
 
 
         <div className="btn-header">
-          <button type="button" class="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Appointment</button>
-        </div>
+  {isCustomer ? (
+    hasPendingAppointment ? (
+      <p>You have a pending appointment. Cannot make a new appointment at this time.</p>
+    ) : (
+      <button
+        type="button"
+        className="btn btn-primary-dashboard btn-lg rounded-pill"
+        data-bs-toggle="modal"
+        data-bs-target="#addModal"
+      >
+        Book Appointment
+      </button>
+    )
+  ) : (
+    <button
+      type="button"
+      className="btn btn-primary-dashboard btn-lg rounded-pill"
+      data-bs-toggle="modal"
+      data-bs-target="#addModal"
+    >
+      Create Appointment
+    </button>
+  )}
+</div>
+
+
 
         <AddAppointment />
 
         <section className="section dashboard">
           <div className="row">
 
-            {/* add data table */}
 
-            <div className="col-lg-12">
-              <div className="card">
-                <div className="card-body">
-                  <h5 className="card-title">Appointments</h5>
-                  {/* Default Table */}
-                  <div className="table-responsive-md">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Schedule</th>
-                        <th scope="col">Client</th>
-                        <th scope="col">Animal</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">No. of Heads</th>
-                        <th scope="col">Services</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>10/11/2023</td>
-                        <td>10/15/2023</td>
-                        <td>Jayson T.</td>
-                        <td>
-                          <li>Cow</li>
-                          <li>Pig</li>
-                        </td>
-                        <td>3 Years Old</td>
-                        <td>
-                          <li>1</li>
-                          <li>3</li>
-                        </td>
-                        <td>A.I</td>
-                        <td>
-                          <span class="badge rounded-pill bg-success">Success</span>
-                        </td>
-                        <td>
-                          <button type="button" class="btn btn-primary-dashboard-action btn-sm">View</button>
-                          <span> | </span>
-                          <button type="button" class="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                        </td>
-
-                      </tr>
-
-                    </tbody>
-                  </table>
-                  </div>
-                  {/* End Default Table Example */}
-                </div>
-              </div>
-            </div>
-
-            
-
+            <AppointmentTable appointments={appointments} />
 
           </div>
         </section>

@@ -1,0 +1,69 @@
+- .env
+- .gitignore
+- backend
+  - controllers
+    - auth.controller.js
+    - user.controller.js
+  - index.js
+  - models
+    - user.model.js
+  - public
+    - img
+      - profilePicture.png
+  - routes
+    - auth.route.js
+    - user.route.js
+  - utils
+    - error.js
+    - verifyUser.js
+- client
+  - .env
+  - .eslintrc.cjs
+  - index.html
+  - package-lock.json
+  - package.json
+  - postcss.config.js
+  - public
+  - src
+    - App.jsx
+    - components
+      - AccountStat.jsx
+      - DashboardFooter.jsx
+      - DashboardHeader.jsx
+      - DashboardSidebar.jsx
+      - Footer.jsx
+      - Header.jsx
+      - modals
+        - AddAccount.jsx
+        - AddAppointment.jsx
+        - AddItem.jsx
+      - OAuth.jsx
+      - Preloader.jsx
+      - PrivateRoute.jsx
+      - TechStat.jsx
+    - firebase.js
+    - index.css
+    - main.jsx
+    - pages
+      - About.jsx
+      - AccountManagement.jsx
+      - Appointments.jsx
+      - BookAppointment.jsx
+      - Dashboard.jsx
+      - Home.jsx
+      - Inventory.jsx
+      - MedicalRecord.jsx
+      - Profile.jsx
+      - Signin.jsx
+      - Signup.jsx
+      - SystemLogs.jsx
+      - UserDashboard.jsx
+    - redux
+      - store.js
+      - user
+        - userSlice.js
+  - tailwind.config.js
+  - vite.config.js
+- package-lock.json
+- package.json
+- README.md
