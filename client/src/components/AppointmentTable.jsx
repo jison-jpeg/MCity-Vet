@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-export default function AppointmentTable({ appointments }) {
+export default function AppointmentTable({ appointments, currentUserRole  }) {
 
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
@@ -37,18 +37,6 @@ export default function AppointmentTable({ appointments }) {
                   Create Appointment
                 </button>}
                 
-                {/* <button
-                  type="button"
-                  className="btn btn-primary-dashboard btn-lg rounded-pill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addModal"
-                  id='book-appointment-button'
-                >
-                  Book Appointment
-                </button> */}
-
-                {/* <a href="/book-appointment" className="btn btn-primary-dashboard btn-lg rounded-pill mt-3" id='book-appointment-button'>Book Appointment</a> */}
-
 
               </div>
             ) : (

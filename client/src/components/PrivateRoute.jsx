@@ -20,11 +20,11 @@ export default function PrivateRoute() {
 
   // Define allowed roles for specific routes
   const allowedRoles = {
-    '/dashboard': ['admin', 'customer'],
-    '/appointments': ['admin', 'customer'],
+    '/dashboard': ['admin', 'customer', 'technician', 'secretary'],
+    '/appointments': ['admin', 'customer', 'technician', 'secretary'],
     '/inventory': ['admin'],
-    '/medical-record': ['admin', 'customer'],
-    '/profile': ['admin', 'customer'],
+    '/medical-record': ['admin', 'customer', 'technician', 'secretary'],
+    '/profile': ['admin', 'customer', 'technician', 'secretary'],
     '/account-management': ['admin'],
     '/system-logs': ['admin'],
   };

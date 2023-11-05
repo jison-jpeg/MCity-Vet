@@ -275,7 +275,7 @@ export default function AddAppointment() {
                             </div>
 
 
-                            <div className="col-md-3">
+                            <div className="col align-self-end">
                                 <button type="button" className="btn btn-outline-primary">
                                     Add More
                                 </button>
