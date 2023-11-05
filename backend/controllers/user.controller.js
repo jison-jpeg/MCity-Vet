@@ -75,6 +75,7 @@ export const updateUser = async (req, res, next) => {
                     firstName: capitalizeAndTrim(req.body.firstName),
                     lastName: capitalizeAndTrim(req.body.lastName),
                     middleName: capitalizeAndTrim(req.body.middleName),
+                    role: req.body.role,
                     birthdate: req.body.birthdate,
                     address: req.body.address,
                     phone: req.body.phone,
