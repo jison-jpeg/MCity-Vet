@@ -36,7 +36,6 @@ export default function Appointments() {
   const { currentUser } = useSelector((state) => state.user);
   const currentUserRole = currentUser.role; // Get the user's role
   const [appointments, setAppointments] = useState([]);
-  const [hasPendingAppointment, setHasPendingAppointment] = useState(false);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -60,11 +59,6 @@ export default function Appointments() {
 
         if (response.ok) {
           const data = await response.json();
-
-          // Check for pending appointments
-          const hasPending = data.some(appointment => appointment.status === 'Pending');
-          setHasPendingAppointment(hasPending);
-
           setAppointments(data);
         } else {
           console.error('Failed to fetch appointments. No Appointments found.');
@@ -76,6 +70,7 @@ export default function Appointments() {
 
     fetchAppointments();
   }, [currentUser, currentUserRole]);
+
 
   return (
     <>
@@ -98,18 +93,14 @@ export default function Appointments() {
 
         <div className="btn-header">
           {currentUserRole === 'customer' ? (
-            hasPendingAppointment ? (
-              <p>You have a pending appointment. Cannot make a new appointment at this time.</p>
-            ) : (
-              <button
-                type="button"
-                className="btn btn-primary-dashboard btn-lg rounded-pill"
-                data-bs-toggle="modal"
-                data-bs-target="#addModal"
-              >
-                Book Appointment
-              </button>
-            )
+            <button
+              type="button"
+              className="btn btn-primary-dashboard btn-lg rounded-pill"
+              data-bs-toggle="modal"
+              data-bs-target="#addModal"
+            >
+              Book Appointment
+            </button>
           ) : (
             <button
               type="button"
@@ -120,6 +111,7 @@ export default function Appointments() {
               Create Appointment
             </button>
           )}
+
         </div>
 
         <AddAppointment />

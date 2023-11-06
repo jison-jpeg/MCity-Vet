@@ -11,7 +11,7 @@ export const test = (req, res) => {
 
 // Add User
 export const createUser = async (req, res, next) => {
-    const { firstName, lastName, email, password, middleName, role, address, gender, birthdate, phone } = req.body;
+    const { firstName, lastName, middleName, email, password, role, address, gender, birthdate, phone } = req.body;
 
     try {
         // Check if the user with the provided email already exists
@@ -123,6 +123,23 @@ export const getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find();
         res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Get User by ID
+export const getUserById = async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user);
     } catch (error) {
         next(error);
     }

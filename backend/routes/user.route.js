@@ -1,10 +1,11 @@
 import express from 'express';
 import {
   test,
-  updateUser,
   createUser,
-  getAllUsers,
+  updateUser,
   deleteUser,
+  getUserById,
+  getAllUsers,
   // getRoleStatistics,
   // getTechnicians,
   getAppointmentsByUser,
@@ -15,11 +16,12 @@ import { verifyToken } from '../utils/verifyUser.js';
 const router = express.Router();
 
 router.get('/', test);
-router.get('/all', verifyToken, getAllUsers);
-// router.get('/role-stats', getRoleStatistics);
-router.get('/:id/appointments', verifyToken, getAppointmentsByUser);
 router.post('/create', verifyToken, createUser);
 router.post('/update/:id', verifyToken, updateUser);
 router.delete('/delete/:id', verifyToken, deleteUser);
+router.get('/:id', verifyToken, getUserById);
+router.get('/all', verifyToken, getAllUsers);
+router.get('/:id/appointments', verifyToken, getAppointmentsByUser);
+
 
 export default router;
