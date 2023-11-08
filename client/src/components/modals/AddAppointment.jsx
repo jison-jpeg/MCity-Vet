@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function AddAppointment() {
+    const { currentUser } = useSelector((state) => state.user);
     const [technicians, setTechnicians] = useState([]);
     const [services, setServices] = useState([]);
     const [formData, setFormData] = useState({
@@ -36,6 +38,7 @@ export default function AddAppointment() {
         fetchData();
     }, []);
 
+    
     const handleInputChange = (event) => {
         const { id, value } = event.target;
         setFormData({
@@ -47,12 +50,18 @@ export default function AddAppointment() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const userRole = currentUser.role;
+        let firstName = userRole === 'customer' ? currentUser.firstName : formData.firstName;
+        let lastName = userRole === 'customer' ? currentUser.lastName : formData.lastName;
+        let email = userRole === 'customer' ? currentUser.email : formData.email;
+
         const appointmentData = {
             schedule: formData.date,
             technicianName: formData.technician,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
+            firstName: firstName,
+            lastName: lastName,
             phone: formData.phoneNumber,
+            email: email,
             patient: {
                 typeOfAnimal: formData.typeOfAnimal,
                 numberOfHeads: formData.numberOfHeads,
@@ -123,7 +132,7 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="firstName"
-                                    value={formData.firstName}
+                                    value={currentUser.role === 'customer' ? currentUser.firstName : formData.firstName}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -136,7 +145,7 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="lastName"
-                                    value={formData.lastName}
+                                    value={currentUser.role === 'customer' ? currentUser.lastName : formData.lastName}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -212,12 +221,13 @@ export default function AddAppointment() {
                                     Email
                                 </label>
                                 <input
-                                    type="text"
+                                    type="email"
                                     className="form-control"
                                     id="email"
                                     placeholder="example@gmail.com"
-                                    value={formData.email}
+                                    value={currentUser.role === 'customer' ? currentUser.email : formData.email}
                                     onChange={handleInputChange}
+                                    
                                 />
                             </div>
 

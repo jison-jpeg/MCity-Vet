@@ -4,6 +4,7 @@ import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import Dashboard from './pages/Dashboard';
 import Appointments from './pages/Appointments';
+import ViewAppointment from './components/ViewAppointment';
 import Inventory from './pages/Inventory';
 import MedicalRecord from './pages/MedicalRecord';
 import Profile from './pages/Profile';
@@ -36,6 +37,10 @@ export default function App() {
           <Route
             path="/appointments"
             element={<Appointments />}
+          />
+          <Route
+            path="/view-appointment"
+            element={<ViewAppointment />}
           />
           <Route
             path="/inventory"

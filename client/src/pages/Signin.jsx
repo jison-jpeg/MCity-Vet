@@ -10,7 +10,7 @@ export default function Signin() {
   const key = '6LeW5u8oAAAAACoTjVXDIKpFpi0lSBSyFZOcCCfC'
   const [captcha, setCaptcha] = useState(false);
   const [captchaError, setCaptchaError] = useState("");
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,10 +28,15 @@ export default function Signin() {
     e.preventDefault();
 
     if (!captcha) {
-      console.log("Please complete the reCAPTCHA.");
       setCaptchaError("Please complete the reCAPTCHA.");
       return;
     }
+
+    if (!formData.email || !formData.password) {
+      setCaptchaError("Email and password are required.");
+      return;
+    }
+
     setCaptchaError("");
 
     try {
@@ -44,20 +49,23 @@ export default function Signin() {
         body: JSON.stringify(formData),
       });
 
-
-      const data = await response.json();
-      if (data.success === false) {
-        dispatch(signinFailure(data));
-        return;
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success === false) {
+          dispatch(signinFailure(data));
+        } else {
+          dispatch(signinSuccess(data));
+          navigate('/dashboard');
+        }
+      } else {
+        console.error('Sign-in failed with status:', response.status);
+        dispatch(signinFailure({ message: 'Invalid email or password.' }));
       }
-
-      dispatch(signinSuccess(data));
-      navigate('/dashboard');
     } catch (error) {
-      dispatch(signinFailure(error));
+      console.error('Sign-in failed:', error);
+      dispatch(signinFailure({ message: 'Something went wrong!' }));
     }
   };
-
 
   useEffect(() => {
     const dashboardStylesheet = document.getElementById('dashboard-stylesheet');
@@ -66,6 +74,7 @@ export default function Signin() {
     const dashboardBootstrap = document.getElementById('dashboard-bootstrap');
     dashboardBootstrap.setAttribute('disabled', 'true');
   }, []);
+  
 
   return (
     <>
@@ -77,12 +86,6 @@ export default function Signin() {
         </div>
       </div>
       <div className="page-wrapper">
-
-
-        {/* <Header /> */}
-        {/*----------------------------------------------
-	        navigation - start
-	    ----------------------------------------------*/}
         <header className="header header-sign">
           <div className="header-middle header-middle-simple">
             <div className="header-left">
@@ -92,11 +95,6 @@ export default function Signin() {
             </div>
           </div>
         </header>
-        {/*----------------------------------------------
-	        navigation - end
-	    ----------------------------------------------*/}
-
-
         <main className="main">
           <div className="height-100vh login-section position-relative bg-section bg-section-signin">
             <form onSubmit={handleSubmit} className="sign-form">
@@ -115,12 +113,11 @@ export default function Signin() {
                 </div>
 
                 {error && (
-                  <span className="term-privacy d-flex justify-content-center">{error.message || 'Something went wrong!'}</span>
+                  <span className="term-privacy d-flex justify-content-center">{error.message}</span>
                 )}
                 {captchaError && (
                   <span className="term-privacy d-flex justify-content-center">{captchaError}</span>
                 )}
-
 
                 <div className="btn-link">
                   <a href="#">Forgot password?</a>
@@ -133,10 +130,9 @@ export default function Signin() {
                   <span className="line-height-1">or </span>
                 </div>
 
-
                 <OAuth />
 
-                <div className=" pt-4 d-flex flex-column align-items-center">
+                <div className="pt-4 d-flex flex-column align-items-center">
                   <ReCAPTCHA
                     sitekey={key}
                     onChange={onChange}

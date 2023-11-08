@@ -17,6 +17,9 @@ const appointmentSchema = new mongoose.Schema({
     phone: {
         type: String,
     },
+    email: {
+        type: String,
+    },
     patient: {
         _id: mongoose.Schema.Types.ObjectId,
         typeOfAnimal: {

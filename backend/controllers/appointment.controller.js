@@ -73,7 +73,7 @@ export const getAppointmentsByTechnician = async (req, res, next) => {
 // Create Appointment
 export const createAppointment = async (req, res, next) => {
   try {
-    const { schedule, technicianName, firstName, lastName, phone, patient, services } = req.body;
+    const { schedule, technicianName, firstName, lastName, phone, email, patient, services } = req.body;
 
     const createdByUserId = req.user.id;
 
@@ -95,11 +95,12 @@ export const createAppointment = async (req, res, next) => {
 
     // Create a new appointment instance, including the patient object
     const newAppointment = await Appointment.create({
-      schedule,
       technicianName,
+      schedule,
       firstName,
       lastName,
       phone,
+      email,
       patient,
       services,
       createdBy: createdByUserId,

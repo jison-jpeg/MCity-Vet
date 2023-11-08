@@ -1,8 +1,10 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, Navigate } from 'react-router-dom';
+import { signout } from '../redux/user/userSlice';
 
 export default function PrivateRoute() {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   if (!currentUser) {
     // If the user is not logged in, redirect to the sign-in page
@@ -15,6 +17,7 @@ export default function PrivateRoute() {
 
   if (tokenExpiration <= currentTime) {
     // Token has expired; redirect to sign-in page
+    dispatch(signout());
     return <Navigate to="/signin" />;
   }
 
@@ -22,6 +25,7 @@ export default function PrivateRoute() {
   const allowedRoles = {
     '/dashboard': ['admin', 'customer', 'technician', 'secretary'],
     '/appointments': ['admin', 'customer', 'technician', 'secretary'],
+    '/appointments/view': ['admin', 'customer', 'technician', 'secretary'],
     '/inventory': ['admin'],
     '/medical-record': ['admin', 'customer', 'technician', 'secretary'],
     '/profile': ['admin', 'customer', 'technician', 'secretary'],

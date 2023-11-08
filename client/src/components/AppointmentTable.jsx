@@ -79,10 +79,13 @@ export default function AppointmentTable({ appointments, currentUserRole  }) {
                           </span>
                         </td>
                         <td>
-                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
+                          <a href='/appointments/view' className="btn btn-primary-dashboard-action btn-sm">View</a>
                           <span> | </span>
-                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                        </td>
+                          {isCustomer ? (
+                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Reschedule</button>
+                          ) : (
+                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                          )}                        </td>
                       </tr>
                     ))}
                   </tbody>
