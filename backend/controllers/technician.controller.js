@@ -18,12 +18,12 @@ export const getTechnicians = async (req, res, next) => {
 };
 
 // Get Appointments by Technician
-export const getAppointmentsByTechnician = async (req, res, next) => {
-  const { id } = req.params;
+export const getAppointmentsForTechnician = async (req, res, next) => {
+  const technicianId = req.user.id; // Assuming you have the technician's ID in the request
 
   try {
     // Find all appointments assigned to the specified technician
-    const appointments = await Appointment.find({ technicianName: id });
+    const appointments = await Appointment.find({ technicianName: technicianId });
 
     if (appointments.length === 0) {
       return res.status(404).json({ message: "No appointments found for this technician." });
@@ -34,6 +34,7 @@ export const getAppointmentsByTechnician = async (req, res, next) => {
     next(error);
   }
 };
+
 
 // Get User Role Statistics
 export const getRoleStatistics = async (req, res, next) => {

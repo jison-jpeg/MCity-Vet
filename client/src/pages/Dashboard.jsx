@@ -64,7 +64,29 @@ export default function Dashboard() {
         <div className='greetings'>
           <h1>Hello, <span>{currentUser?.firstName}</span> !</h1>
         </div>
+
+        <div className="card mb-3">
+          <div className="row g-0">
+            <div className="d-none d-sm-block col-4 col-sm-4 col-md-2 col-lg-2">
+              <img src="/assets/img/signin/background-1-fore.png" className="img-fluid rounded-start" alt="..." />
+            </div>
+            <div className="col-sm-8 col-md-10">
+              <div className="card-body">
+                <h5 className="card-title">We care about your animal.</h5>
+                <p className="card-text">
+                  We provide the best service for your animal. Our team is always ready to help you.
+                </p>
+                <a href="#" className='btn btn-primary-dashboard btn-sm rounded-pill'>Book an Appointment</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* End Page Title */}
+
+        {/* <div className="pagetitle">
+          <h1>Account Statistics</h1>
+        </div> */}
 
         <section className="section dashboard">
           <div className="row">
@@ -80,58 +102,98 @@ export default function Dashboard() {
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
-                  <h5 className="card-title">Appointments</h5>
-                  {/* Default Table */}
-                  <div className="table-responsive-md">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Schedule</th>
-                          <th scope="col">Client</th>
-                          <th scope="col">Animal</th>
-                          <th scope="col">Age</th>
-                          <th scope="col">No. of Heads</th>
-                          <th scope="col">Services</th>
-                          <th scope="col">Status</th>
-                          <th scope="col">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>10/11/2023</td>
-                          <td>10/15/2023</td>
-                          <td>Jayson T.</td>
-                          <td>
-                            <li>Cow</li>
-                            <li>Pig</li>
-                          </td>
-                          <td>3 Years Old</td>
-                          <td>
-                            <li>1</li>
-                            <li>3</li>
-                          </td>
-                          <td>A.I</td>
-                          <td>
-                            <span className="badge rounded-pill bg-success">Success</span>
-                          </td>
-                          <td>
-                            <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                            <span> | </span>
-                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                          </td>
-
-                        </tr>
-
-                      </tbody>
-                    </table>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h5 className="card-title">Latest Appointment</h5>
+                    <a href="#" className="btn btn-primary-dashboard btn-sm rounded-pill">View All</a>
                   </div>
-                  {/* End Default Table Example */}
+
+                  <div className="mb-3 row">
+                    <div className="col-sm-4 col-md-4 mt-2">
+                      <p class="card-text fw-bold">Appointment ID</p>
+                    </div>
+                    <div className="col-sm-8 col-md-8 mt-2">
+                      <p class="card-text text-muted">1234567890</p>
+                    </div>
+                    <div className="col-sm-4 col-md-4 mt-2">
+                      <p class="card-text fw-bold">Status</p>
+                    </div>
+                    <div className="col-sm-8 col-md-8 mt-2">
+                      <span className="badge rounded-pill bg-danger">Pending</span>
+                    </div>
+                    <div className="col-sm-4 col-md-4 mt-2">
+                      <p class="card-text fw-bold">Schedule</p>
+                    </div>
+                    <div className="col-sm-8 col-md-8 mt-2">
+                      <p class="card-text text-muted">11/02/2003</p>
+                    </div>
+                    <div className="col-sm-4 col-md-4 mt-2">
+                      <p class="card-text fw-bold">Address</p>
+                    </div>
+                    <div className="col-sm-8 col-md-8 mt-2">
+                      <p class="card-text text-muted">P9, Sumpong, Malaybalay City, Bukidnon</p>
+                    </div>
+
+
+
+                  </div>
+
+
+
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h5 className="card-title">Information</h5>
+                  </div>
+
+                  <div className="mb-5 row">
+                    <label
+                      htmlFor="example-text-input"
+                      className="col-sm-4 col-md-4 mt-2"
+                    >
+                      Customer's Name
+                    </label>
+                    <div className="col-sm-8 col-md-8 mt-2">
+                      <span className='text-muted'>John Doe</span>
+                    </div>
+
+                    <label
+                      htmlFor="example-text-input"
+                      className="col-sm-4 col-md-4 mt-2"
+                    >
+                      Service
+                    </label>
+                    <div className="col-sm-8 col-md-8 mt-2">
+                      <span className='text-muted'>AI, Grooming</span>
+                    </div>
+
+                    <label
+                      htmlFor="example-text-input"
+                      className="col-sm-4 col-md-4 mt-2"
+                    >
+                      Animal
+                    </label>
+                    <div className="col-sm-8 col-md-8 mt-2">
+                      <span className='text-muted'>(2) Horse, (1) Pig</span>
+                    </div>
+
+                  </div>
+
+                  <div className="">
+                    <button type="submit" className="btn btn-primary-dashboard btn-s rounded-pill ">
+                      Submit
+                    </button>
+                  </div>
+
+
+
+
                 </div>
               </div>
             </div>
+
+
+
+
+
+
 
 
 

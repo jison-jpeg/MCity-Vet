@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-export default function AppointmentTable({ appointments }) {
+export default function AppointmentTable({ appointments, currentUserRole  }) {
 
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
@@ -18,7 +18,7 @@ export default function AppointmentTable({ appointments }) {
 
 
             {appointments.length === 0 ? (
-              <div className="card-body profile-card pt-4 d-flex flex-column align-items-center">
+              <div className="card-body pt-4 d-flex flex-column align-items-center">
 
                 <img src="assets/images/cow.gif" alt="" />
                 <div className="text-center">
@@ -37,18 +37,6 @@ export default function AppointmentTable({ appointments }) {
                   Create Appointment
                 </button>}
                 
-                {/* <button
-                  type="button"
-                  className="btn btn-primary-dashboard btn-lg rounded-pill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addModal"
-                  id='book-appointment-button'
-                >
-                  Book Appointment
-                </button> */}
-
-                {/* <a href="/book-appointment" className="btn btn-primary-dashboard btn-lg rounded-pill mt-3" id='book-appointment-button'>Book Appointment</a> */}
-
 
               </div>
             ) : (
@@ -91,10 +79,13 @@ export default function AppointmentTable({ appointments }) {
                           </span>
                         </td>
                         <td>
-                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
+                          <a href='/appointments/view' className="btn btn-primary-dashboard-action btn-sm">View</a>
                           <span> | </span>
-                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                        </td>
+                          {isCustomer ? (
+                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Reschedule</button>
+                          ) : (
+                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                          )}                        </td>
                       </tr>
                     ))}
                   </tbody>

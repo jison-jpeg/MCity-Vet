@@ -9,19 +9,9 @@ export const test = (req, res) => {
     });
 }
 
-// Get All Users
-export const getAllUsers = async (req, res, next) => {
-    try {
-        const users = await User.find();
-        res.status(200).json(users);
-    } catch (error) {
-        next(error);
-    }
-};
-
 // Add User
 export const createUser = async (req, res, next) => {
-    const { firstName, lastName, email, password, middleName, role, address, gender, birthdate, phone } = req.body;
+    const { firstName, lastName, middleName, email, password, role, address, gender, birthdate, phone } = req.body;
 
     try {
         // Check if the user with the provided email already exists
@@ -33,12 +23,19 @@ export const createUser = async (req, res, next) => {
         // Hash the password using bcrypt
         const hashedPassword = await bcryptjs.hashSync(password, 12);
 
+        const capitalizeAndTrim = (value) => {
+            if (typeof value === 'string') {
+                return value.trim().charAt(0).toUpperCase() + value.trim().slice(1);
+            }
+            return value;
+        };
+
         const newUser = new User({
-            firstName,
-            lastName,
+            firstName: capitalizeAndTrim(firstName),
+            lastName: capitalizeAndTrim(lastName),
             email,
             password: hashedPassword,
-            middleName,
+            middleName: capitalizeAndTrim(middleName),
             role,
             address,
             gender,
@@ -52,6 +49,7 @@ export const createUser = async (req, res, next) => {
         next(error);
     }
 };
+
 
 
 // Update User
@@ -77,6 +75,7 @@ export const updateUser = async (req, res, next) => {
                     firstName: capitalizeAndTrim(req.body.firstName),
                     lastName: capitalizeAndTrim(req.body.lastName),
                     middleName: capitalizeAndTrim(req.body.middleName),
+                    role: req.body.role,
                     birthdate: req.body.birthdate,
                     address: req.body.address,
                     phone: req.body.phone,
@@ -94,19 +93,57 @@ export const updateUser = async (req, res, next) => {
     }
 };
 
+
 // Delete User
 
-// export const deleteUser = async (req, res, next) => {
-//     if (req.user.id !== req.params.id) {
-//         return next(errorHandler(401, 'You can delete only your account!'));
-//     }
-//     try {
-//         await User.findByIdAndDelete(req.params.id);
-//         res.status(200).json({ message: 'User has been deleted...' });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
+export const deleteUser = async (req, res, next) => {
+    console.log("User Role:", req.user.role);
+    console.log("User ID:", req.user.id);
+    console.log("Target User ID:", req.params.id);
+
+    try {
+        // Check if the user is an admin or is deleting their own account
+        if (req.user.role === 'admin' || req.user.id === req.params.id) {
+            // Only admins or the account owner can delete the account
+
+            // Perform the deletion
+            await User.findByIdAndDelete(req.params.id);
+            res.status(200).json({ message: 'User has been deleted.' });
+        } else {
+            // If the user is not authorized to delete the account
+            return next(errorHandler(403, 'You are not authorized to delete this account.'));
+        }
+    } catch (error) {
+        next(error);
+    }
+}
+
+// Get All Users
+export const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Get User by ID
+export const getUserById = async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+};
 
 // Get Appointments by User
 export const getAppointmentsByUser = async (req, res, next) => {

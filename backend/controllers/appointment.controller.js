@@ -1,4 +1,5 @@
 import Appointment from "../models/appointment.model.js";
+import User from "../models/user.model.js";
 
 export const test = (req, res) => {
   res.json({
@@ -72,17 +73,34 @@ export const getAppointmentsByTechnician = async (req, res, next) => {
 // Create Appointment
 export const createAppointment = async (req, res, next) => {
   try {
-    const { schedule, technicianName, firstName, lastName, phone, patient, services } = req.body;
+    const { schedule, technicianName, firstName, lastName, phone, email, patient, services } = req.body;
 
     const createdByUserId = req.user.id;
 
+    // Check if the technician is available
+    const technician = await User.findById(technicianName);
+    if (!technician) {
+      return res.status(404).json({ message: 'Technician not found.' });
+    }
+
+    if (!technician.availability) {
+      return res.status(400).json({ message: 'Technician is not available for appointments.' });
+    }
+
+    // Check if the schedule is available for scheduling
+    const existingAppointment = await Appointment.findOne({ technicianName, schedule });
+    if (existingAppointment) {
+      return res.status(400).json({ message: 'Appointment slot is already booked.' });
+    }
+
     // Create a new appointment instance, including the patient object
     const newAppointment = await Appointment.create({
-      schedule,
       technicianName,
+      schedule,
       firstName,
       lastName,
       phone,
+      email,
       patient,
       services,
       createdBy: createdByUserId,

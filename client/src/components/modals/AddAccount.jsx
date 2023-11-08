@@ -5,7 +5,6 @@ export default function AddAccount() {
         firstName: '',
         lastName: '',
         middleName: '',
-        // role: 'customer',
         address: '',
         gender: '',
         birthdate: '',

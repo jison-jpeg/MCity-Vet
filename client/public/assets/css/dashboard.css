@@ -1317,6 +1317,49 @@ h6 {
   }
 }
 
+
+
+
+/*--------------------------------------------------------------
+# Error 401
+--------------------------------------------------------------*/
+.error-401 {
+  padding: 30px;
+  background-color: #283779;
+}
+
+.error-401 h1 {
+  font-size: 180px;
+  font-weight: 700;
+  color: #ff594dff;
+  margin-bottom: 0;
+  line-height: 150px;
+}
+
+.error-401 h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+.error-401 .btn {
+  background: #51678f;
+  color: #fff;
+  padding: 8px 30px;
+}
+
+.error-401 .btn:hover {
+  background: #3e4f6f;
+}
+
+@media (min-width: 992px) {
+  .error-401 img {
+    max-width: 50%;
+  }
+}
+
 /*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/

@@ -5,9 +5,7 @@ import DashboardSidebar from '../components/DashboardSidebar';
 import AddAppointment from '../components/modals/AddAppointment';
 import AppointmentTable from '../components/AppointmentTable';
 
-
-export default function Dashboard() {
-
+export default function Appointments() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -36,10 +34,8 @@ export default function Dashboard() {
   }, []);
 
   const { currentUser } = useSelector((state) => state.user);
-  const isCustomer = currentUser.role === 'customer';
+  const currentUserRole = currentUser.role; // Get the user's role
   const [appointments, setAppointments] = useState([]);
-  const [hasPendingAppointment, setHasPendingAppointment] = useState(false);
-
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -49,16 +45,21 @@ export default function Dashboard() {
       }
 
       try {
-        const response = await fetch(`/backend/user/${currentUser._id}/appointments`);
+        let response;
+        if (currentUserRole === 'customer') {
+          // Fetch appointments for customers
+          response = await fetch(`/backend/user/${currentUser._id}/appointments`);
+        } else if (currentUserRole === 'technician') {
+          // Fetch appointments for technicians
+          response = await fetch(`/backend/appointment/technician/${currentUser._id}`);
+        } else if (currentUserRole === 'admin') {
+          // Fetch all appointments for admin
+          response = await fetch('/backend/appointment/all');
+        }
+
         if (response.ok) {
           const data = await response.json();
-
-          // Check for pending appointments
-          const hasPending = data.some(appointment => appointment.status === 'Pending');
-          setHasPendingAppointment(hasPending);
-
           setAppointments(data);
-          // console.log(data)
         } else {
           console.error('Failed to fetch appointments. No Appointments found.');
         }
@@ -68,18 +69,18 @@ export default function Dashboard() {
     };
 
     fetchAppointments();
-  }, [currentUser]);
+  }, [currentUser, currentUserRole]);
+
 
   return (
     <>
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
 
-
       {/* ======= Main ======= */}
       <main id="main" className="main">
         <div className="pagetitle">
-        {isCustomer ? <h1>My Appointments</h1> : <h1>Appointments</h1>}
+          {currentUserRole === 'customer' ? <h1>My Appointments</h1> : <h1>Appointments</h1>}
           <nav>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
@@ -90,48 +91,36 @@ export default function Dashboard() {
           </nav>
         </div>
 
-
-
         <div className="btn-header">
-  {isCustomer ? (
-    hasPendingAppointment ? (
-      <p>You have a pending appointment. Cannot make a new appointment at this time.</p>
-    ) : (
-      <button
-        type="button"
-        className="btn btn-primary-dashboard btn-lg rounded-pill"
-        data-bs-toggle="modal"
-        data-bs-target="#addModal"
-      >
-        Book Appointment
-      </button>
-    )
-  ) : (
-    <button
-      type="button"
-      className="btn btn-primary-dashboard btn-lg rounded-pill"
-      data-bs-toggle="modal"
-      data-bs-target="#addModal"
-    >
-      Create Appointment
-    </button>
-  )}
-</div>
+          {currentUserRole === 'customer' ? (
+            <button
+              type="button"
+              className="btn btn-primary-dashboard btn-lg rounded-pill"
+              data-bs-toggle="modal"
+              data-bs-target="#addModal"
+            >
+              Book Appointment
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-primary-dashboard btn-lg rounded-pill"
+              data-bs-toggle="modal"
+              data-bs-target="#addModal"
+            >
+              Create Appointment
+            </button>
+          )}
 
-
+        </div>
 
         <AddAppointment />
 
         <section className="section dashboard">
           <div className="row">
-
-
-            <AppointmentTable appointments={appointments} />
-
+            <AppointmentTable appointments={appointments} currentUserRole={currentUserRole} />
           </div>
         </section>
-
-
       </main>
       {/* End #main */}
 
@@ -140,23 +129,18 @@ export default function Dashboard() {
         <div className="copyright">
           © Copyright{" "}
           <strong>
-            <span>NiceAdmin</span>
+            <span>Troubleshooters</span>
           </strong>
-          . All Rights Reserved
         </div>
         <div className="credits">
 
-          Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+          All Rights Reserved
         </div>
       </footer>
       {/* End Footer */}
-      <a
-        href="#"
-        className="back-to-top d-flex align-items-center justify-content-center"
-      >
+      <a href="#" className="back-to-top d-flex align-items-center justify-content-center">
         <i className="bi bi-arrow-up-short" />
       </a>
-
     </>
   );
 }

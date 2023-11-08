@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
         enum: ['admin', 'technician', 'secretary', 'customer'],
         default: 'customer'
     },
+    availability: {
+        type: Boolean,
+        default: true, // By default, a technician is available
+      },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

@@ -141,7 +141,7 @@ export default function Profile() {
                     alt="Profile"
                     className="rounded-circle"
                   />
-                  <h2>  {currentUser?.firstName} {currentUser?.lastName} {currentUser?.middleName ? ` ${currentUser.middleName[0]}.` : ''}</h2>
+                  <h2>  {currentUser?.firstName} {currentUser?.middleName ? ` ${currentUser.middleName[0]}.` : ''} {currentUser?.lastName}</h2>
                   <h3>{currentUser?.role}</h3>
 
 
@@ -296,18 +296,18 @@ export default function Profile() {
                           </div>
                         }
 
-  
+
 
 
 
                         <div className="row mb-3">
                           <label
                             htmlFor="profileImage"
-                            className="col-md-4 col-lg-3 col-form-label"
+                            className="col-md-4 col-lg-3 "
                           >
                             Profile Image
                           </label>
-                          <div className="col-md-8 col-lg-9">
+                          <div className="col-md-8 col-lg-9 d-flex flex-column align-items-center">
                             <img src={formData.profilePicture || currentUser.profilePicture} alt="Profile"
                               onClick={() => fileRef.current.click()}
                             />
@@ -449,14 +449,19 @@ export default function Profile() {
                         </div>
 
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                          <button className="btn btn-primary" type="submit">
-                            Save Changes
+                          <button className="btn btn-primary" type="submit" disabled={loading}>
+                            {loading ? (
+                              <>
+                                <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" />
+                                Saving Changes
+                              </>
+                            ) : (
+                              'Save Changes'
+                            )}
                           </button>
                         </div>
 
-
-
-
+       
                       </form>
                       {/* End Profile Edit Form */}
                     </div>
