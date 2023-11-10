@@ -85,12 +85,15 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                           >
                             View
                           </a>
-                          <span> | </span>
-                          {isCustomer ? (
-                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Reschedule</button>
-                          ) : (
-                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                          )}                        </td>
+                          {isCustomer ? null : (
+                            <>
+                              <span> | </span>
+                              <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
+                                {isCustomer ? null : 'Reschedule'}
+                              </button>
+                            </>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

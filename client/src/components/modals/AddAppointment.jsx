@@ -232,7 +232,7 @@ export default function AddAppointment() {
                             </div>
 
                             <div className="col-md-3">
-                                <label htmlFor="inputZip" className="form-label">
+                                <label htmlFor="phoneNumber" className="form-label">
                                     Phone Number
                                 </label>
                                 <input

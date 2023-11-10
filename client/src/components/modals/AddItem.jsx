@@ -90,7 +90,7 @@ export default function AddItem() {
                                     <input type="number" className="form-control" id="numberOfHeads" />
                                 </div>
                                 <div className="col-md-6">
-                                    <label htmlFor="inputZip" className="form-label">
+                                    <label htmlFor="phoneNumber" className="form-label">
                                         Phone Number
                                     </label>
                                     <input type="phoneNumber" className="form-control" id="phoneNumber" placeholder='0912 345 6789'/>

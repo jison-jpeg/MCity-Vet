@@ -33,7 +33,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
 
           {/* Appointment Page Nav */}
           <li className="nav-item">
-            <a className={`nav-link ${location.pathname === '/appointments' ? '' : 'collapsed'}`} href="/appointments">
+          <a className={`nav-link ${location.pathname.startsWith('/appointments') ? '' : 'collapsed'}`} href="/appointments">
 
               <i className="bi bi-person" />
               <span>{isCustomer ? 'My Appointment' : 'Appointments'}</span>            </a>

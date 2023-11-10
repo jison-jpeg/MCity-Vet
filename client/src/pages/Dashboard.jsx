@@ -4,8 +4,7 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import TechStat from '../components/TechStat';
 import AccountStat from '../components/AccountStat';
-// import MyAppointment from '../components/AppointmentDetails';
-
+import RecentAppointment from '../components/RecentAppointment';
 
 export default function Dashboard() {
 
@@ -103,7 +102,7 @@ export default function Dashboard() {
                 <p className="card-text">
                   We provide the best service for your animal. Our team is always ready to help you.
                 </p>
-                <a href="#" className='btn btn-primary-dashboard btn-sm rounded-pill'>Book an Appointment</a>
+                <a href="/book-appointment" className='btn btn-primary-dashboard btn-sm rounded-pill'>Book an Appointment</a>
               </div>
             </div>
           </div>
@@ -119,7 +118,7 @@ export default function Dashboard() {
               </>
             )}
 
-            {/* <MyAppointment /> */}
+            <RecentAppointment lastAppointment={lastAppointment}/>
 
           </div>
         </section>
