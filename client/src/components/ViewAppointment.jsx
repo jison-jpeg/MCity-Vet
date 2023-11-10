@@ -59,13 +59,6 @@ export default function ViewAppointment() {
                     </nav>
                 </div>
 
-
-                {/* End Page Title */}
-
-                {/* <div className="pagetitle">
-          <h1>Account Statistics</h1>
-        </div> */}
-
                 <section className="section dashboard">
                     <div className="row">
 
@@ -85,6 +78,8 @@ export default function ViewAppointment() {
                                 </div>
                             </div>
                         </div>
+
+                        <MyAppointment />
 
                     </div>
                 </section>

@@ -4,6 +4,7 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import TechStat from '../components/TechStat';
 import AccountStat from '../components/AccountStat';
+// import MyAppointment from '../components/AppointmentDetails';
 
 
 export default function Dashboard() {
@@ -23,6 +24,7 @@ export default function Dashboard() {
     document.body.classList.remove('toggle-sidebar');
   }
 
+
   useEffect(() => {
     const mainStylesheet = document.getElementById('main-stylesheet');
     const mainBootstrap = document.getElementById('main-bootstrap');
@@ -40,6 +42,31 @@ export default function Dashboard() {
   const { currentUser } = useSelector((state) => state.user);
   const isAdmin = currentUser && currentUser.role === 'admin';
   const isTechnicianOrSecretary = currentUser && (currentUser.role === 'technician' || currentUser.role === 'secretary');
+  const [lastAppointment, setLastAppointment] = useState(null);
+
+  useEffect(() => {
+    const fetchLastAppointment = async () => {
+      if (currentUser && currentUser._id) {
+        try {
+          const response = await fetch(`/backend/user/${currentUser._id}/appointments`);
+          if (response.ok) {
+            const appointments = await response.json();
+            if (appointments.length > 0) {
+              const last = appointments[appointments.length - 1];
+              setLastAppointment(last);
+            }
+          } else {
+            console.error('Failed to fetch appointments:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching appointments:', error);
+        }
+      }
+    };
+  
+    fetchLastAppointment();
+  }, [currentUser]);
+  
 
   return (
     <>
@@ -82,11 +109,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* End Page Title */}
-
-        {/* <div className="pagetitle">
-          <h1>Account Statistics</h1>
-        </div> */}
 
         <section className="section dashboard">
           <div className="row">
@@ -97,112 +119,13 @@ export default function Dashboard() {
               </>
             )}
 
-
-
-            <div className="col-lg-12">
-              <div className="card">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <h5 className="card-title">Latest Appointment</h5>
-                    <a href="#" className="btn btn-primary-dashboard btn-sm rounded-pill">View All</a>
-                  </div>
-
-                  <div className="mb-3 row">
-                    <div className="col-sm-4 col-md-4 mt-2">
-                      <p class="card-text fw-bold">Appointment ID</p>
-                    </div>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <p class="card-text text-muted">1234567890</p>
-                    </div>
-                    <div className="col-sm-4 col-md-4 mt-2">
-                      <p class="card-text fw-bold">Status</p>
-                    </div>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <span className="badge rounded-pill bg-danger">Pending</span>
-                    </div>
-                    <div className="col-sm-4 col-md-4 mt-2">
-                      <p class="card-text fw-bold">Schedule</p>
-                    </div>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <p class="card-text text-muted">11/02/2003</p>
-                    </div>
-                    <div className="col-sm-4 col-md-4 mt-2">
-                      <p class="card-text fw-bold">Address</p>
-                    </div>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <p class="card-text text-muted">P9, Sumpong, Malaybalay City, Bukidnon</p>
-                    </div>
-
-
-
-                  </div>
-
-
-
-                  <div className="d-flex justify-content-between align-items-center">
-                    <h5 className="card-title">Information</h5>
-                  </div>
-
-                  <div className="mb-5 row">
-                    <label
-                      htmlFor="example-text-input"
-                      className="col-sm-4 col-md-4 mt-2"
-                    >
-                      Customer's Name
-                    </label>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <span className='text-muted'>John Doe</span>
-                    </div>
-
-                    <label
-                      htmlFor="example-text-input"
-                      className="col-sm-4 col-md-4 mt-2"
-                    >
-                      Service
-                    </label>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <span className='text-muted'>AI, Grooming</span>
-                    </div>
-
-                    <label
-                      htmlFor="example-text-input"
-                      className="col-sm-4 col-md-4 mt-2"
-                    >
-                      Animal
-                    </label>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <span className='text-muted'>(2) Horse, (1) Pig</span>
-                    </div>
-
-                  </div>
-
-                  <div className="">
-                    <button type="submit" className="btn btn-primary-dashboard btn-s rounded-pill ">
-                      Submit
-                    </button>
-                  </div>
-
-
-
-
-                </div>
-              </div>
-            </div>
-
-
-
-
-
-
-
-
+            {/* <MyAppointment /> */}
 
           </div>
         </section>
 
 
       </main>
-      {/* End #main */}
 
       {/* ======= Footer ======= */}
       <footer id="footer" className="footer">

@@ -27,7 +27,7 @@ export default function UnauthorizedPage() {
                 Back to home
               </a>
               <img
-                src="assets/img/unauthorized.svg"
+                src="/assets/img/unauthorized.svg"
                 className="img-fluid py-5"
                 alt="Page Not Found"
               />

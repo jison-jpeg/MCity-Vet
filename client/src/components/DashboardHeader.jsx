@@ -33,7 +33,7 @@ export default function DashboardHeader({ toggleSidebar }) {
       <header id="header" className="header fixed-top d-flex align-items-center">
         <div className="d-flex align-items-center justify-content-between">
           <a href="/dashboard" className="logo d-flex align-items-center">
-            <img src="assets/images/logo-mc.png" alt="" className="d-none d-xl-block" />
+            <img src="/assets/images/logo-mc.png" alt="" className="d-none d-xl-block" />
             <span className="d-none d-xl-block">MCity Vet</span>
           </a>
           <i className="bi bi-list toggle-sidebar-btn" onClick={toggleSidebar} />

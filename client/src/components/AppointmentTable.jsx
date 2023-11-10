@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-export default function AppointmentTable({ appointments, currentUserRole  }) {
+export default function AppointmentTable({ appointments, currentUserRole }) {
 
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
@@ -36,7 +36,7 @@ export default function AppointmentTable({ appointments, currentUserRole  }) {
                 >
                   Create Appointment
                 </button>}
-                
+
 
               </div>
             ) : (
@@ -79,7 +79,12 @@ export default function AppointmentTable({ appointments, currentUserRole  }) {
                           </span>
                         </td>
                         <td>
-                          <a href='/appointments/view' className="btn btn-primary-dashboard-action btn-sm">View</a>
+                          <a
+                            href={`/appointments/${appointment._id}`}
+                            className="btn btn-primary-dashboard-action btn-sm"
+                          >
+                            View
+                          </a>
                           <span> | </span>
                           {isCustomer ? (
                             <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Reschedule</button>

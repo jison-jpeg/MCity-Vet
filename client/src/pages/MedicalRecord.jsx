@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import AddAppointment from '../components/modals/AddItem';
+import { useSelector } from 'react-redux';
 
 
 export default function MedicalRecord() {
@@ -35,6 +36,9 @@ export default function MedicalRecord() {
         dashboardBootstrap.removeAttribute('disabled');
     }, []);
 
+    const { currentUser } = useSelector((state) => state.user);
+
+
     return (
         <>
             <DashboardHeader toggleSidebar={toggleSidebar} />
@@ -57,14 +61,18 @@ export default function MedicalRecord() {
 
 
 
-                <div className="btn-header">
-                    <button
-                        type="button"
-                        className="btn btn-primary-dashboard btn-lg rounded-pill"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addModal">Create Record
-                    </button>
-                </div>
+                {currentUser && (currentUser.role === 'customer' || currentUser.role === 'secretary') ? null : (
+                    <div className="btn-header">
+                        <button
+                            type="button"
+                            className="btn btn-primary-dashboard btn-lg rounded-pill"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addModal"
+                        >
+                            Create Record
+                        </button>
+                    </div>
+                )}
 
                 <AddAppointment />
 

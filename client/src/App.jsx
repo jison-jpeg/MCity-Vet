@@ -14,6 +14,7 @@ import BookAppointment from './pages/BookAppointment';
 import NotFound from './pages/NotFound';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import PrivateRoute from './components/PrivateRoute';
+import AppointmentDetails from './pages/AppointmentDetails';
 
 export default function App() {
   return (
@@ -37,6 +38,10 @@ export default function App() {
           <Route
             path="/appointments"
             element={<Appointments />}
+          />
+          <Route
+            path="appointments/:id"
+            element={<AppointmentDetails />}
           />
           <Route
             path="/view-appointment"

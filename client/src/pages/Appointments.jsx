@@ -55,6 +55,12 @@ export default function Appointments() {
         } else if (currentUserRole === 'admin') {
           // Fetch all appointments for admin
           response = await fetch('/backend/appointment/all');
+        } else if (currentUserRole === 'secretary') {
+          // Fetch appointments for secretary
+          response = await fetch('/backend/appointment/all');
+        } else {
+          console.error('Invalid user role:', currentUserRole);
+          return;
         }
 
         if (response.ok) {
@@ -91,29 +97,19 @@ export default function Appointments() {
           </nav>
         </div>
 
-        <div className="btn-header">
-          {currentUserRole === 'customer' ? (
+        {currentUser.role !== 'technician' && (
+          <div className="btn-header">
             <button
               type="button"
               className="btn btn-primary-dashboard btn-lg rounded-pill"
               data-bs-toggle="modal"
               data-bs-target="#addModal"
             >
-              Book Appointment
+              {currentUser.role === 'customer' ? 'Book Appointment' : 'Create Appointment'}
             </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-primary-dashboard btn-lg rounded-pill"
-              data-bs-toggle="modal"
-              data-bs-target="#addModal"
-            >
-              Create Appointment
-            </button>
-          )}
-
-        </div>
-
+          </div>
+        )}
+        
         <AddAppointment />
 
         <section className="section dashboard">
