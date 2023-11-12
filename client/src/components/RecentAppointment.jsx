@@ -3,15 +3,14 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 export default function RecentAppointment({ lastAppointment }) {
-  const { currentUser } = useSelector((state) => state.user);
 
   const appointmentId = lastAppointment?._id || 'N/A';
   const status = lastAppointment?.status || 'N/A';
   const schedule = lastAppointment?.schedule || 'N/A';
-  const patientAddress = lastAppointment?.patient?.address || 'N/A';
+  const patientAddress = lastAppointment?.address || 'N/A';
   const customerName = `${lastAppointment?.firstName || 'N/A'} ${lastAppointment?.lastName || 'N/A'}`;
-  const service = lastAppointment?.patient?.services?.join(', ') || 'N/A';
-  const animal = lastAppointment?.patient?.typeOfAnimal || 'N/A';
+  const service = lastAppointment?.services?.join(', ') || 'N/A';
+  const patients = lastAppointment?.patient || [];  // const animal = patient.typeOfAnimal || 'N/A';
 
   return (
     <div className="col-lg-12">
@@ -83,12 +82,17 @@ export default function RecentAppointment({ lastAppointment }) {
               Animal
             </label>
             <div className="col-sm-8 col-md-8 mt-2">
-              <span className='text-muted'>{animal}</span>
+              {patients.map((patient, index) => (
+                <span key={index} className='text-muted'>
+                  {`(${patient.numberOfHeads}) ${patient.typeOfAnimal}`}
+                  {index !== patients.length - 1 && ', '}
+                </span>
+              ))}
             </div>
           </div>
 
           <div className="d-flex flex-row-reverse">
-          <Link to={`/appointments/${lastAppointment?._id}`} className="btn btn-primary-dashboard btn-sm rounded-pill">
+            <Link to={`/appointments/${lastAppointment?._id}`} className="btn btn-primary-dashboard btn-sm rounded-pill">
               View Appointment
             </Link>
           </div>

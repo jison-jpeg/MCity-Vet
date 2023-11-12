@@ -20,7 +20,16 @@ const appointmentSchema = new mongoose.Schema({
     email: {
         type: String,
     },
-    patient: {
+    services: [{
+        type: String,
+    }],
+    address: {
+        type: String,
+    },
+    landmark: {
+        type: String,
+    },
+    patient: [{
         _id: mongoose.Schema.Types.ObjectId,
         typeOfAnimal: {
             type: String,
@@ -31,16 +40,7 @@ const appointmentSchema = new mongoose.Schema({
         age: {
             type: Number,
         },
-        services: [{
-            type: String,
-        }],
-        address: {
-            type: String,
-        },
-        landmark: {
-            type: String,
-        },
-    },
+    }],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

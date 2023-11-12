@@ -3,6 +3,7 @@ import express from 'express';
 import {
     test,
     getAllAppointments,
+    getAppointmentStats,
     createAppointment,
     deleteAppointment,
     getAppointmentById,
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.get('/', test);
 router.get('/all', verifyToken, getAllAppointments);
+router.get('/stats', verifyToken, getAppointmentStats);
 router.get('/:id', verifyToken, getAppointmentById);
 router.get('/technician/:id', verifyToken, getAppointmentsByTechnician);
 router.get('/:id/appointments', verifyToken, getAppointmentsByUser);

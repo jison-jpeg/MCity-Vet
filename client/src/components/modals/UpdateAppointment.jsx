@@ -1,37 +1,86 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 
-export default function AddAppointment() {
-    const { currentUser } = useSelector((state) => state.user);
-    const [technicians, setTechnicians] = useState([]);
-    const [animalInfo, setAnimalInfo] = useState([{ typeOfAnimal: '', age: '', numberOfHeads: '' }]);
-    const [services, setServices] = useState([]);
+export default function UpdateAppointment({ appointment }) {
     const [formData, setFormData] = useState({
-        date: '',
-        technician: '',
         firstName: '',
         lastName: '',
+        technician: '',
+        date: '',
         address: '',
         landmark: '',
         email: '',
-        typeOfAnimal: '',
-        numberOfHeads: '',
+        phone: '',
+        patients: [
+            {
+                typeOfAnimal: '',
+                age: '',
+                numberOfHeads: '',
+            },
+        ],
         services: [],
-        age: '',
-        phoneNumber: '',
     });
 
-    const handleAnimalInfoChange = (index, propertyName, value) => {
-        const newAnimalInfo = [...animalInfo];
-        newAnimalInfo[index] = { ...newAnimalInfo[index], [propertyName]: value };
-        setAnimalInfo(newAnimalInfo);
+    useEffect(() => {
+        // Update form data when appointment changes
+        if (appointment) {
+            console.log("Original Appointment Data:", appointment);
+            setFormData({
+                firstName: appointment.firstName,
+                lastName: appointment.lastName,
+                technician: appointment.technicianName,
+                date: appointment.schedule,
+                address: appointment.address,
+                landmark: appointment.landmark,
+                email: appointment.email,
+                phone: appointment.phone,
+                services: appointment.services,
+                patients: appointment.patient.map((patient) => ({
+                    typeOfAnimal: patient.typeOfAnimal,
+                    age: patient.age,
+                    numberOfHeads: patient.numberOfHeads,
+                })),
+            });
+        }
+    }, [appointment]);
 
-        console.log('Updated animalInfo:', newAnimalInfo);
+
+    const [technicians, setTechnicians] = useState([]);
+    const [services, setServices] = useState([]);
+
+    const handlePatientChange = (index, field, value) => {
+        setFormData((prevFormData) => {
+            const updatedPatients = [...prevFormData.patients];
+            updatedPatients[index] = { ...updatedPatients[index], [field]: value };
+            return {
+                ...prevFormData,
+                patients: updatedPatients,
+            };
+        });
     };
 
 
-    const handleAddMore = () => {
-        setAnimalInfo([...animalInfo, { typeOfAnimal: '', age: '', numberOfHeads: '' }]);
+    useEffect(() => {
+        if (appointment) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                services: appointment.services,
+            }));
+        }
+    }, [appointment]);
+
+    const handleServiceChange = (event) => {
+        const { name, checked } = event.target;
+        if (checked) {
+            setFormData({
+                ...formData,
+                services: [...formData.services, name],
+            });
+        } else {
+            setFormData({
+                ...formData,
+                services: formData.services.filter((service) => service !== name),
+            });
+        }
     };
 
     useEffect(() => {
@@ -53,83 +102,45 @@ export default function AddAppointment() {
     }, []);
 
 
-    const handleInputChange = (event) => {
-        const { id, value } = event.target;
-        setFormData({
-            ...formData,
-            [id]: value,
-        });
+
+
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        const userRole = currentUser.role;
-        let firstName = userRole === 'customer' ? currentUser.firstName : formData.firstName;
-        let lastName = userRole === 'customer' ? currentUser.lastName : formData.lastName;
-        let email = userRole === 'customer' ? currentUser.email : formData.email;
-
-        const appointmentData = {
-            schedule: formData.date,
-            technicianName: formData.technician,
-            firstName: firstName,
-            lastName: lastName,
-            phone: formData.phoneNumber,
-            email: email,
-            services: formData.services,
-            address: formData.address,
-            landmark: formData.landmark,
-            patient: animalInfo.map(animal => ({
-                typeOfAnimal: animal.typeOfAnimal,
-                numberOfHeads: animal.numberOfHeads,
-                age: animal.age,
-            })),
-        };
-        console.log('Submitted appointmentData:', appointmentData);
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log('Form Data to be Submitted:', formData);
 
         try {
-            const response = await fetch('/backend/appointment/create', {
-                method: 'POST',
+            const response = await fetch(`/backend/appointment/update/${appointment._id}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(appointmentData),
+                body: JSON.stringify(formData),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Appointment created:', data);
-                // You can reset the form or perform other actions after successful creation.
-            } else {
-                console.error('Error creating appointment:', response.statusText);
+            if (!response.ok) {
+                throw new Error(`Error updating appointment: ${response.statusText}`);
             }
+
+            const updatedAppointment = await response.json();
+            console.log('Updated Appointment:', updatedAppointment);
         } catch (error) {
-            console.error('Error creating appointment:', error);
+            console.error(error);
         }
     };
 
-    const handleServiceChange = (event) => {
-        const { name, checked } = event.target;
-        if (checked) {
-            setFormData({
-                ...formData,
-                services: [...formData.services, name],
-            });
-        } else {
-            setFormData({
-                ...formData,
-                services: formData.services.filter((service) => service !== name),
-            });
-        }
-    };
 
     return (
-        <div className="modal fade" id="addModal" tabIndex={-1}>
+        <div className="modal fade" id="updateModal" tabIndex={-1}>
             <div className="modal-dialog modal-xl modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title">Book Appointment</h5>
+                        <h5 className="modal-title">Update Appointment</h5>
+
                         <button
                             type="button"
                             className="btn-close"
@@ -138,6 +149,7 @@ export default function AddAppointment() {
                         />
                     </div>
                     <div className="modal-body">
+
                         <form className="row g-3" onSubmit={handleSubmit}>
 
                             <div className="col-md-6">
@@ -148,9 +160,11 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="firstName"
-                                    value={currentUser.role === 'customer' ? currentUser.firstName : formData.firstName}
+                                    name='firstName'
+                                    value={formData.firstName}
                                     onChange={handleInputChange}
-                                    disabled={currentUser.role === 'customer'}
+
+
                                 />
                             </div>
 
@@ -162,24 +176,29 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="lastName"
-                                    value={currentUser.role === 'customer' ? currentUser.lastName : formData.lastName}
+                                    name='lastName'
+                                    value={formData.lastName}
                                     onChange={handleInputChange}
-                                    disabled={currentUser.role === 'customer'}
+
+
                                 />
                             </div>
 
                             <div className="col-md-6">
                                 <label htmlFor="technician" className="form-label">
-                                    Technician Name and Schedule
+                                    Technician Name
                                 </label>
                                 <select
                                     id="technician"
                                     className="form-select"
                                     required
+                                    name='technician'
                                     value={formData.technician}
                                     onChange={handleInputChange}
                                 >
-                                    <option disabled value={''}>Choose...</option>
+                                    <option disabled value={''}>
+                                        Choose...
+                                    </option>
                                     {technicians.map((technician) => (
                                         <option key={technician._id} value={technician._id}>
                                             {technician.firstName} {technician.lastName}
@@ -196,9 +215,11 @@ export default function AddAppointment() {
                                     type="date"
                                     className="form-control"
                                     id="date"
-                                    required
+                                    name='date'
                                     value={formData.date}
                                     onChange={handleInputChange}
+                                    required
+
                                 />
                             </div>
 
@@ -210,9 +231,11 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="address"
-                                    placeholder="Ex. 1234 Main St"
+                                    name='address'
                                     value={formData.address}
                                     onChange={handleInputChange}
+                                    placeholder="1234 Main St"
+
                                 />
                             </div>
 
@@ -224,9 +247,11 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="landmark"
-                                    placeholder="Ex. Juan's Store"
+                                    name='landmark'
                                     value={formData.landmark}
                                     onChange={handleInputChange}
+                                    placeholder="Juan's Store"
+
                                 />
                             </div>
 
@@ -238,32 +263,34 @@ export default function AddAppointment() {
                                     type="email"
                                     className="form-control"
                                     id="email"
-                                    placeholder="example@gmail.com"
-                                    value={currentUser.role === 'customer' ? currentUser.email : formData.email}
+                                    name='email'
+                                    value={formData.email}
                                     onChange={handleInputChange}
-                                    disabled={currentUser.role === 'customer'}
+                                    placeholder="example@gmail.com"
+
 
                                 />
                             </div>
 
                             <div className="col-md-3">
-                                <label htmlFor="phoneNumber" className="form-label">
+                                <label htmlFor="phone" className="form-label">
                                     Phone Number
                                 </label>
                                 <input
                                     type="number"
                                     className="form-control"
-                                    id="phoneNumber"
-                                    placeholder='0912 345 6789'
-                                    value={formData.phoneNumber}
+                                    id="phone"
+                                    name='phone'
+                                    value={formData.phone}
                                     onChange={handleInputChange}
+                                    placeholder='0912 345 6789'
+
                                 />
                             </div>
 
-
-                            {animalInfo.map((animal, index) => (
+                            {formData.patients.map((patient, index) => (
                                 <div key={index} className='row g-3'>
-                                    <div className="col-3">
+                                    <div className="col-md-3">
                                         <label htmlFor={`typeOfAnimal_${index}`} className="form-label">
                                             Animal Type
                                         </label>
@@ -271,12 +298,13 @@ export default function AddAppointment() {
                                             type="text"
                                             className="form-control"
                                             id={`typeOfAnimal_${index}`}
-                                            value={animal.typeOfAnimal}
-                                            onChange={(event) => handleAnimalInfoChange(index, 'typeOfAnimal', event.target.value)}
+                                            name={`typeOfAnimal_${index}`}
+                                            value={patient.typeOfAnimal}
+                                            onChange={(e) => handlePatientChange(index, 'typeOfAnimal', e.target.value)}
                                         />
                                     </div>
 
-                                    <div className="col-3">
+                                    <div className="col-md-3">
                                         <label htmlFor={`age_${index}`} className="form-label">
                                             Age
                                         </label>
@@ -284,12 +312,13 @@ export default function AddAppointment() {
                                             type="number"
                                             className="form-control"
                                             id={`age_${index}`}
-                                            value={animal.age}
-                                            onChange={(event) => handleAnimalInfoChange(index, 'age', event.target.value)}
+                                            name={`age_${index}`}
+                                            value={patient.age}
+                                            onChange={(e) => handlePatientChange(index, 'age', e.target.value)}
                                         />
                                     </div>
 
-                                    <div className="col-3">
+                                    <div className="col-md-3">
                                         <label htmlFor={`numberOfHeads_${index}`} className="form-label">
                                             Number of Heads
                                         </label>
@@ -297,22 +326,30 @@ export default function AddAppointment() {
                                             type="number"
                                             className="form-control"
                                             id={`numberOfHeads_${index}`}
-                                            value={animal.numberOfHeads}
-                                            onChange={(event) => handleAnimalInfoChange(index, 'numberOfHeads', event.target.value)}
+                                            name={`numberOfHeads_${index}`}
+                                            value={patient.numberOfHeads}
+                                            onChange={(e) => handlePatientChange(index, 'numberOfHeads', e.target.value)}
                                         />
                                     </div>
 
-                                    {index === animalInfo.length - 1 && (
-                                        <div className="col-md-3 align-self-end">
-                                            <button type="button" className="btn btn-outline-primary" onClick={handleAddMore}>
+                                    <div className="col align-self-end">
+                                        {index === formData.patients.length - 1 && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-primary"
+                                                onClick={() =>
+                                                    setFormData((prevFormData) => ({
+                                                        ...prevFormData,
+                                                        patients: [...prevFormData.patients, { typeOfAnimal: '', age: '', numberOfHeads: '' }],
+                                                    }))
+                                                }
+                                            >
                                                 Add More
                                             </button>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             ))}
-
-
 
 
                             <div className="col-md-6">
@@ -325,7 +362,8 @@ export default function AddAppointment() {
                                             className="form-check-input"
                                             type="checkbox"
                                             id={`service_${service._id}`}
-                                            name={service.serviceType} // Use service.serviceType as the name attribute
+                                            name={service.serviceType}
+                                            checked={formData.services.includes(service.serviceType)} // Check based on the formData
                                             onChange={handleServiceChange}
                                         />
                                         <label className="form-check-label">{service.serviceType}</label>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
-import TechStat from '../components/TechStat';
+import AppointmentStat from '../components/AppointmentStat';
 import AccountStat from '../components/AccountStat';
 import RecentAppointment from '../components/RecentAppointment';
 
@@ -40,12 +40,14 @@ export default function Dashboard() {
 
   const { currentUser } = useSelector((state) => state.user);
   const isAdmin = currentUser && currentUser.role === 'admin';
-  const isTechnicianOrSecretary = currentUser && (currentUser.role === 'technician' || currentUser.role === 'secretary');
+  const isCustomer = currentUser && currentUser.role === 'customer';
+  const isTechnician = currentUser && currentUser.role === 'technician';
+  const isSecretary = currentUser && currentUser.role === 'secretary';
   const [lastAppointment, setLastAppointment] = useState(null);
 
   useEffect(() => {
     const fetchLastAppointment = async () => {
-      if (currentUser && currentUser._id) {
+      if (isCustomer && currentUser && currentUser._id) {
         try {
           const response = await fetch(`/backend/user/${currentUser._id}/appointments`);
           if (response.ok) {
@@ -62,10 +64,10 @@ export default function Dashboard() {
         }
       }
     };
-  
+
     fetchLastAppointment();
-  }, [currentUser]);
-  
+  }, [currentUser, isCustomer]);
+
 
   return (
     <>
@@ -91,34 +93,34 @@ export default function Dashboard() {
           <h1>Hello, <span>{currentUser?.firstName}</span> !</h1>
         </div>
 
-        <div className="card mb-3">
-          <div className="row g-0">
-            <div className="d-none d-sm-block col-4 col-sm-4 col-md-2 col-lg-2">
-              <img src="/assets/img/signin/background-1-fore.png" className="img-fluid rounded-start" alt="..." />
-            </div>
-            <div className="col-sm-8 col-md-10">
-              <div className="card-body">
-                <h5 className="card-title">We care about your animal.</h5>
-                <p className="card-text">
-                  We provide the best service for your animal. Our team is always ready to help you.
-                </p>
-                <a href="/book-appointment" className='btn btn-primary-dashboard btn-sm rounded-pill'>Book an Appointment</a>
+        {(isCustomer || isAdmin || isSecretary) && (
+          <>
+            <div className="card mb-3">
+              <div className="row g-0">
+                <div className="d-none d-sm-block col-4 col-sm-4 col-md-2 col-lg-2">
+                  <img src="/assets/img/signin/background-1-fore.png" className="img-fluid rounded-start" alt="..." />
+                </div>
+                <div className="col-sm-8 col-md-10">
+                  <div className="card-body">
+                    <h5 className="card-title">We care about your animal.</h5>
+                    <p className="card-text">
+                      We provide the best service for your animal. Our team is always ready to help you.
+                    </p>
+                    <a href="/book-appointment" className='btn btn-primary-dashboard btn-sm rounded-pill'>Book an Appointment</a>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
 
 
         <section className="section dashboard">
           <div className="row">
-            {isAdmin && (
-              <>
-                {isAdmin ? null : <TechStat />}
-                {isTechnicianOrSecretary ? null : <AccountStat />}
-              </>
-            )}
-
-            <RecentAppointment lastAppointment={lastAppointment}/>
+            
+            {isAdmin && <AccountStat />}
+            {(isTechnician || isSecretary) && <AppointmentStat />}
+            {isCustomer && <RecentAppointment lastAppointment={lastAppointment} />}
 
           </div>
         </section>

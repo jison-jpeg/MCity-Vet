@@ -5,15 +5,21 @@ export default function AccountStat() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch user role statistics from your backend API
-    fetch('/backend/technician/role-stats')
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchRoleStatistics = async () => {
+      try {
+        const response = await fetch('/backend/user/role-stats');
+        const data = await response.json();
         setRoleStatistics(data);
-        setIsLoading(false); // Data is now available, set isLoading to false
-      })
-      .catch((error) => console.error('Error fetching role statistics:', error));
-  }, []);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching role statistics:', error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchRoleStatistics();
+  }, []); // Empty dependency array to ensure the effect runs only once on mount
+
 
   // Helper function to capitalize the first letter
   const capitalizeFirstLetter = (str) => {

@@ -31,11 +31,8 @@ export default function OAuth() {
             const data = await res.json();
             console.log(data);
             dispatch(signinSuccess(data));
-            if (data.role === 'admin' || data.role === 'secretary' || data.role === 'technician') {
-                navigate('/dashboard');
-            } else {
-                navigate('/user-dashboard');
-            }
+            navigate('/dashboard');
+            
         } catch (error) {
             console.log('could not login with google', error);
         }

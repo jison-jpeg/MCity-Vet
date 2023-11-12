@@ -63,12 +63,45 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                         <td>{appointment.createdAt}</td>
                         <td>{appointment.schedule}</td>
                         <td>{`${appointment.firstName} ${appointment.lastName}`}</td>
-                        <td>{appointment.patient.typeOfAnimal}</td>
-                        <td>{appointment.patient.age}</td>
-                        <td>{appointment.patient.numberOfHeads}</td>
+                        <td>
+                          {Array.isArray(appointment.patient) ? (
+                            <ul>
+                              {appointment.patient.map((patient, index) => (
+                                <li key={index}>{patient.typeOfAnimal}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            appointment.patient.typeOfAnimal
+                          )}
+                        </td>
+
+                        <td>
+                          {Array.isArray(appointment.patient) ? (
+                            <ul>
+                              {appointment.patient.map((patient, index) => (
+                                <li key={index}>{patient.age}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            appointment.patient.age
+                          )}
+                        </td>
+
+                        <td>
+                          {Array.isArray(appointment.patient) ? (
+                            <ul>
+                              {appointment.patient.map((patient, index) => (
+                                <li key={index}>{patient.numberOfHeads}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            appointment.patient.numberOfHeads
+                          )}
+                        </td>
+
                         <td>
                           <ul>
-                            {appointment.patient.services.map((service, serviceIndex) => (
+                            {appointment.services.map((service, serviceIndex) => (
                               <li key={serviceIndex}>{service}</li>
                             ))}
                           </ul>

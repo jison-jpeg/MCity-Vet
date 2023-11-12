@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 export default function AddAppointment() {
     const { currentUser } = useSelector((state) => state.user);
     const [technicians, setTechnicians] = useState([]);
-    const [animalInfo, setAnimalInfo] = useState([{ typeOfAnimal: '', age: '', numberOfHeads: '' }]);
     const [services, setServices] = useState([]);
     const [formData, setFormData] = useState({
         date: '',
@@ -20,19 +19,6 @@ export default function AddAppointment() {
         age: '',
         phoneNumber: '',
     });
-
-    const handleAnimalInfoChange = (index, propertyName, value) => {
-        const newAnimalInfo = [...animalInfo];
-        newAnimalInfo[index] = { ...newAnimalInfo[index], [propertyName]: value };
-        setAnimalInfo(newAnimalInfo);
-
-        console.log('Updated animalInfo:', newAnimalInfo);
-    };
-
-
-    const handleAddMore = () => {
-        setAnimalInfo([...animalInfo, { typeOfAnimal: '', age: '', numberOfHeads: '' }]);
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,7 +38,7 @@ export default function AddAppointment() {
         fetchData();
     }, []);
 
-
+    
     const handleInputChange = (event) => {
         const { id, value } = event.target;
         setFormData({
@@ -76,17 +62,15 @@ export default function AddAppointment() {
             lastName: lastName,
             phone: formData.phoneNumber,
             email: email,
-            services: formData.services,
-            address: formData.address,
-            landmark: formData.landmark,
-            patient: animalInfo.map(animal => ({
-                typeOfAnimal: animal.typeOfAnimal,
-                numberOfHeads: animal.numberOfHeads,
-                age: animal.age,
-            })),
+            patient: {
+                typeOfAnimal: formData.typeOfAnimal,
+                numberOfHeads: formData.numberOfHeads,
+                age: formData.age,
+                services: formData.services,
+                address: formData.address,
+                landmark: formData.landmark,
+            },
         };
-        console.log('Submitted appointmentData:', appointmentData);
-
 
         try {
             const response = await fetch('/backend/appointment/create', {
@@ -150,7 +134,6 @@ export default function AddAppointment() {
                                     id="firstName"
                                     value={currentUser.role === 'customer' ? currentUser.firstName : formData.firstName}
                                     onChange={handleInputChange}
-                                    disabled={currentUser.role === 'customer'}
                                 />
                             </div>
 
@@ -164,7 +147,6 @@ export default function AddAppointment() {
                                     id="lastName"
                                     value={currentUser.role === 'customer' ? currentUser.lastName : formData.lastName}
                                     onChange={handleInputChange}
-                                    disabled={currentUser.role === 'customer'}
                                 />
                             </div>
 
@@ -210,7 +192,7 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="address"
-                                    placeholder="Ex. 1234 Main St"
+                                    placeholder="1234 Main St"
                                     value={formData.address}
                                     onChange={handleInputChange}
                                 />
@@ -224,7 +206,7 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="landmark"
-                                    placeholder="Ex. Juan's Store"
+                                    placeholder="Juan's Store"
                                     value={formData.landmark}
                                     onChange={handleInputChange}
                                 />
@@ -241,8 +223,7 @@ export default function AddAppointment() {
                                     placeholder="example@gmail.com"
                                     value={currentUser.role === 'customer' ? currentUser.email : formData.email}
                                     onChange={handleInputChange}
-                                    disabled={currentUser.role === 'customer'}
-
+                                    
                                 />
                             </div>
 
@@ -260,60 +241,51 @@ export default function AddAppointment() {
                                 />
                             </div>
 
+                            <div className="col-md-3">
+                                <label htmlFor="typeOfAnimal" className="form-label">
+                                    Animal Type
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="typeOfAnimal"
+                                    value={formData.typeOfAnimal}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
 
-                            {animalInfo.map((animal, index) => (
-                                <div key={index} className='row g-3'>
-                                    <div className="col-3">
-                                        <label htmlFor={`typeOfAnimal_${index}`} className="form-label">
-                                            Animal Type
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id={`typeOfAnimal_${index}`}
-                                            value={animal.typeOfAnimal}
-                                            onChange={(event) => handleAnimalInfoChange(index, 'typeOfAnimal', event.target.value)}
-                                        />
-                                    </div>
+                            <div className="col-md-3">
+                                <label htmlFor="typeOfAnimal" className="form-label">
+                                    Age
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    id="age"
+                                    value={formData.age}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
 
-                                    <div className="col-3">
-                                        <label htmlFor={`age_${index}`} className="form-label">
-                                            Age
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            id={`age_${index}`}
-                                            value={animal.age}
-                                            onChange={(event) => handleAnimalInfoChange(index, 'age', event.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className="col-3">
-                                        <label htmlFor={`numberOfHeads_${index}`} className="form-label">
-                                            Number of Heads
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            id={`numberOfHeads_${index}`}
-                                            value={animal.numberOfHeads}
-                                            onChange={(event) => handleAnimalInfoChange(index, 'numberOfHeads', event.target.value)}
-                                        />
-                                    </div>
-
-                                    {index === animalInfo.length - 1 && (
-                                        <div className="col-md-3 align-self-end">
-                                            <button type="button" className="btn btn-outline-primary" onClick={handleAddMore}>
-                                                Add More
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                            <div className="col-md-3">
+                                <label htmlFor="numberOfHeads" className="form-label">
+                                    Number of Heads
+                                </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    id="numberOfHeads"
+                                    value={formData.numberOfHeads}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
 
 
-
+                            <div className="col align-self-end">
+                                <button type="button" className="btn btn-outline-primary">
+                                    Add More
+                                </button>
+                            </div>
 
                             <div className="col-md-6">
                                 <label htmlFor="services" className="form-label">

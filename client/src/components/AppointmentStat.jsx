@@ -1,6 +1,44 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-export default function TechStat() {
+export default function AppointmentStat() {
+    const { currentUser } = useSelector((state) => state.user);
+
+    const isTechnician = currentUser.role === 'technician';
+    const [appointmentStats, setAppointmentStats] = useState({
+        totalAppointments: 0,
+        pendingAppointments: 0,
+        completeAppointments: 0,
+    });
+
+    useEffect(() => {
+        // Fetch appointment stats for the current user based on role
+        const fetchAppointmentStats = async () => {
+            try {
+                let response;
+
+                if (isTechnician) {
+                    // Fetch stats for the current technician
+                    response = await fetch(`/backend/technician/${currentUser._id}/stats`);
+                } else {
+                    // Fetch total stats for all technicians (admin or secretary)
+                    response = await fetch('/backend/appointment/stats');
+                }
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setAppointmentStats(data);
+                } else {
+                    console.error('Failed to fetch appointment stats:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching appointment stats:', error);
+            }
+        };
+
+        fetchAppointmentStats();
+    }, [isTechnician, currentUser._id]);
+
     return (
         <>
             <div className="techstat col-lg-4">
@@ -32,14 +70,14 @@ export default function TechStat() {
                     </div>
                     <div className="card-body">
                         <h5 className="card-title">
-                            Today's Appointments
+                            Total Appointments
                         </h5>
                         <div className="d-flex align-items-center">
                             <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                 <i className="bi bi-clipboard-plus" />
                             </div>
                             <div className="ps-3">
-                                <h6>145</h6>
+                                <h6>{appointmentStats.totalAppointments}</h6>
 
                             </div>
                         </div>
@@ -84,7 +122,7 @@ export default function TechStat() {
                                 <i className="bi bi-clock-history" />
                             </div>
                             <div className="ps-3">
-                                <h6>145</h6>
+                                <h6>{appointmentStats.pendingAppointments}</h6>
 
                             </div>
                         </div>
@@ -122,14 +160,14 @@ export default function TechStat() {
                     </div>
                     <div className="card-body">
                         <h5 className="card-title">
-                            Served Appointments
+                            Complete Appointments
                         </h5>
                         <div className="d-flex align-items-center">
                             <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                 <i className="bi bi-clipboard-check" />
                             </div>
                             <div className="ps-3">
-                                <h6>145</h6>
+                                <h6>{appointmentStats.completeAppointments}</h6>
 
                             </div>
                         </div>

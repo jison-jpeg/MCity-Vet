@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
-import TechStat from '../components/TechStat';
-import AccountStat from '../components/AccountStat';
-
 
 export default function ViewAppointment() {
 

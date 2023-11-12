@@ -128,6 +128,29 @@ export const getAllUsers = async (req, res, next) => {
     }
 };
 
+// Get All Role Stats
+export const getRoleStatistics = async (req, res, next) => {
+    try {
+        const users = await User.find();
+
+        // Count the number of users for each role
+        const roleCounts = {
+            customer: 0,
+            admin: 0,
+            technician: 0,
+            secretary: 0,
+        };
+
+        users.forEach((user) => {
+            roleCounts[user.role] += 1;
+        });
+
+        res.status(200).json(roleCounts);
+    } catch (error) {
+        next(error);
+    }
+};
+
 // Get User by ID
 export const getUserById = async (req, res, next) => {
     const { id } = req.params;

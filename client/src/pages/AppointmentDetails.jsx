@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
+import UpdateAppointment from '../components/modals/UpdateAppointment';
 import { useParams } from 'react-router-dom';
 
 export default function AppointmentDetails() {
-  // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // Function to toggle the sidebar
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -36,6 +34,22 @@ export default function AppointmentDetails() {
   const { id } = useParams();
   const [appointment, setAppointment] = useState(null);
 
+  const fetchTechnicianDetails = async (technicianId) => {
+    try {
+      const response = await fetch(`/backend/technician/${technicianId}`);
+      if (!response.ok) {
+        throw new Error(`Error fetching technician details: ${response.statusText}`);
+      }
+  
+      const technicianData = await response.json();
+      return technicianData;
+    } catch (error) {
+      console.error(error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
+  
+
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
       try {
@@ -45,7 +59,10 @@ export default function AppointmentDetails() {
         }
 
         const appointmentData = await response.json();
-        setAppointment(appointmentData);
+        const technicianData = await fetchTechnicianDetails(appointmentData.technicianName);
+
+        setAppointment({...appointmentData,
+          technicianName: technicianData.firstName + ' ' + technicianData.lastName,});
       } catch (error) {
         console.error(error);
         // Handle error, e.g., show an error message to the user
@@ -54,6 +71,41 @@ export default function AppointmentDetails() {
 
     fetchAppointmentDetails();
   }, [id]);
+  
+
+  const cancelAppointment = async () => {
+    // Display confirmation alert
+    const userConfirmed = window.confirm('Are you sure you want to cancel this appointment?');
+
+    if (userConfirmed) {
+      try {
+        const response = await fetch(`/backend/appointment/update/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'Cancelled',
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error cancelling appointment: ${response.statusText}`);
+        }
+
+        const updatedAppointment = await response.json();
+        setAppointment(updatedAppointment);
+      } catch (error) {
+        console.error(error);
+        // Handle error, e.g., show an error message to the user
+      }
+    }
+  };
+
+  // Disable buttons if the status is Approved, Rescheduled, Cancelled, or Completed
+  const isDisabled =
+    appointment &&
+    ['Approved', 'Rescheduled', 'Cancelled', 'Completed'].includes(appointment.status);
 
   return (
     <>
@@ -80,9 +132,8 @@ export default function AppointmentDetails() {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-body mb-2">
-                <div className="d-flex justify-content-between align-items-center">
+                <div className="d-flex justify-content-between align-items-start">
                   <h5 className="card-title">Latest Appointment</h5>
-                  <a href="#" className="btn btn-primary-dashboard btn-sm rounded-pill">View All</a>
                 </div>
 
 
@@ -92,6 +143,12 @@ export default function AppointmentDetails() {
                   </div>
                   <div className="col-sm-8 col-md-8 mt-2">
                     <p className="card-text text-muted">{appointment._id}</p>
+                  </div>
+                  <div className="col-sm-4 col-md-4 mt-2">
+                    <p className="card-text fw-bold">Technician</p>
+                  </div>
+                  <div className="col-sm-8 col-md-8 mt-2">
+                    <p className="card-text text-muted">{appointment.technicianName}</p>
                   </div>
                   <div className="col-sm-4 col-md-4 mt-2">
                     <p className="card-text fw-bold">Status</p>
@@ -104,12 +161,6 @@ export default function AppointmentDetails() {
                   </div>
                   <div className="col-sm-8 col-md-8 mt-2">
                     <p className="card-text text-muted">{appointment.schedule}</p>
-                  </div>
-                  <div className="col-sm-4 col-md-4 mt-2">
-                    <p className="card-text fw-bold">Address</p>
-                  </div>
-                  <div className="col-sm-8 col-md-8 mt-2">
-                    <p className="card-text text-muted">{appointment.patient.address}</p>
                   </div>
                 </div>
 
@@ -133,10 +184,31 @@ export default function AppointmentDetails() {
                     htmlFor="example-text-input"
                     className="col-sm-4 col-md-4 mt-2"
                   >
+                    Address
+                  </label>
+                  <div className="col-sm-8 col-md-8 mt-2">
+                    <span className='text-muted'>{appointment.address}</span>
+                  </div>
+
+                  <label
+                    htmlFor="example-text-input"
+                    className="col-sm-4 col-md-4 mt-2"
+                  >
+                    Landmark
+                  </label>
+                  <div className="col-sm-8 col-md-8 mt-2">
+                    <span className='text-muted'>{appointment.landmark}</span>
+                  </div>
+                  
+
+                  <label
+                    htmlFor="example-text-input"
+                    className="col-sm-4 col-md-4 mt-2"
+                  >
                     Service
                   </label>
                   <div className="col-sm-8 col-md-8 mt-2">
-                    <span className='text-muted'>{appointment.patient.services.join(', ')}</span>
+                    <span className='text-muted'>{appointment.services.join(', ')}</span>
                   </div>
 
                   <label
@@ -146,22 +218,41 @@ export default function AppointmentDetails() {
                     Animal
                   </label>
                   <div className="col-sm-8 col-md-8 mt-2">
-                    <span className='text-muted'>{appointment.patient.typeOfAnimal}</span>
-                  </div>
+  {Array.isArray(appointment.patient) ? (
+    <span className='text-muted'>
+      {appointment.patient.map((patient, index) => (
+        <span key={index}>
+          {`(${patient.numberOfHeads}) ${patient.typeOfAnimal}${index < appointment.patient.length - 1 ? ', ' : ''}`}
+        </span>
+      ))}
+    </span>
+  ) : (
+    <span className='text-muted'>
+      {`(${appointment.patient.numberOfHeads}) ${appointment.patient.typeOfAnimal}`}
+    </span>
+  )}
+</div>
                 </div>
 
+                <UpdateAppointment appointment={appointment} />
 
-                {/* <div className="d-flex flex-row-reverse">
-                <button type="submit" className="btn btn-primary-dashboard btn-sm rounded-pill">
-                  View Appointment
-                </button>
-              </div> */}
+
                 <div className="d-grid gap-2 d-sm-flex justify-content-sm-end">
-                  <button className="btn btn-primary-dashboard btn-sm rounded-pill" type="button">
+                  <button
+                    className="btn btn-primary-dashboard btn-sm rounded-pill"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#updateModal"
+                    disabled={isDisabled}
+                  >
                     Reschedule
                   </button>
-                  <button className="btn btn-primary-dashboard btn-sm rounded-pill" type="button">
-                    Cancel Appointment
+                  <button
+                    className="btn btn-primary-dashboard btn-sm rounded-pill"
+                    type="button"
+                    onClick={cancelAppointment}
+                    disabled={isDisabled}
+                  >                    Cancel Appointment
                   </button>
                 </div>
 
