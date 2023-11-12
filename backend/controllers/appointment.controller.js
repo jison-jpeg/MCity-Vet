@@ -38,7 +38,7 @@ export const getAppointmentStats = async (req, res, next) => {
   try {
     const totalAppointments = await Appointment.countDocuments();
     const pendingAppointments = await Appointment.countDocuments({ status: 'Pending' });
-    const completeAppointments = await Appointment.countDocuments({ status: 'Complete' });
+    const completeAppointments = await Appointment.countDocuments({ status: 'Completed' });
 
     res.status(200).json({
       totalAppointments,

@@ -3,8 +3,11 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import UpdateAppointment from '../components/modals/UpdateAppointment';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function AppointmentDetails() {
+  const { currentUser } = useSelector((state) => state.user);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -40,7 +43,7 @@ export default function AppointmentDetails() {
       if (!response.ok) {
         throw new Error(`Error fetching technician details: ${response.statusText}`);
       }
-  
+
       const technicianData = await response.json();
       return technicianData;
     } catch (error) {
@@ -48,7 +51,7 @@ export default function AppointmentDetails() {
       // Handle error, e.g., show an error message to the user
     }
   };
-  
+
 
   useEffect(() => {
     const fetchAppointmentDetails = async () => {
@@ -61,8 +64,10 @@ export default function AppointmentDetails() {
         const appointmentData = await response.json();
         const technicianData = await fetchTechnicianDetails(appointmentData.technicianName);
 
-        setAppointment({...appointmentData,
-          technicianName: technicianData.firstName + ' ' + technicianData.lastName,});
+        setAppointment({
+          ...appointmentData,
+          technicianName: technicianData.firstName + ' ' + technicianData.lastName,
+        });
       } catch (error) {
         console.error(error);
         // Handle error, e.g., show an error message to the user
@@ -71,8 +76,58 @@ export default function AppointmentDetails() {
 
     fetchAppointmentDetails();
   }, [id]);
-  
 
+  // Accept appointment
+  const acceptAppointment = async () => {
+    try {
+      const response = await fetch(`/backend/appointment/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'Approved',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error accepting appointment: ${response.statusText}`);
+      }
+
+      const updatedAppointment = await response.json();
+      setAppointment(updatedAppointment);
+    } catch (error) {
+      console.error(error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
+
+  // Complete appointment
+  const completeAppointment = async () => {
+    try {
+      const response = await fetch(`/backend/appointment/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'Completed',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error completing appointment: ${response.statusText}`);
+      }
+
+      const updatedAppointment = await response.json();
+      setAppointment(updatedAppointment);
+    } catch (error) {
+      console.error(error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
+
+  // Cancel appointment
   const cancelAppointment = async () => {
     // Display confirmation alert
     const userConfirmed = window.confirm('Are you sure you want to cancel this appointment?');
@@ -103,9 +158,14 @@ export default function AppointmentDetails() {
   };
 
   // Disable buttons if the status is Approved, Rescheduled, Cancelled, or Completed
+  // const isDisabled =
+  // appointment &&
+  // (currentUser.role === 'customer' &&
+  //   ['Approved', 'Rescheduled', 'Cancelled', 'Completed'].includes(appointment.status));
   const isDisabled =
-    appointment &&
-    ['Approved', 'Rescheduled', 'Cancelled', 'Completed'].includes(appointment.status);
+  appointment &&
+  (['Cancelled', 'Completed'].includes(appointment.status) ||
+    (currentUser.role === 'customer' && appointment.status === 'Approved'));
 
   return (
     <>
@@ -199,7 +259,7 @@ export default function AppointmentDetails() {
                   <div className="col-sm-8 col-md-8 mt-2">
                     <span className='text-muted'>{appointment.landmark}</span>
                   </div>
-                  
+
 
                   <label
                     htmlFor="example-text-input"
@@ -218,20 +278,20 @@ export default function AppointmentDetails() {
                     Animal
                   </label>
                   <div className="col-sm-8 col-md-8 mt-2">
-  {Array.isArray(appointment.patient) ? (
-    <span className='text-muted'>
-      {appointment.patient.map((patient, index) => (
-        <span key={index}>
-          {`(${patient.numberOfHeads}) ${patient.typeOfAnimal}${index < appointment.patient.length - 1 ? ', ' : ''}`}
-        </span>
-      ))}
-    </span>
-  ) : (
-    <span className='text-muted'>
-      {`(${appointment.patient.numberOfHeads}) ${appointment.patient.typeOfAnimal}`}
-    </span>
-  )}
-</div>
+                    {Array.isArray(appointment.patient) ? (
+                      <span className='text-muted'>
+                        {appointment.patient.map((patient, index) => (
+                          <span key={index}>
+                            {`(${patient.numberOfHeads}) ${patient.typeOfAnimal}${index < appointment.patient.length - 1 ? ', ' : ''}`}
+                          </span>
+                        ))}
+                      </span>
+                    ) : (
+                      <span className='text-muted'>
+                        {`(${appointment.patient.numberOfHeads}) ${appointment.patient.typeOfAnimal}`}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <UpdateAppointment appointment={appointment} />
@@ -243,18 +303,51 @@ export default function AppointmentDetails() {
                     type="button"
                     data-bs-toggle="modal"
                     data-bs-target="#updateModal"
-                    disabled={isDisabled}
-                  >
+                    disabled={isDisabled || (currentUser.role === 'customer' && appointment.status === 'Approved')}
+                    >
                     Reschedule
                   </button>
-                  <button
-                    className="btn btn-primary-dashboard btn-sm rounded-pill"
-                    type="button"
-                    onClick={cancelAppointment}
-                    disabled={isDisabled}
-                  >                    Cancel Appointment
-                  </button>
+
+                  {currentUser.role === 'customer' && (
+                    <>
+                      <button
+                        className="btn btn-primary-dashboard btn-sm rounded-pill"
+                        type="button"
+                        onClick={cancelAppointment}
+                        disabled={isDisabled}
+                      >
+                        Cancel Appointment
+                      </button>
+                    </>
+                  )}
+
+                  {currentUser.role === 'technician' && (
+                    <>
+                    {(appointment.status !== 'Completed' && appointment.status !== 'Approved') && (
+                      <button
+                        className="btn btn-primary-dashboard btn-sm rounded-pill"
+                        type="button"
+                        onClick={acceptAppointment}
+                        disabled={isDisabled}
+                      >
+                        Accept Appointment
+                      </button>
+                       )}
+
+                      {(appointment.status === 'Approved' || appointment.status === 'Completed') && (
+                        <button
+                          className="btn btn-primary-dashboard btn-sm rounded-pill"
+                          type="button"
+                          onClick={completeAppointment}
+                          disabled={isDisabled}
+                        >
+                          Complete Appointment
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
+
 
               </div>
             </div>

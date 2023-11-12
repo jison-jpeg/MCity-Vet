@@ -126,6 +126,25 @@ export default function UpdateAppointment({ appointment }) {
                 throw new Error(`Error updating appointment: ${response.statusText}`);
             }
 
+            // Check if the date has changed
+            if (formData.date !== appointment.schedule) {
+                // If the date has changed, update the status to 'Rescheduled'
+                const rescheduleResponse = await fetch(`/backend/appointment/update/${appointment._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: 'Rescheduled',
+                    }),
+                });
+
+                if (!rescheduleResponse.ok) {
+                    throw new Error(`Error updating appointment status to Rescheduled: ${rescheduleResponse.statusText}`);
+                }
+            }
+
+
             const updatedAppointment = await response.json();
             console.log('Updated Appointment:', updatedAppointment);
         } catch (error) {
