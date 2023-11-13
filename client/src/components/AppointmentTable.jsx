@@ -108,10 +108,26 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                           </ul>
                         </td>
                         <td>
-                          <span className={`badge rounded-pill ${appointment.status === 'Complete' ? 'bg-success' : 'bg-danger'}`}>
-                            {appointment.status}
-                          </span>
-                        </td>
+  <span className={`badge rounded-pill ${appointment.status === 'Completed' ? 'bg-success' : 
+    ((isAdmin || currentUserRole === 'secretary' || currentUserRole === 'technician') && appointment.status === 'Approved' ? 'bg-secondary' :
+    (currentUserRole === 'customer' && appointment.status === 'Approved' ? 'bg-warning' : 'bg-danger'))}`}>
+    {currentUserRole === 'customer' && appointment.status === 'Approved' ? (
+      <span className='text'>Pending</span>
+    ) : (
+      currentUserRole === 'customer' && appointment.status === 'Pending' ? (
+        <span>Waiting to Accept</span>
+      ) : (
+        (isAdmin || currentUserRole === 'secretary' || currentUserRole === 'technician') && appointment.status === 'Approved' ? 'On Going' : appointment.status
+      )
+    )}
+  </span>
+</td>
+
+
+
+
+
+
                         <td>
                           <div className='d-grid gap-2 d-sm-flex justify-content-sm-center'>
 
