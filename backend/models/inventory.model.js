@@ -10,6 +10,10 @@ const inventorySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  description: {
+    type: String,
+    required: true,
+  },
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

@@ -157,15 +157,10 @@ export default function AppointmentDetails() {
     }
   };
 
-  // Disable buttons if the status is Approved, Rescheduled, Cancelled, or Completed
-  // const isDisabled =
-  // appointment &&
-  // (currentUser.role === 'customer' &&
-  //   ['Approved', 'Rescheduled', 'Cancelled', 'Completed'].includes(appointment.status));
   const isDisabled =
-  appointment &&
-  (['Cancelled', 'Completed'].includes(appointment.status) ||
-    (currentUser.role === 'customer' && appointment.status === 'Approved'));
+    appointment &&
+    (['Cancelled', 'Completed'].includes(appointment.status) ||
+      (currentUser.role === 'customer' && appointment.status === 'Approved'));
 
   return (
     <>
@@ -210,12 +205,29 @@ export default function AppointmentDetails() {
                   <div className="col-sm-8 col-md-8 mt-2">
                     <p className="card-text text-muted">{appointment.technicianName}</p>
                   </div>
+
                   <div className="col-sm-4 col-md-4 mt-2">
                     <p className="card-text fw-bold">Status</p>
                   </div>
                   <div className="col-sm-8 col-md-8 mt-2">
-                    <span className="badge rounded-pill bg-danger">{appointment.status}</span>
+                    {currentUser.role === 'customer' && appointment.status === 'Approved' ? (
+                      <span className="badge rounded-pill bg-warning">Pending</span>
+                    ) : (
+                      <span className={`badge rounded-pill ${appointment.status === 'Completed' ? 'bg-success' :
+                        (appointment.status === 'Approved' && currentUser.role !== 'technician') ? 'bg-secondary' :
+                          'bg-danger'
+                        }`}>
+                        {currentUser.role === 'customer' && appointment.status === 'Pending' ? 'Waiting to Accept' :
+                          (currentUser.role !== 'technician' && appointment.status === 'Approved') ? 'On Going' : appointment.status}
+                      </span>
+                    )}
                   </div>
+
+
+
+
+
+
                   <div className="col-sm-4 col-md-4 mt-2">
                     <p className="card-text fw-bold">Schedule</p>
                   </div>
@@ -304,9 +316,10 @@ export default function AppointmentDetails() {
                     data-bs-toggle="modal"
                     data-bs-target="#updateModal"
                     disabled={isDisabled || (currentUser.role === 'customer' && appointment.status === 'Approved')}
-                    >
-                    Reschedule
+                  >
+                    {currentUser.role === 'admin' ? 'Update Appointment' : 'Reschedule'}
                   </button>
+
 
                   {currentUser.role === 'customer' && (
                     <>
@@ -321,18 +334,18 @@ export default function AppointmentDetails() {
                     </>
                   )}
 
-                  {currentUser.role === 'technician' && (
+                  {(currentUser.role === 'technician' || currentUser.role === 'admin' || currentUser.role === 'secretary') && (
                     <>
-                    {(appointment.status !== 'Completed' && appointment.status !== 'Approved') && (
-                      <button
-                        className="btn btn-primary-dashboard btn-sm rounded-pill"
-                        type="button"
-                        onClick={acceptAppointment}
-                        disabled={isDisabled}
-                      >
-                        Accept Appointment
-                      </button>
-                       )}
+                      {(appointment.status !== 'Completed' && appointment.status !== 'Approved') && (
+                        <button
+                          className="btn btn-primary-dashboard btn-sm rounded-pill"
+                          type="button"
+                          onClick={acceptAppointment}
+                          disabled={isDisabled}
+                        >
+                          Accept Appointment
+                        </button>
+                      )}
 
                       {(appointment.status === 'Approved' || appointment.status === 'Completed') && (
                         <button

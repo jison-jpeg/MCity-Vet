@@ -55,9 +55,13 @@ export const getAppointmentsForTechnician = async (req, res, next) => {
 // Get All Appointments Stats by Technician
 export const getAppointmentStatsForTechnician = async (req, res, next) => {
     const { id } = req.params;
+
     try {
         const totalAppointments = await Appointment.countDocuments({ technicianName: id });
-        const pendingAppointments = await Appointment.countDocuments({ technicianName: id, status: 'Pending' });
+        const pendingAppointments = await Appointment.countDocuments({
+            technicianName: id,
+            status: { $in: ['Pending', 'Rescheduled', 'Approved'] },
+        });
         const completeAppointments = await Appointment.countDocuments({ technicianName: id, status: 'Completed' });
 
         res.status(200).json({
@@ -69,6 +73,7 @@ export const getAppointmentStatsForTechnician = async (req, res, next) => {
         next(error);
     }
 };
+
 
 // Get User Role Statistics
 export const getRoleStatistics = async (req, res, next) => {

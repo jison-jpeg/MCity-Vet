@@ -5,6 +5,7 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
 
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
+  const isAdmin = currentUser.role === 'admin';
 
   return (
     <>
@@ -41,7 +42,7 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
               </div>
             ) : (
               <div className="table-responsive-xl">
-                <table className="table">
+                <table className="table align-middle">
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
@@ -53,7 +54,7 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                       <th scope="col">No. of Heads</th>
                       <th scope="col">Services</th>
                       <th scope="col">Status</th>
-                      <th scope="col">Action</th>
+                      <th scope="col" className='text-center'>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -112,20 +113,24 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                           </span>
                         </td>
                         <td>
-                          <a
-                            href={`/appointments/${appointment._id}`}
-                            className="btn btn-primary-dashboard-action btn-sm"
-                          >
-                            View
-                          </a>
-                          {isCustomer ? null : (
-                            <>
-                              <span> | </span>
-                              <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
-                                {isCustomer ? null : 'Reschedule'}
-                              </button>
-                            </>
-                          )}
+                          <div className='d-grid gap-2 d-sm-flex justify-content-sm-center'>
+
+                            <a
+                              href={`/appointments/${appointment._id}`}
+                              className="btn btn-primary-dashboard-action btn-sm"
+                            >
+                              View
+                            </a>
+                            {isCustomer ? null : (
+                              <>
+                                {/* <span> | </span> */}
+                                <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
+                                  {isAdmin ? 'Delete' : 'Reschedule'}
+                                </button>
+
+                              </>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

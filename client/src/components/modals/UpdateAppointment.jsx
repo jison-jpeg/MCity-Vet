@@ -5,7 +5,7 @@ export default function UpdateAppointment({ appointment }) {
         firstName: '',
         lastName: '',
         technician: '',
-        date: '',
+        schedule: '',
         address: '',
         landmark: '',
         email: '',
@@ -23,12 +23,13 @@ export default function UpdateAppointment({ appointment }) {
     useEffect(() => {
         // Update form data when appointment changes
         if (appointment) {
-            console.log("Original Appointment Data:", appointment);
-            setFormData({
+            console.log("Updated Appointment Data:", formData);
+            setFormData((prevFormData) => ({
+                ...prevFormData,
                 firstName: appointment.firstName,
                 lastName: appointment.lastName,
                 technician: appointment.technicianName,
-                date: appointment.schedule,
+                schedule: appointment.schedule,
                 address: appointment.address,
                 landmark: appointment.landmark,
                 email: appointment.email,
@@ -39,9 +40,13 @@ export default function UpdateAppointment({ appointment }) {
                     age: patient.age,
                     numberOfHeads: patient.numberOfHeads,
                 })),
-            });
+            }));
         }
     }, [appointment]);
+
+
+    // Other useEffect and functions remain unchanged
+
 
 
     const [technicians, setTechnicians] = useState([]);
@@ -64,24 +69,20 @@ export default function UpdateAppointment({ appointment }) {
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 services: appointment.services,
+                technician: appointment.technicianName,
             }));
         }
     }, [appointment]);
 
     const handleServiceChange = (event) => {
-        const { name, checked } = event.target;
-        if (checked) {
-            setFormData({
-                ...formData,
-                services: [...formData.services, name],
-            });
-        } else {
-            setFormData({
-                ...formData,
-                services: formData.services.filter((service) => service !== name),
-            });
-        }
-    };
+    const { name, checked } = event.target;
+    setFormData((prevFormData) => ({
+        ...prevFormData,
+        services: checked
+            ? [...prevFormData.services, name]
+            : prevFormData.services.filter((service) => service !== name),
+    }));
+};
 
     useEffect(() => {
         const fetchData = async () => {
@@ -101,14 +102,23 @@ export default function UpdateAppointment({ appointment }) {
         fetchData();
     }, []);
 
-
-
-
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        console.log('Input Field:', name, 'Value:', value);
+    
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            technicianName: name === 'technician' ? value : prevFormData.technicianName,
+            [name]: value,
+        }));
     };
+    
+
+
+
+
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form Data to be Submitted:', formData);
@@ -127,7 +137,7 @@ export default function UpdateAppointment({ appointment }) {
             }
 
             // Check if the date has changed
-            if (formData.date !== appointment.schedule) {
+            if (formData.schedule !== appointment.schedule) {
                 // If the date has changed, update the status to 'Rescheduled'
                 const rescheduleResponse = await fetch(`/backend/appointment/update/${appointment._id}`, {
                     method: 'PUT',
@@ -184,6 +194,7 @@ export default function UpdateAppointment({ appointment }) {
                                     onChange={handleInputChange}
 
 
+
                                 />
                             </div>
 
@@ -224,18 +235,19 @@ export default function UpdateAppointment({ appointment }) {
                                         </option>
                                     ))}
                                 </select>
+
                             </div>
 
                             <div className="col-md-6">
-                                <label htmlFor="date" className="form-label">
+                                <label htmlFor="schedule" className="form-label">
                                     Date for your Appointment
                                 </label>
                                 <input
                                     type="date"
                                     className="form-control"
-                                    id="date"
-                                    name='date'
-                                    value={formData.date}
+                                    id="schedule"
+                                    name='schedule'
+                                    value={formData.schedule}
                                     onChange={handleInputChange}
                                     required
 

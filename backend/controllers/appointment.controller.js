@@ -36,19 +36,25 @@ export const getAppointmentById = async (req, res, next) => {
 // Get All Appointments Stats
 export const getAppointmentStats = async (req, res, next) => {
   try {
-    const totalAppointments = await Appointment.countDocuments();
-    const pendingAppointments = await Appointment.countDocuments({ status: 'Pending' });
-    const completeAppointments = await Appointment.countDocuments({ status: 'Completed' });
+      const totalAppointments = await Appointment.countDocuments();
+      const rescheduledAppointments = await Appointment.countDocuments({ status: 'Rescheduled' });
+      const approvedAppointments = await Appointment.countDocuments({ status: 'Approved' });
 
-    res.status(200).json({
-      totalAppointments,
-      pendingAppointments,
-      completeAppointments,
-    });
+      // Calculate total pending appointments including rescheduled and approved
+      const pendingAppointments = totalAppointments - rescheduledAppointments - approvedAppointments;
+
+      const completeAppointments = await Appointment.countDocuments({ status: 'Completed' });
+
+      res.status(200).json({
+          totalAppointments,
+          pendingAppointments,
+          completeAppointments,
+      });
   } catch (error) {
-    next(error);
+      next(error);
   }
 };
+
 
 // Get Appointments by User
 export const getAppointmentsByUser = async (req, res, next) => {
@@ -146,7 +152,6 @@ export const updateAppointment = async (req, res, next) => {
       {
         $set: {
           ...req.body,
-          // Ensure the patient field is updated correctly
           patient: req.body.patients,
         },
       },

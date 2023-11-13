@@ -74,7 +74,7 @@ export default function Inventory() {
                   <h5 className="card-title">Items Inventory</h5>
                   {/* Default Table */}
                   <div className="table-responsive-md">
-                  <table className="table">
+                  <table className="table text-center align-middle">
                     <thead>
                       <tr>
                         <th scope="col">Item</th>
@@ -82,6 +82,7 @@ export default function Inventory() {
                         <th scope="col">Description</th>
                         <th scope="col">Date Added</th>
                         <th scope="col">Date Updated</th>
+                        <th scope="col">Added By</th>
                         <th scope="col">Action</th>
                       </tr>
                     </thead>
@@ -92,10 +93,14 @@ export default function Inventory() {
                         <td>for Artificial Insemination</td>
                         <td>10/15/2023</td>
                         <td>10/20/2023</td>
+                        <td>firstName lastName</td>
                         <td>
+                          <div className='d-grid gap-2 d-sm-flex justify-content-sm-center'>
+
                           <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                          <span> | </span>
+                          {/* <span > | </span> */}
                           <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                          </div>
                         </td>
 
                       </tr>

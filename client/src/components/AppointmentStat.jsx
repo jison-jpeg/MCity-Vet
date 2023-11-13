@@ -16,7 +16,7 @@ export default function AppointmentStat() {
         const fetchAppointmentStats = async () => {
             try {
                 let response;
-
+        
                 if (isTechnician) {
                     // Fetch stats for the current technician
                     response = await fetch(`/backend/technician/${currentUser._id}/stats`);
@@ -24,9 +24,10 @@ export default function AppointmentStat() {
                     // Fetch total stats for all technicians (admin or secretary)
                     response = await fetch('/backend/appointment/stats');
                 }
-
+        
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('Appointment Stats:', data); // Log the response data
                     setAppointmentStats(data);
                 } else {
                     console.error('Failed to fetch appointment stats:', response.statusText);
@@ -35,6 +36,7 @@ export default function AppointmentStat() {
                 console.error('Error fetching appointment stats:', error);
             }
         };
+        
 
         fetchAppointmentStats();
     }, [isTechnician, currentUser._id]);
