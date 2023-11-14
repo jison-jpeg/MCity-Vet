@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
+import { signinStart, signinSuccess, signinFailure, setRefreshToken } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import OAuth from '../components/OAuth';
 import ReCAPTCHA from "react-google-recaptcha";
@@ -55,6 +55,7 @@ export default function Signin() {
           dispatch(signinFailure(data));
         } else {
           dispatch(signinSuccess(data));
+          dispatch(setRefreshToken(data.refreshToken));
           navigate('/dashboard');
         }
       } else {

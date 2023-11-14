@@ -85,6 +85,30 @@ export const google = async (req, res, next) => {
     }
 };
 
+export const refreshAccessToken = async (req, res, next) => {
+    const refreshToken = req.body.refreshToken;
+
+    try {
+        // Verify the refresh token
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+        // Check if the user associated with the refresh token exists
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid refresh token' });
+        }
+
+        // Generate a new access token
+        const accessToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Send the new access token to the client
+        res.status(200).json({ accessToken });
+    } catch (error) {
+        // Token verification failed or other errors
+        return res.status(401).json({ message: 'Invalid refresh token' });
+    }
+};
+
 export const signout = (req, res) => {
     const token = req.cookies.access_token;
 

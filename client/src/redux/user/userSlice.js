@@ -40,10 +40,11 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+        setRefreshToken: (state, action) => {
+            state.refreshToken = action.payload;
+        },
     },
 });
-
-
-export const { signinStart, signinSuccess, signinFailure, signout, updateUserStart, updateUserSuccess, updateUserFailure } = userSlice.actions;
+export const { signinStart, signinSuccess, signinFailure, signout, updateUserStart, updateUserSuccess, updateUserFailure, setRefreshToken } = userSlice.actions;
 
 export default userSlice.reducer;

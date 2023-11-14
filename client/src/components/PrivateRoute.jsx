@@ -3,7 +3,7 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { signout } from '../redux/user/userSlice';
 
 export default function PrivateRoute() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, refreshToken } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   if (!currentUser) {
@@ -11,14 +11,35 @@ export default function PrivateRoute() {
     return <Navigate to="/signin" />;
   }
 
+  const handleTokenRefresh = async () => {
+    try {
+      const response = await fetch('/backend/auth/refresh-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        dispatch(updateUserSuccess(data)); // Update the user state with the new access token
+      } else {
+        console.error('Token refresh failed with status:', response.status);
+        dispatch(signout());
+      }
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      dispatch(signout());
+    }
+  };
+
   // Check if the token has expired
   const tokenExpiration = new Date(currentUser.expiryDate);
   const currentTime = new Date();
 
   if (tokenExpiration <= currentTime) {
-    // Token has expired; redirect to sign-in page
-    dispatch(signout());
-    return <Navigate to="/signin" />;
+    handleTokenRefresh();
   }
 
   // Define allowed roles for specific routes
