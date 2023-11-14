@@ -80,6 +80,7 @@ export default function Inventory() {
                         <th scope="col">Item</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Description</th>
+                        <th scope="col">Category</th>
                         <th scope="col">Date Added</th>
                         <th scope="col">Date Updated</th>
                         <th scope="col">Added By</th>
@@ -91,6 +92,7 @@ export default function Inventory() {
                         <td>Cow Semen</td>
                         <td>50</td>
                         <td>for Artificial Insemination</td>
+                        <td>Category</td>
                         <td>10/15/2023</td>
                         <td>10/20/2023</td>
                         <td>firstName lastName</td>
