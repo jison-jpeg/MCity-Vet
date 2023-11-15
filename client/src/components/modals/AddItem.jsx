@@ -1,13 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
 
 export default function AddItem() {
+    const { currentUser } = useSelector((state) => state.user);
+
+    const [quantity, setQuantity] = useState(0);
+
+    const handleQuantityChange = (value) => {
+        // Ensure quantity is not negative
+        const newQuantity = Math.max(0, quantity + value);
+        setQuantity(newQuantity);
+    };
+
+    const handleInputChange = (event) => {
+        // Parse the input value as an integer
+        const newQuantity = parseInt(event.target.value, 10) || 0;
+        setQuantity(newQuantity);
+    };
+
+
     return (
         <>
             <div className="modal fade" id="addModal" tabIndex={-1}>
                 <div className="modal-dialog modal-xl modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Vertically Centered</h5>
+                            <h5 className="modal-title">Add Item</h5>
                             <button
                                 type="button"
                                 className="btn-close"
@@ -17,87 +35,71 @@ export default function AddItem() {
                         </div>
                         <div className="modal-body">
                             <form className="row g-3">
-                                <div className="col-md-6">
-                                    <label htmlFor="date" className="form-label">
-                                        Date
+
+                                <div className="col-md-4">
+                                    <label htmlFor="itemName" className="form-label">
+                                        Item Name
                                     </label>
-                                    <input type="date" className="form-control" id="date" required/>
+                                    <input type="text" className="form-control" id="itemName" />
                                 </div>
-                                <div className="col-md-6">
-                                    <label htmlFor="schedule" className="form-label">
-                                        Technician Name and Schedule
+                                <div className="col-md-4">
+                                    <label htmlFor="quantity" className="form-label">
+                                        Quantity
                                     </label>
-                                    <select id="inputState" className="form-select" defaultValue={""} required>
-                                        <option value={""}>Choose...</option>
-                                        <option>...</option>
+                                    <div className="input-group">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="quantity"
+                                            value={quantity}
+                                            onChange={handleInputChange}
+                                        />
+                                        <button
+                                            className="btn btn-outline-primary"
+                                            type="button"
+                                            onClick={() => handleQuantityChange(-1)}
+                                        >
+                                            -
+                                        </button>
+                                        <button
+                                            className="btn btn-outline-primary"
+                                            type="button"
+                                            onClick={() => handleQuantityChange(1)}
+                                        >
+                                            +
+                                        </button>
+                                        
+                                    </div>
+                                </div>
+                                <div className="col-4">
+                                    <label htmlFor="category" className="form-label">
+                                        Category
+                                    </label>
+                                    <select id="category" className="form-select">
+                                        <option value="" disabled>Choose...</option>
+                                        <option>Antibiotics</option>
+                                        <option>Vitamins</option>
+                                        <option>Minerals</option>
+                                        <option>Anti-Inflammatory</option>
+                                        <option>Disinfectants</option>
+                                        <option>Syringes</option>
                                     </select>
                                 </div>
-                                <div className="col-md-3">
-                                    <label htmlFor="firstName" className="form-label">
-                                        First Name
+
+                                <div className="col-12">
+                                    <label htmlFor="description" className="form-label">
+                                        Description
                                     </label>
-                                    <input type="text" className="form-control" id="firstName" />
-                                </div>
-                                <div className="col-md-3">
-                                    <label htmlFor="lastName" className="form-label">
-                                        Last Name
-                                    </label>
-                                    <input type="text" className="form-control" id="lastName" />
-                                </div>
-                                <div className="col-3">
-                                    <label htmlFor="address" className="form-label">
-                                        Address
-                                    </label>
-                                    <input
-                                        type="text"
+                                    <textarea
                                         className="form-control"
-                                        id="address"
-                                        placeholder="1234 Main St"
+                                        placeholder="Enter a short description about the item..."
+                                        id="description"
+                                        style={{ height: 80 }}
+                                        defaultValue={""}
                                     />
-                                </div>
-                                <div className="col-3">
-                                    <label htmlFor="landmark" className="form-label">
-                                        Landmark
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="landmark"
-                                        placeholder="Juan's Store"
-                                    />
-                                </div>
-                                <div className="col-6">
-                                    <label htmlFor="email" className="form-label">
-                                        Email
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="email"
-                                        placeholder="example@gmail.com"
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label htmlFor="typeOfAnimal" className="form-label">
-                                        Type of Animal
-                                    </label>
-                                    <input type="text" className="form-control" id="typeOfAnimal" />
-                                </div>
-                                <div className="col-md-3">
-                                    <label htmlFor="numberOfHeads" className="form-label">
-                                        Number of Heads
-                                    </label>
-                                    <input type="number" className="form-control" id="numberOfHeads" />
-                                </div>
-                                <div className="col-md-6">
-                                    <label htmlFor="phoneNumber" className="form-label">
-                                        Phone Number
-                                    </label>
-                                    <input type="phoneNumber" className="form-control" id="phoneNumber" placeholder='0912 345 6789'/>
                                 </div>
 
-                               
-                                
+
                                 <div className="modal-footer">
                                     <button
                                         type="button"

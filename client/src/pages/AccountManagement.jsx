@@ -14,6 +14,13 @@ export default function AccountManagement() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Add 'toggle-sidebar' class to the body when the button is clicked
+  if (isSidebarOpen) {
+    document.body.classList.add('toggle-sidebar');
+  } else {
+    document.body.classList.remove('toggle-sidebar');
+  }
+
   useEffect(() => {
     const mainStylesheet = document.getElementById('main-stylesheet');
     const mainBootstrap = document.getElementById('main-bootstrap');

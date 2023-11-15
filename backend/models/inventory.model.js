@@ -3,16 +3,27 @@ import mongoose from 'mongoose';
 const inventorySchema = new mongoose.Schema({
   itemName: {
     type: String,
-    required: true,
+    unique: true,
+    // required: true,
   },
-  category: String,
+  description: {
+    type: String,
+    // required: true,
+  },
+  category: {
+    type: String
+  },
   quantity: {
     type: Number,
     default: 0,
   },
-  description: {
-    type: String,
-    required: true,
+  dateAdded: {
+    type: Date,
+    default: Date.now(),
+  },
+  dateUpdated: {
+    type: Date,
+    default: Date.now(),
   },
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -21,10 +32,6 @@ const inventorySchema = new mongoose.Schema({
   updatedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-  },
-  dateAdded: {
-    type: Date,
-    default: Date.now,
   },
 });
 

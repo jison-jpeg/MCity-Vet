@@ -26,7 +26,6 @@
     - technician.route.js
     - user.route.js
   - utils
-    - auth.js
     - error.js
     - verifyUser.js
 - client

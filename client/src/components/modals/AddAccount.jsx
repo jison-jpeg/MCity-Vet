@@ -19,7 +19,7 @@ export default function AddAccount() {
             [e.target.id]: e.target.value,
         });
     };
-    console.log(user)
+    // console.log(user)
 
     const handleSubmit = async (e) => {
         e.preventDefault();

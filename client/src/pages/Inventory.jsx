@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
-import AddAppointment from '../components/modals/AddItem';
+import AddItem from '../components/modals/AddItem';
+import InventoryTable from '../components/InventoryTable';
 
 
 export default function Inventory() {
@@ -34,6 +35,7 @@ export default function Inventory() {
     mainBootstrap.setAttribute('disabled', 'true');
     dashboardBootstrap.removeAttribute('disabled');
   }, []);
+  
 
   return (
     <>
@@ -61,61 +63,11 @@ export default function Inventory() {
           <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Item</button>
         </div>
 
-        {/* <AddAppointment /> */}
-
+        <AddItem />
         <section className="section dashboard">
           <div className="row">
 
-            {/* add data table */}
-
-            <div className="col-lg-12">
-              <div className="card">
-                <div className="card-body">
-                  <h5 className="card-title">Items Inventory</h5>
-                  {/* Default Table */}
-                  <div className="table-responsive-md">
-                  <table className="table text-center align-middle">
-                    <thead>
-                      <tr>
-                        <th scope="col">Item</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Date Added</th>
-                        <th scope="col">Date Updated</th>
-                        <th scope="col">Added By</th>
-                        <th scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Cow Semen</td>
-                        <td>50</td>
-                        <td>for Artificial Insemination</td>
-                        <td>Category</td>
-                        <td>10/15/2023</td>
-                        <td>10/20/2023</td>
-                        <td>firstName lastName</td>
-                        <td>
-                          <div className='d-grid gap-2 d-sm-flex justify-content-sm-center'>
-
-                          <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                          {/* <span > | </span> */}
-                          <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                          </div>
-                        </td>
-
-                      </tr>
-
-                    </tbody>
-                  </table>
-                  </div>
-                  {/* End Default Table Example */}
-                </div>
-              </div>
-            </div>
-
-            
+            <InventoryTable />
 
 
           </div>
