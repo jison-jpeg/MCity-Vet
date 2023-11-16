@@ -210,25 +210,15 @@ export default function AppointmentDetails() {
                     <p className="card-text fw-bold">Status</p>
                   </div>
                   <div className="col-sm-8 col-md-8 mt-2">
-                    {/* {currentUser.role === 'customer' && appointment.status === 'Approved' ? (
-                      <span className="badge rounded-pill bg-warning">Pending</span>
-                    ) : (
-                      <span className={`badge rounded-pill ${appointment.status === 'Completed' ? 'bg-success' :
-                        (appointment.status === 'Approved' && currentUser.role !== 'technician') ? 'bg-secondary' :
-                          'bg-danger'
-                        }`}>
-                        {currentUser.role === 'customer' && appointment.status === 'Pending' ? 'Waiting to Accept' :
-                          (currentUser.role !== 'technician' && appointment.status === 'Approved') ? 'On Going' : appointment.status}
-                      </span>
-                    )} */}
 
-{appointment.status === 'Approved' ? (
-  <span className={`badge rounded-pill ${currentUser.role === 'customer' ? 'bg-warning' : 'bg-secondary'}`}>{currentUser.role === 'customer' ? 'Pending' : 'On Going'}</span>
-) : (
-  <span className={`badge rounded-pill ${appointment.status === 'Completed' ? 'bg-success' : 'bg-danger'}`}>
-    {currentUser.role === 'customer' && appointment.status === 'Pending' ? 'Waiting to Accept' : appointment.status}
-  </span>
-)}
+
+                    {appointment.status === 'Approved' ? (
+                      <span className={`badge rounded-pill ${currentUser.role === 'customer' ? 'bg-warning' : 'bg-secondary'}`}>{currentUser.role === 'customer' ? 'Pending' : 'On Going'}</span>
+                    ) : (
+                      <span className={`badge rounded-pill ${appointment.status === 'Completed' ? 'bg-success' : 'bg-danger'}`}>
+                        {currentUser.role === 'customer' && appointment.status === 'Pending' ? 'Waiting to Accept' : appointment.status}
+                      </span>
+                    )}
 
 
 

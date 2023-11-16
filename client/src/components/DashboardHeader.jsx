@@ -14,7 +14,6 @@ export default function DashboardHeader({ toggleSidebar }) {
     try {
       await fetch('/backend/auth/signout');
       dispatch(signout())
-      navigate('/signin');
     } catch (error) {
       console.log(error);
     }
