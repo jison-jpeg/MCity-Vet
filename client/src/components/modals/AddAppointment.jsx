@@ -100,6 +100,28 @@ export default function AddAppointment() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Appointment created:', data);
+
+                // Add system log after creating the appointment
+                const systemLogResponse = await fetch('/backend/logs/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: currentUser._id,
+                        name: `${currentUser.firstName} ${currentUser.lastName}`, // Include lastName in the name field
+                        role: currentUser.role,
+                        dateTime: new Date(),
+                        activity: `Created an appointment this coming ${appointmentData.schedule} for ${appointmentData.firstName} ${appointmentData.lastName}`,
+                    }),
+                });
+
+                if (systemLogResponse.ok) {
+                    console.log('System log added:', await systemLogResponse.json());
+                } else {
+                    console.error('Error adding system log:', systemLogResponse.statusText);
+                }
+
                 // You can reset the form or perform other actions after successful creation.
             } else {
                 console.error('Error creating appointment:', response.statusText);

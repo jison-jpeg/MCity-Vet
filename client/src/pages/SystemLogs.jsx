@@ -33,6 +33,23 @@ export default function SystemLogs() {
         dashboardBootstrap.removeAttribute('disabled');
     }, []);
 
+    const [systemLogs, setSystemLogs] = useState([]);
+
+    useEffect(() => {
+        // Fetch system logs from your API
+        const fetchSystemLogs = async () => {
+            try {
+                const response = await fetch('/backend/logs/all'); // Replace with your API endpoint
+                const data = await response.json();
+                setSystemLogs(data);
+            } catch (error) {
+                console.error('Error fetching system logs:', error);
+            }
+        };
+
+        fetchSystemLogs();
+    }, []);
+
     return (
         <>
             <DashboardHeader toggleSidebar={toggleSidebar} />
@@ -54,7 +71,7 @@ export default function SystemLogs() {
                 </div>
 
                 <br />
-                
+
                 <section className="section dashboard">
                     <div className="row">
 
@@ -66,29 +83,33 @@ export default function SystemLogs() {
                                     <h5 className="card-title">System Logs</h5>
                                     {/* Default Table */}
                                     <div className="table-responsive-md">
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Account ID</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col">Role</th>
-                                                    <th scope="col">Date and Time</th>
-                                                    <th scope="col">Activity</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>ADMIN-abc123</td>
-                                                    <td>Jayson T.</td>
-                                                    <td>Admin</td>
-                                                    <td>10/21/2023 - 12:00PM</td>
-                                                    <td>Added an</td>
-                                                </tr>
-
-                                            </tbody>
-                                        </table>
+                                        {systemLogs.length > 0 ? (
+                                            <table className="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Account ID</th>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Role</th>
+                                                        <th scope="col">Date and Time</th>
+                                                        <th scope="col">Activity</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {systemLogs.map((log) => (
+                                                        <tr key={log._id}>
+                                                            <td>{log.accountId}</td>
+                                                            <td>{log.name}</td>
+                                                            <td>{log.role}</td>
+                                                            <td>{new Date(log.dateTime).toLocaleString()}</td>
+                                                            <td>{log.activity}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        ) : (
+                                            <p>No system logs available.</p>
+                                        )}
                                     </div>
-                                    {/* End Default Table Example */}
                                 </div>
                             </div>
                         </div>

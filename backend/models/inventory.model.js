@@ -25,6 +25,11 @@ const inventorySchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  status: {
+    type: String,
+        enum: ['In Stock', 'Out of Stock'],
+        default: 'In Stock',
+  },
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function AddAccount() {
+    const { currentUser } = useSelector((state) => state.user);
+
     const [user, setUser] = useState({
         firstName: '',
         lastName: '',
@@ -31,10 +34,32 @@ export default function AddAccount() {
                 },
                 body: JSON.stringify(user),
             });
-            //   console.log(user)
+
             if (response.ok) {
                 const data = await response.json();
                 console.log('User created:', data);
+
+                // Add system log after creating the user
+                const systemLogResponse = await fetch('/backend/logs/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: currentUser._id,
+                        name: `${currentUser.firstName} ${currentUser.lastName}`,
+                        role: currentUser.role,
+                        dateTime: new Date(),
+                        activity: `Created an account for ${user.firstName} ${user.lastName}`,
+                    }),
+                });
+
+                if (systemLogResponse.ok) {
+                    console.log('System log added:', await systemLogResponse.json());
+                } else {
+                    console.error('Error adding system log:', systemLogResponse.statusText);
+                }
+
                 // Reset the form or perform other actions after successful creation.
             } else {
                 console.error('Error creating user:', response.statusText);
@@ -43,7 +68,6 @@ export default function AddAccount() {
             console.error('Error creating user:', error);
         }
     };
-
     return (
         <>
             <div className="modal fade" id="addModal" tabIndex={-1}>

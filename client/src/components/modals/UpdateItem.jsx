@@ -1,14 +1,10 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 
-export default function AddItem() {
+export default function UpdateItem() {
     const { currentUser } = useSelector((state) => state.user);
 
-    
     const [quantity, setQuantity] = useState(0);
-    const [itemName, setItemName] = useState('');
-    const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('');
 
     const handleQuantityChange = (value) => {
         // Ensure quantity is not negative
@@ -17,67 +13,19 @@ export default function AddItem() {
     };
 
     const handleInputChange = (event) => {
-        const { id, value } = event.target;
-        switch (id) {
-            case 'itemName':
-                setItemName(value);
-                break;
-            case 'description':
-                setDescription(value);
-                break;
-            case 'category':
-                setCategory(value);
-                break;
-            case 'quantity': // Handle quantity input
-                const newQuantity = parseInt(value, 10) || 0;
-                setQuantity(newQuantity);
-                break;
-            default:
-                break;
-        }
+        // Parse the input value as an integer
+        const newQuantity = parseInt(event.target.value, 10) || 0;
+        setQuantity(newQuantity);
     };
 
-    const handleFormSubmit = async (event) => {
-        event.preventDefault();
-
-        const addedBy = currentUser._id; // Assuming currentUser has _id property
-
-        const itemData = {
-            itemName,
-            description,
-            category,
-            quantity,
-            addedBy,
-        };
-
-        try {
-            const response = await fetch('/backend/inventory/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(itemData),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Item added:', data);
-                // You can reset the form or perform other actions after successful creation.
-            } else {
-                console.error('Error adding item:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error adding item:', error);
-        }
-    };
 
     return (
         <>
-            <div className="modal fade" id="addModal" tabIndex={-1}>
+            <div className="modal fade" id="updateModal" tabIndex={-1}>
                 <div className="modal-dialog modal-xl modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Add Item</h5>
+                            <h5 className="modal-title">Update Item</h5>
                             <button
                                 type="button"
                                 className="btn-close"
@@ -86,19 +34,13 @@ export default function AddItem() {
                             />
                         </div>
                         <div className="modal-body">
-                            <form className="row g-3" onSubmit={handleFormSubmit}>
+                            <form className="row g-3">
 
                                 <div className="col-md-4">
                                     <label htmlFor="itemName" className="form-label">
                                         Item Name
                                     </label>
-                                    <input
-                                    type="text"
-                                    className="form-control"
-                                    id="itemName"
-                                    value={itemName}
-                                    onChange={handleInputChange}
-                                    />
+                                    <input type="text" className="form-control" id="itemName" />
                                 </div>
                                 <div className="col-md-4">
                                     <label htmlFor="quantity" className="form-label">
@@ -133,18 +75,14 @@ export default function AddItem() {
                                     <label htmlFor="category" className="form-label">
                                         Category
                                     </label>
-                                    <select
-                                        id="category"
-                                        className="form-select"
-                                        onChange={handleInputChange}
-                                    >
+                                    <select id="category" className="form-select">
                                         <option value="" disabled>Choose...</option>
-                                        <option value="Antibiotics">Antibiotics</option>
-                                        <option value="Vitamins">Vitamins</option>
-                                        <option value="Minerals">Minerals</option>
-                                        <option value="Anti-Inflammatory">Anti-Inflammatory</option>
-                                        <option value="Disinfectants">Disinfectants</option>
-                                        <option value="Syringes">Syringes</option>
+                                        <option>Antibiotics</option>
+                                        <option>Vitamins</option>
+                                        <option>Minerals</option>
+                                        <option>Anti-Inflammatory</option>
+                                        <option>Disinfectants</option>
+                                        <option>Syringes</option>
                                     </select>
                                 </div>
 
@@ -157,8 +95,7 @@ export default function AddItem() {
                                         placeholder="Enter a short description about the item..."
                                         id="description"
                                         style={{ height: 80 }}
-                                        value={description}
-                                        onChange={handleInputChange}
+                                        defaultValue={""}
                                     />
                                 </div>
 

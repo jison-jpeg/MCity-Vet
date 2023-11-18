@@ -3,9 +3,11 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import AddItem from '../components/modals/AddItem';
 import InventoryTable from '../components/InventoryTable';
-
+import UpdateItem from '../components/modals/UpdateItem';
+import { useSelector } from 'react-redux';
 
 export default function Inventory() {
+  const { currentUser } = useSelector((state) => state.user);
 
   // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -61,9 +63,12 @@ export default function Inventory() {
 
         <div className="btn-header">
           <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Item</button>
+          <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#updateModal">Update Item</button>
         </div>
 
         <AddItem />
+        <UpdateItem />
+
         <section className="section dashboard">
           <div className="row">
 
