@@ -101,7 +101,26 @@ export default function UpdateItem({ selectedItem }) {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Item updated:', data);
-                // You can close the modal or perform other actions after successful update.
+
+                // Add system log after updating the item
+                const systemLogResponse = await fetch('/backend/logs/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: currentUser._id,
+                        name: `${currentUser.firstName} ${currentUser.lastName}`, // Include lastName in the name field
+                        role: currentUser.role,
+                        dateTime: new Date(),
+                        activity: `Updated item in inventory: ${updatedItemData.itemName}`,
+                    }),
+                });
+                if (systemLogResponse.ok) {
+                    console.log('System log added:', await systemLogResponse.json());
+                } else {
+                    console.error('Error adding system log:', systemLogResponse.statusText);
+                }
             } else {
                 console.error('Error updating item:', response.statusText);
             }

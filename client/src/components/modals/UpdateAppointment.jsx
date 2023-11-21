@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function UpdateAppointment({ appointment }) {
+    const { currentUser } = useSelector((state) => state.user);
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -152,6 +155,27 @@ export default function UpdateAppointment({ appointment }) {
                 if (!rescheduleResponse.ok) {
                     throw new Error(`Error updating appointment status to Rescheduled: ${rescheduleResponse.statusText}`);
                 }
+            }
+
+            // Add system log after updating the appointment
+            const systemLogResponse = await fetch('/backend/logs/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    accountId: currentUser._id,
+                    name: `${currentUser.firstName} ${currentUser.lastName}`, // Include lastName in the name field
+                    role: currentUser.role,
+                    dateTime: new Date(),
+                    activity: `Made an update(s) on appointment for ${formData.firstName} ${formData.lastName}`,
+                }),
+            });
+
+            if (systemLogResponse.ok) {
+                console.log('System log added:', await systemLogResponse.json());
+            } else {
+                console.error('Error adding system log:', systemLogResponse.statusText);
             }
 
 

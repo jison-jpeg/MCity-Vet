@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 export default function AddItem() {
     const { currentUser } = useSelector((state) => state.user);
 
-    
     const [quantity, setQuantity] = useState(0);
     const [itemName, setItemName] = useState('');
     const [description, setDescription] = useState('');
@@ -62,6 +61,28 @@ export default function AddItem() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Item added:', data);
+
+                // Add system log after adding the item
+                const systemLogResponse = await fetch('/backend/logs/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: currentUser._id,
+                        name: `${currentUser.firstName} ${currentUser.lastName}`, // Include lastName in the name field
+                        role: currentUser.role,
+                        dateTime: new Date(),
+                        activity: `Added item to inventory: ${itemData.itemName}`,
+                    }),
+                });
+
+                if (systemLogResponse.ok) {
+                    console.log('System log added:', await systemLogResponse.json());
+                } else {
+                    console.error('Error adding system log:', systemLogResponse.statusText);
+                }
+
                 // You can reset the form or perform other actions after successful creation.
             } else {
                 console.error('Error adding item:', response.statusText);
