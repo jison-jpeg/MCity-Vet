@@ -63,11 +63,10 @@ export default function Inventory() {
 
         <div className="btn-header">
           <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">Add Item</button>
-          <button type="button" className="btn btn-primary-dashboard btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#updateModal">Update Item</button>
         </div>
 
         <AddItem />
-        <UpdateItem />
+        {/* <UpdateItem /> */}
 
         <section className="section dashboard">
           <div className="row">

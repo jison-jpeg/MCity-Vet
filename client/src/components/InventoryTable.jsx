@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import UpdateItem from './modals/UpdateItem';
 
 export default function InventoryTable() {
   const [inventoryData, setInventoryData] = useState([]);
   const [userDisplayNames, setUserDisplayNames] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null); // Initialize selectedItem
+
   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -44,6 +47,11 @@ export default function InventoryTable() {
       });
   };
 
+  const getStatusBadgeClass = (status) => {
+    return status === 'In Stock' ? 'bg-success' : 'bg-danger';
+  };
+  
+
   return (
     <>
       <div className="col-lg-12">
@@ -78,10 +86,18 @@ export default function InventoryTable() {
                         <td>{new Date(item.dateAdded).toLocaleDateString()}</td>
                         <td>{new Date(item.dateUpdated).toLocaleDateString()}</td>
                         <td>{userDisplayNames[index]}</td>
-                        <td>{item.status}</td>
+                        <td> <span className={`badge rounded-pill ${getStatusBadgeClass(item.status)}`}>
+                            {item.status}
+                          </span> </td>
                         <td>
                           <div className='d-grid gap-2 d-sm-flex justify-content-sm-center'>
-                            <button type="button" className="btn btn-primary-dashboard-action btn-sm" data-bs-toggle="modal" data-bs-target="#updateModal">
+                            <button
+                              type="button"
+                              className="btn btn-primary-dashboard-action btn-sm"
+                              data-bs-toggle="modal"
+                              data-bs-target="#updateModal"
+                              onClick={() => setSelectedItem(item)}
+                            >
                               Update
                             </button>
                             <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
@@ -98,6 +114,9 @@ export default function InventoryTable() {
           </div>
         </div>
       </div>
+
+      <UpdateItem selectedItem={selectedItem} />
+
     </>
   );
 }

@@ -69,7 +69,7 @@ export const addInventory = async (req, res) => {
 
 // Update Inventory
 export const updateInventory = async (req, res) => {
-    const { itemName, description, category, quantity } = req.body;
+    const { itemName, description, category, quantity, status } = req.body;
     const updatedBy = req.user.id;
 
     try {
@@ -88,6 +88,7 @@ export const updateInventory = async (req, res) => {
                 category,
                 quantity,
                 updatedBy,
+                status,
                 dateUpdated: Date.now(),
             },
             { new: true }
