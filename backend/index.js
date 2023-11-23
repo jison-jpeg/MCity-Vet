@@ -8,6 +8,7 @@ import appointmentRoutes from './routes/appointment.route.js';
 import inventoryRoutes from './routes/inventory.route.js';
 import serviceRoutes from './routes/service.route.js';
 import systemlogsRoutes from './routes/systemlogs.route.js';
+import medicalrecordRoutes from './routes/medicalrecord.route.js';
 
 import cookieParser from 'cookie-parser';
 // import path from 'path';
@@ -36,7 +37,7 @@ app.use("/backend/inventory", inventoryRoutes);
 app.use("/backend/technician", technicianRoutes);
 app.use("/backend/service", serviceRoutes);
 app.use("/backend/logs", systemlogsRoutes);
-
+app.use("/backend/medicalrecord", medicalrecordRoutes);
 
 app.use((error, req, res, next) => {
     const statusCode = error.statusCode || 500;

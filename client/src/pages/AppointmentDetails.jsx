@@ -188,7 +188,7 @@ export default function AppointmentDetails() {
             <div className="card">
               <div className="card-body mb-2">
                 <div className="d-flex justify-content-between align-items-start">
-                  <h5 className="card-title">Latest Appointment</h5>
+                  <h5 className="card-title">My Appointment</h5>
                 </div>
 
 

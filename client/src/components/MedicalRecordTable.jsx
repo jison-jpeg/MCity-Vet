@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-const MedicalRecordTable = () => {
+export default function MedicalRecordTable() {
     const [medicalRecords, setMedicalRecords] = useState([]);
 
     useEffect(() => {
@@ -8,7 +9,21 @@ const MedicalRecordTable = () => {
             try {
                 const response = await fetch('/backend/medicalrecord/all');
                 const data = await response.json();
-                setMedicalRecords(data);
+
+                // Fetch additional data for each medical record from the Appointment model
+                const recordsWithDetails = await Promise.all(
+                    data.map(async (record) => {
+                        const appointmentResponse = await fetch(`/backend/appointment/${record.appointmentId}`);
+                        const appointmentData = await appointmentResponse.json();
+                        return {
+                            ...record,
+                            firstName: appointmentData.firstName,
+                            lastName: appointmentData.lastName,
+                        };
+                    })
+                );
+
+                setMedicalRecords(recordsWithDetails);
             } catch (error) {
                 console.error('Error fetching medical records:', error);
             }
@@ -35,9 +50,9 @@ const MedicalRecordTable = () => {
                             <td>{record._id}</td>
                             <td>{record.appointmentId}</td>
                             <td>{record.createdAt}</td>
-                            <td>{`${record.appointmentId.firstName} ${record.appointmentId.lastName}`}</td>
+                            <td>{`${record.firstName} ${record.lastName}`}</td>
                             <td>
-                                <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
+                                <Link to={`/medical-records/${record._id}`} className="btn btn-primary-dashboard-action btn-sm">View</Link>
                                 <span> | </span>
                                 <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
                             </td>
@@ -46,7 +61,5 @@ const MedicalRecordTable = () => {
                 </tbody>
             </table>
         </>
-    );
-};
-
-export default MedicalRecordTable;
+    )
+}
