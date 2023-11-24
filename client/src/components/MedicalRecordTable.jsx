@@ -52,7 +52,7 @@ export default function MedicalRecordTable() {
                             <td>{record.createdAt}</td>
                             <td>{`${record.firstName} ${record.lastName}`}</td>
                             <td>
-                                <Link to={`/medical-records/${record._id}`} className="btn btn-primary-dashboard-action btn-sm">View</Link>
+                                <Link to={`/medical-record/${record._id}`} className="btn btn-primary-dashboard-action btn-sm">View</Link>
                                 <span> | </span>
                                 <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
                             </td>

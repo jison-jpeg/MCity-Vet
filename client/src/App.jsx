@@ -15,6 +15,7 @@ import NotFound from './pages/NotFound';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import PrivateRoute from './components/PrivateRoute';
 import AppointmentDetails from './pages/AppointmentDetails';
+import MedicalRecordDetails from './pages/MedicalRecordDetails';
 
 export default function App() {
   return (
@@ -66,6 +67,10 @@ export default function App() {
           <Route
             path="/system-logs"
             element={<SystemLogs />}
+          />
+          <Route
+            path="medical-record/:id"
+            element={<MedicalRecordDetails />}
           />
         </Route>
       </Routes>
