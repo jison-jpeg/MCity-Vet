@@ -8,8 +8,9 @@ import {
     deleteAppointment,
     getAppointmentById,
     getAppointmentsByTechnician,
-    getAppointmentsByUser ,
+    getAppointmentsByUser,
     updateAppointment,
+    archiveAppointment,
 
 } from '../controllers/appointment.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';
@@ -24,6 +25,7 @@ router.get('/technician/:id', verifyToken, getAppointmentsByTechnician);
 router.get('/:id/appointments', verifyToken, getAppointmentsByUser);
 router.post('/create', verifyToken, createAppointment);
 router.put('/update/:id', verifyToken, updateAppointment);
+router.put('/archive/:id', verifyToken, archiveAppointment);
 router.delete('/delete/:id', verifyToken, deleteAppointment);
 
 export default router;

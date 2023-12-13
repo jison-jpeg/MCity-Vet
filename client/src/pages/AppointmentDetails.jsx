@@ -4,6 +4,7 @@ import DashboardSidebar from '../components/DashboardSidebar';
 import UpdateAppointment from '../components/modals/UpdateAppointment';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Preloader from '../components/Preloader';
 
 export default function AppointmentDetails() {
   const { currentUser } = useSelector((state) => state.user);
@@ -157,6 +158,41 @@ export default function AppointmentDetails() {
     }
   };
 
+  // Toggle archive status with a single button
+  const toggleArchive = async () => {
+    try {
+      console.log('Toggling archive status...');
+
+      const response = await fetch(`/backend/appointment/archive/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          archive: !appointment.archive,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error toggling archive status: ${response.statusText}`);
+      }
+
+      const updatedAppointment = await response.json();
+      console.log('Archive status toggled successfully:', updatedAppointment);
+
+      setAppointment(updatedAppointment);
+    } catch (error) {
+      console.error('Error toggling archive status:', error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
+
+
+
+
+
+
+
   const isDisabled =
     appointment &&
     (['Cancelled', 'Completed'].includes(appointment.status) ||
@@ -164,6 +200,7 @@ export default function AppointmentDetails() {
 
   return (
     <>
+      <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
 
@@ -187,9 +224,20 @@ export default function AppointmentDetails() {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-body mb-2">
-                <div className="d-flex justify-content-between align-items-start">
-                  <h5 className="card-title">My Appointment</h5>
-                </div>
+              <div className="d-flex justify-content-between align-items-center">
+  <h5 className="card-title">My Appointment</h5>
+  {appointment.status === 'Completed' && (currentUser.role === 'technician' || currentUser.role === 'admin' || currentUser.role === 'secretary') && (
+    <button
+      className={`btn btn-primary-dashboard btn-sm rounded-pill ${
+        appointment.archive ? 'btn-danger' : 'btn-primary'
+      }`}
+      type="button"
+      onClick={toggleArchive}
+    >
+      {appointment.archive ? 'Unarchive' : 'Archive'}
+    </button>
+  )}
+</div>
 
 
                 <div className="mb-3 row">
@@ -219,17 +267,7 @@ export default function AppointmentDetails() {
                         {currentUser.role === 'customer' && appointment.status === 'Pending' ? 'Waiting to Accept' : appointment.status}
                       </span>
                     )}
-
-
-
-
-
                   </div>
-
-
-
-
-
 
                   <div className="col-sm-4 col-md-4 mt-2">
                     <p className="card-text fw-bold">Schedule</p>
@@ -362,8 +400,9 @@ export default function AppointmentDetails() {
                       )}
                     </>
                   )}
-                </div>
 
+
+                </div>
 
               </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import FacebookMsg from '../components/FacebookMsg';
+import Preloader from '../components/Preloader';
 
 export default function Home() {
 
@@ -10,6 +11,7 @@ export default function Home() {
       
 
       <div className="page-wrapper">
+        <Preloader />
 
         {/* Header.jsx */}
         <Header />

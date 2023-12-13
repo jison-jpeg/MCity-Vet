@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import AddAppointment from '../components/modals/AddAppointment';
-import AppointmentTable from '../components/AppointmentTable';
+import AppointmentTableArchive from '../components/AppointmentTableArchive';
 import Preloader from '../components/Preloader';
 
-export default function Appointments() {
+export default function AppointmentsArchive() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -94,7 +94,10 @@ export default function Appointments() {
               <li className="breadcrumb-item">
                 <a href="/dashboard">Home</a>
               </li>
-              <li className="breadcrumb-item active">Appointments</li>
+              <li className="breadcrumb-item">
+                <a href="/appointments">Appointments</a>
+              </li>
+              <li className="breadcrumb-item active">Archive</li>
             </ol>
           </nav>
         </div>
@@ -116,7 +119,7 @@ export default function Appointments() {
 
         <section className="section dashboard">
           <div className="row">
-            <AppointmentTable appointments={appointments} currentUserRole={currentUserRole} />
+            <AppointmentTableArchive appointments={appointments} currentUserRole={currentUserRole} />
           </div>
         </section>
       </main>
@@ -142,3 +145,4 @@ export default function Appointments() {
     </>
   );
 }
+

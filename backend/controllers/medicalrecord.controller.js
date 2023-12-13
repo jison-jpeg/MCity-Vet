@@ -86,7 +86,7 @@ export const updateMedicalRecord = async (req, res, next) => {
         medicalRecord.diagnosis = diagnosis;
         medicalRecord.treatment = treatment;
         medicalRecord.prescription = prescription;
-        medicalRecord.createdBy = createdBy;
+        // medicalRecord.createdBy = createdBy;
 
         await medicalRecord.save();
 

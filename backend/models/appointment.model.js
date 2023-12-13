@@ -49,7 +49,11 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         enum: ['Pending', 'Approved', 'Rescheduled', 'Cancelled', 'Completed'],
         default: 'Pending',
-    }
+    },
+    archive: {
+        type: Boolean,
+        default: false, // By default, a appointment is available
+    },
 }, {
     timestamps: true // Add this to include createdAt and updatedAt timestamps
 });

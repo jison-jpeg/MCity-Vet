@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-export default function AppointmentTable({ appointments, currentUserRole }) {
+export default function AppointmentTableArchive({ appointments, currentUserRole }) {
+
+  const archivedAppointments = appointments.filter(appointment => appointment.archive === true);
 
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
@@ -58,7 +60,7 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {appointments.map((appointment) => (
+                    {archivedAppointments.map((appointment) => (
                       <tr key={appointment._id}>
                         <th scope="row">{appointment._id}</th>
                         <td>{appointment.createdAt}</td>

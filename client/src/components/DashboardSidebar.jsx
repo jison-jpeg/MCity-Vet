@@ -33,29 +33,29 @@ export default function DashboardSidebar({ toggleSidebar }) {
 
           {/* Appointment Page Nav */}
           <li className="nav-item">
-          <a className={`nav-link ${location.pathname.startsWith('/appointments') ? '' : 'collapsed'}`} href="/appointments">
+            <a className={`nav-link ${location.pathname.startsWith('/appointments') ? '' : 'collapsed'}`} href="/appointments">
 
-              <i className="bi bi-person" />
+              <i className="bi bi-clipboard-heart" />
               <span>{isCustomer ? 'My Appointment' : 'Appointments'}</span>            </a>
           </li>
           {/* End Appointment Page Nav */}
 
           {/* Inventory Page Nav */}
           {isAdmin && (
-          <li className="nav-item">
-            <a className={`nav-link ${location.pathname === '/inventory' ? '' : 'collapsed'}`} href="/inventory">
+            <li className="nav-item">
+              <a className={`nav-link ${location.pathname === '/inventory' ? '' : 'collapsed'}`} href="/inventory">
 
-              <i className="bi bi-person" />
-              <span>Inventory</span>
-            </a>
-          </li>
+                <i className="bi bi-box-seam" />
+                <span>Inventory</span>
+              </a>
+            </li>
           )}
           {/* End Inventory Page Nav */}
 
           {/* Medical Record Page Nav */}
           <li className="nav-item">
             <a className={`nav-link ${location.pathname === '/medical-record' ? '' : 'collapsed'}`} href="/medical-record">
-              <i className="bi bi-question-circle" />
+              <i className="bi bi-prescription" />
               <span>Medical Record</span>
             </a>
           </li>
@@ -65,7 +65,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
           <li className="nav-heading">USER</li>
           <li className="nav-item">
             <a className={`nav-link ${location.pathname === '/profile' ? '' : 'collapsed'}`} href="/profile">
-              <i className="bi bi-card-list" />
+              <i className="bi bi-person" />
               <span>Profile</span>
             </a>
           </li>
@@ -78,7 +78,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
               <li className="nav-heading">SYSTEM</li>
               <li className="nav-item">
                 <a className={`nav-link ${location.pathname === '/account-management' ? '' : 'collapsed'}`} href="/account-management">
-                  <i className="bi bi-envelope" />
+                  <i className="bi bi-person-gear" />
                   <span>Account Management</span>
                 </a>
               </li>
@@ -92,10 +92,49 @@ export default function DashboardSidebar({ toggleSidebar }) {
                   <span>System Logs</span>
                 </a>
               </li>
-
             </div>
           )}
           {/* End System Logs Page Nav */}
+
+          {/* Archives Page Nav */}
+          <li className="nav-item">
+            <a
+              className="nav-link collapsed"
+              data-bs-target="#icons-nav"
+              data-bs-toggle="collapse"
+              href="#"
+              aria-expanded="false"
+            >
+              <i className="bi bi-archive" />
+              <span>Archives</span>
+              <i className="bi bi-chevron-down ms-auto" />
+            </a>
+            <ul
+              id="icons-nav"
+              className="nav-content collapse "
+              data-bs-parent="#sidebar-nav"
+            >
+              <li>
+                <a href="/appointments/archive">
+                  <i className="bi bi-circle" />
+                  <span>Appointments</span>
+                </a>
+              </li>
+              <li>
+                <a href="/inventory/archive">
+                  <i className="bi bi-circle" />
+                  <span>Inventory</span>
+                </a>
+              </li>
+              <li>
+                <a href="/medical-record/archive">
+                  <i className="bi bi-circle" />
+                  <span>Medical Record</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+
 
         </ul>
       </aside>

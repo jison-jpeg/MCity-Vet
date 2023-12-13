@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
+import Preloader from '../components/Preloader';
 
 export default function SystemLogs() {
 
@@ -51,7 +52,8 @@ export default function SystemLogs() {
     }, []);
 
     return (
-        <>
+        <>  
+            <Preloader />
             <DashboardHeader toggleSidebar={toggleSidebar} />
             <DashboardSidebar toggleSidebar={toggleSidebar} />
 

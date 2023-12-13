@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-export default function UnauthorizedPage() {
+export default function NotFound() {
 
   useEffect(() => {
     const mainStylesheet = document.getElementById('main-stylesheet');
@@ -17,8 +17,9 @@ export default function UnauthorizedPage() {
   }, []);
 
   return (
-    <div className="page-wrapper">
-        <main className='main error-401'>
+    <>
+      <div className="page-wrapper">
+        <main className='main' style={{ backgroundColor: '#283779' }}>
           <div className="container">
             <section className="section error-401 min-vh-100 d-flex flex-column align-items-center justify-content-center">
               <h1>401</h1>
@@ -36,5 +37,7 @@ export default function UnauthorizedPage() {
           </div>
         </main>
       </div>
+    </>
+
   )
 }

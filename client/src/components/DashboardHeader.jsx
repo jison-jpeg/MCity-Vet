@@ -1,19 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { signout } from '../redux/user/userSlice';
-import { useNavigate } from 'react-router-dom';
-import Preloader from './Preloader';
 
 export default function DashboardHeader({ toggleSidebar }) {
   const { currentUser } = useSelector((state) => state.user);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
 
   const handleSignout = async () => {
     try {
-      await fetch('/backend/auth/signout');
       dispatch(signout())
+      await fetch('/backend/auth/signout');
     } catch (error) {
       console.log(error);
     }
@@ -22,11 +19,6 @@ export default function DashboardHeader({ toggleSidebar }) {
   return (
 
     <>
-
-      
-      {/* Preloader */}
-      <Preloader />
-
 
       {/* ======= Header ======= */}
       <header id="header" className="header fixed-top d-flex align-items-center">

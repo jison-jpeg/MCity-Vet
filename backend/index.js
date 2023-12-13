@@ -37,7 +37,7 @@ app.use("/backend/inventory", inventoryRoutes);
 app.use("/backend/technician", technicianRoutes);
 app.use("/backend/service", serviceRoutes);
 app.use("/backend/logs", systemlogsRoutes);
-app.use("/backend/medicalrecord", medicalrecordRoutes);
+app.use("/backend/medical-record", medicalrecordRoutes);
 
 app.use((error, req, res, next) => {
     const statusCode = error.statusCode || 500;

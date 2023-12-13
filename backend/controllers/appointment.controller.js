@@ -164,6 +164,33 @@ export const updateAppointment = async (req, res, next) => {
   }
 };
 
+// Archive Appointment
+export const archiveAppointment = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const appointment = await Appointment.findById(id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          archive: !appointment.archive, // Toggle the archive status
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updatedAppointment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 
 
 // Delete Appointment

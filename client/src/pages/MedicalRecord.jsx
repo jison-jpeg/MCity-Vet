@@ -3,6 +3,7 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import { useSelector } from 'react-redux';
 import MedicalRecordTable from '../components/MedicalRecordTable';
+import Preloader from '../components/Preloader';
 
 
 export default function MedicalRecord() {
@@ -41,6 +42,7 @@ export default function MedicalRecord() {
 
     return (
         <>
+            <Preloader />
             <DashboardHeader toggleSidebar={toggleSidebar} />
             <DashboardSidebar toggleSidebar={toggleSidebar} />
 

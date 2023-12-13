@@ -7,7 +7,7 @@ export default function MedicalRecordTable() {
     useEffect(() => {
         const fetchMedicalRecords = async () => {
             try {
-                const response = await fetch('/backend/medicalrecord/all');
+                const response = await fetch('/backend/medical-record/all');
                 const data = await response.json();
 
                 // Fetch additional data for each medical record from the Appointment model

@@ -6,6 +6,7 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { app } from "../firebase";
 import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import Preloader from '../components/Preloader';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -115,6 +116,7 @@ export default function Profile() {
 
   return (
     <>
+      <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
       <main id="main" className="main">

@@ -5,6 +5,7 @@ import DashboardSidebar from '../components/DashboardSidebar';
 import AppointmentStat from '../components/AppointmentStat';
 import AccountStat from '../components/AccountStat';
 import RecentAppointment from '../components/RecentAppointment';
+import Preloader from '../components/Preloader';
 
 export default function Dashboard() {
 
@@ -71,6 +72,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
 

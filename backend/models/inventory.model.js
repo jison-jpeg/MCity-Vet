@@ -18,12 +18,10 @@ const inventorySchema = new mongoose.Schema({
     default: 0,
   },
   dateAdded: {
-    type: Date,
-    default: Date.now(),
+    type: String,
   },
   dateUpdated: {
-    type: Date,
-    default: Date.now(),
+    type: String,
   },
   status: {
     type: String,
@@ -39,6 +37,16 @@ const inventorySchema = new mongoose.Schema({
     ref: 'User',
   },
 });
+
+// Pre-save middleware to format createdAt before saving the document
+inventorySchema.pre('save', function (next) {
+  // Format the date as needed, for example: MM-DD-YYYY
+  const currentDate = new Date().toLocaleDateString();
+  this.dateAdded = currentDate;
+  this.dateUpdated = currentDate;
+  next();
+});
+
 
 const Inventory = mongoose.model('Inventory', inventorySchema);
 

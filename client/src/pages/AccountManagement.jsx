@@ -4,6 +4,7 @@ import DashboardSidebar from '../components/DashboardSidebar';
 import AccountStat from '../components/AccountStat';
 import AddAccount from '../components/modals/AddAccount';
 import { useSelector } from 'react-redux';
+import Preloader from '../components/Preloader';
 
 export default function AccountManagement() {
   // State to manage the sidebar visibility
@@ -66,6 +67,7 @@ export default function AccountManagement() {
 
   return (
     <>
+      <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
 

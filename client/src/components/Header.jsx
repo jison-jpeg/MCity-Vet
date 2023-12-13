@@ -25,8 +25,8 @@ export default function Header() {
 
   const handleSignout = async () => {
     try {
-      await fetch('/api/auth/signout');
       dispatch(signout())
+      await fetch('/api/auth/signout');
       navigate('/signin');
     } catch (error) {
       console.log(error);
@@ -35,15 +35,6 @@ export default function Header() {
 
   return (
     <header className="header">
-
-      {/* Pre loader */}
-      <div className="loading-overlay">
-        <div className="bounce-loader">
-          <div className="bounce1" />
-          <div className="bounce2" />
-          <div className="bounce3" />
-        </div>
-      </div>
 
       <div className="header-middle sticky-header">
         <div className="header-left">

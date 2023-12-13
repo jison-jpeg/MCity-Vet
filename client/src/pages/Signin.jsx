@@ -4,6 +4,7 @@ import { signinStart, signinSuccess, signinFailure, setRefreshToken } from '../r
 import { useDispatch, useSelector } from 'react-redux';
 import OAuth from '../components/OAuth';
 import ReCAPTCHA from "react-google-recaptcha";
+import Preloader from '../components/Preloader';
 
 export default function Signin() {
 
@@ -81,13 +82,7 @@ export default function Signin() {
 
   return (
     <>
-      <div className="loading-overlay">
-        <div className="bounce-loader">
-          <div className="bounce1" />
-          <div className="bounce2" />
-          <div className="bounce3" />
-        </div>
-      </div>
+<Preloader />
       <div className="page-wrapper">
         <header className="header header-sign">
           <div className="header-middle header-middle-simple">

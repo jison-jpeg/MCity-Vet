@@ -5,6 +5,7 @@ import AddItem from '../components/modals/AddItem';
 import InventoryTable from '../components/InventoryTable';
 import UpdateItem from '../components/modals/UpdateItem';
 import { useSelector } from 'react-redux';
+import Preloader from '../components/Preloader';
 
 export default function Inventory() {
   const { currentUser } = useSelector((state) => state.user);
@@ -41,6 +42,7 @@ export default function Inventory() {
 
   return (
     <>
+      <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
 
