@@ -78,61 +78,92 @@ export default function AppointmentDetails() {
     fetchAppointmentDetails();
   }, [id]);
 
-  // Accept appointment
-  const acceptAppointment = async () => {
-    try {
-      const response = await fetch(`/backend/appointment/update/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: 'Approved',
-        }),
-      });
+// Accept appointment
+const acceptAppointment = async () => {
+  try {
+    const response = await fetch(`/backend/appointment/update/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        status: 'Approved',
+      }),
+    });
 
-      if (!response.ok) {
-        throw new Error(`Error accepting appointment: ${response.statusText}`);
-      }
-
-      const updatedAppointment = await response.json();
-      setAppointment((prevAppointment) => ({
-        ...prevAppointment,
-        ...updatedAppointment,
-        technicianName: prevAppointment.technicianName,
-      }));
-    } catch (error) {
-      console.error(error);
+    if (!response.ok) {
+      throw new Error(`Error accepting appointment: ${response.statusText}`);
     }
-  };
 
-  // Complete appointment
-  const completeAppointment = async () => {
-    try {
-      const response = await fetch(`/backend/appointment/update/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: 'Completed',
-        }),
-      });
+    const updatedAppointment = await response.json();
 
-      if (!response.ok) {
-        throw new Error(`Error completing appointment: ${response.statusText}`);
-      }
+    // Notify the customer that their appointment is accepted
+    await fetch('/backend/notification/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: updatedAppointment.createdBy, // Customer's user ID
+        message: 'Your appointment has been accepted!',
+        type: 'success',
+        appointmentId: id,
+      }),
+    });
 
-      const updatedAppointment = await response.json();
-      setAppointment((prevAppointment) => ({
-        ...prevAppointment,
-        ...updatedAppointment,
-        technicianName: prevAppointment.technicianName,
-      }));
-    } catch (error) {
-      console.error(error);
+    setAppointment((prevAppointment) => ({
+      ...prevAppointment,
+      ...updatedAppointment,
+      technicianName: prevAppointment.technicianName,
+    }));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+// Complete appointment
+const completeAppointment = async () => {
+  try {
+    const response = await fetch(`/backend/appointment/update/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        status: 'Completed',
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error completing appointment: ${response.statusText}`);
     }
-  };
+
+    const updatedAppointment = await response.json();
+
+    // Notify the customer that their appointment is completed
+    await fetch('/backend/notification/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: updatedAppointment.createdBy, // Customer's user ID
+        message: 'Your appointment has been completed!',
+        type: 'success',
+        appointmentId: id,
+      }),
+    });
+
+    setAppointment((prevAppointment) => ({
+      ...prevAppointment,
+      ...updatedAppointment,
+      technicianName: prevAppointment.technicianName,
+    }));
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   // Cancel appointment
   const cancelAppointment = async () => {

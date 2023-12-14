@@ -1,5 +1,6 @@
 import Appointment from "../models/appointment.model.js";
 import User from "../models/user.model.js";
+import Notification from "../models/notification.model.js";
 
 export const test = (req, res) => {
   res.json({
@@ -96,7 +97,7 @@ export const getAppointmentsByTechnician = async (req, res, next) => {
 // Create Appointment
 export const createAppointment = async (req, res, next) => {
   try {
-    const { schedule, technicianName, firstName, lastName, phone, email, services, address, landmark, patient,  } = req.body;
+    const { schedule, technicianName, firstName, lastName, phone, email, services, address, landmark, patient, } = req.body;
 
     const createdByUserId = req.user.id;
 
@@ -131,11 +132,34 @@ export const createAppointment = async (req, res, next) => {
       createdBy: createdByUserId,
     });
 
-    res.status(201).json(newAppointment);
-  } catch (error) {
-    next(error);
-  }
+    const appointmentId = newAppointment._id;
+
+    res.status(201).json({
+      ...newAppointment.toObject(),
+      appointmentId, // Include the appointmentId in the response
+  });
+
+  // Create notification for the user who initiated the action (patient)
+  await Notification.create({
+      userId: createdByUserId,
+      message: 'Appointment created successfully!',
+      type: 'success',
+      appointmentId,
+  });
+
+  // If targetUserId is provided, create notification for the target user (e.g., technician)
+  await Notification.create({
+      userId: technician._id,
+      message: `New appointment scheduled by ${firstName} ${lastName}`,
+      type: 'info',
+      appointmentId,
+  });
+  
+} catch (error) {
+  next(error);
+}
 };
+
 
 // Update Appointment
 export const updateAppointment = async (req, res, next) => {
@@ -145,6 +169,27 @@ export const updateAppointment = async (req, res, next) => {
     const appointment = await Appointment.findById(id);
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    const { status } = req.body;
+
+    // Check if the appointment status is changing to 'Cancelled'
+    if (status === 'Cancelled' && appointment.status !== 'Cancelled') {
+      // Notify the customer that their appointment is cancelled
+      await Notification.create({
+        userId: appointment.createdBy,
+        message: 'Your appointment has been cancelled.',
+        type: 'error', // You can use 'error' or 'info' based on your preference
+        appointmentId: id,
+      });
+
+      // Notify the technician about the cancellation
+      await Notification.create({
+        userId: appointment.technicianName,
+        message: `Your Appointment from ${appointment.firstName} ${appointment.lastName} has been cancelled.`,
+        type: 'warning', // You can use 'error' or 'info' based on your preference
+        appointmentId: id,
+      });
     }
 
     const updatedAppointment = await Appointment.findByIdAndUpdate(
@@ -163,6 +208,8 @@ export const updateAppointment = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 // Archive Appointment
 export const archiveAppointment = async (req, res, next) => {
@@ -190,9 +237,6 @@ export const archiveAppointment = async (req, res, next) => {
   }
 };
 
-
-
-
 // Delete Appointment
 export const deleteAppointment = async (req, res, next) => {
   const { id } = req.params;
@@ -208,3 +252,4 @@ export const deleteAppointment = async (req, res, next) => {
     next(error);
   }
 };
+

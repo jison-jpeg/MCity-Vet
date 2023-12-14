@@ -1,25 +1,76 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { signout } from '../redux/user/userSlice';
+import { Link } from 'react-router-dom';
+
 
 export default function DashboardHeader({ toggleSidebar }) {
   const { currentUser } = useSelector((state) => state.user);
+  const [notifications, setNotifications] = useState([]);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch(`/backend/notification/${currentUser._id}/notifications`);
+        if (response.ok) {
+          const data = await response.json();
+          setNotifications(data);
+        } else {
+          console.error('Failed to fetch notifications:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    fetchNotifications();
+  }, [currentUser._id]);
 
   const handleSignout = async () => {
     try {
-      dispatch(signout())
+      dispatch(signout());
       await fetch('/backend/auth/signout');
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Helper function to get notification icon based on type
+const getNotificationIcon = (type) => {
+  switch (type) {
+    case 'info':
+      return 'bi-info-circle text-primary';
+    case 'warning':
+      return 'bi-exclamation-circle text-warning';
+    case 'success':
+      return 'bi-check-circle text-success';
+    case 'error':
+      return 'bi-x-circle text-danger';
+    default:
+      return 'bi-info-circle text-primary';
+  }
+};
+
+// Helper function to get notification color based on type
+const getNotificationColor = (type) => {
+  switch (type) {
+    case 'info':
+      return 'text-primary';
+    case 'warning':
+      return 'text-warning';
+    case 'success':
+      return 'text-success';
+    case 'error':
+      return 'text-danger';
+    default:
+      return 'text-primary';
+  }
+};
+
+
   return (
-
     <>
-
       {/* ======= Header ======= */}
       <header id="header" className="header fixed-top d-flex align-items-center">
         <div className="d-flex align-items-center justify-content-between">
@@ -59,65 +110,33 @@ export default function DashboardHeader({ toggleSidebar }) {
             <li className="nav-item dropdown">
               <a className="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                 <i className="bi bi-bell-fill" />
-                <span className="badge bg-primary badge-number">4</span>
+                <span className="badge bg-primary badge-number">{notifications.length}</span>
               </a>
               {/* End Notification Icon */}
               <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                 <li className="dropdown-header">
-                  You have 4 new notifications
+                  You have {notifications.length} new notifications
                   <a href="#">
                     <span className="badge rounded-pill bg-primary p-2 ms-2">
                       View all
                     </span>
                   </a>
                 </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li className="notification-item">
-                  <i className="bi bi-exclamation-circle text-warning" />
-                  <div>
-                    <h4>Lorem Ipsum</h4>
-                    <p>Quae dolorem earum veritatis oditseno</p>
-                    <p>30 min. ago</p>
-                  </div>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li className="notification-item">
-                  <i className="bi bi-x-circle text-danger" />
-                  <div>
-                    <h4>Atque rerum nesciunt</h4>
-                    <p>Quae dolorem earum veritatis oditseno</p>
-                    <p>1 hr. ago</p>
-                  </div>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li className="notification-item">
-                  <i className="bi bi-check-circle text-success" />
-                  <div>
-                    <h4>Sit rerum fuga</h4>
-                    <p>Quae dolorem earum veritatis oditseno</p>
-                    <p>2 hrs. ago</p>
-                  </div>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li className="notification-item">
-                  <i className="bi bi-info-circle text-primary" />
-                  <div>
-                    <h4>Dicta reprehenderit</h4>
-                    <p>Quae dolorem earum veritatis oditseno</p>
-                    <p>4 hrs. ago</p>
-                  </div>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
+                {notifications.map((notification) => (
+                  <li key={notification._id} className="notification-item">
+                    <Link to={`/appointments/${notification.appointmentId}`}>
+                      <i className={getNotificationIcon(notification.type)} />
+                    </Link>
+                    <div>
+                      <h4 className={getNotificationColor(notification.type)}>
+                        <Link to={`/appointments/${notification.appointmentId}`}>
+                          {notification.message}
+                        </Link>
+                      </h4>
+                      <p>{formatDate(notification.timestamp)}</p>
+                    </div>
+                  </li>
+                ))}
                 <li className="dropdown-footer">
                   <a href="#">Show all notifications</a>
                 </li>
@@ -138,14 +157,13 @@ export default function DashboardHeader({ toggleSidebar }) {
                   className="rounded-circle"
                 />
                 <span className="d-none d-md-block dropdown-toggle ps-2">
-                {currentUser?.firstName}
+                  {currentUser?.firstName}
                 </span>
               </a>
               {/* End Profile Iamge Icon */}
               <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                 <li className="dropdown-header">
-                  <h6>{currentUser?.firstName} {currentUser?.lastName}
-</h6>
+                  <h6>{currentUser?.firstName} {currentUser?.lastName}</h6>
                   <span>{currentUser?.role}</span>
                 </li>
                 <li>
@@ -160,13 +178,16 @@ export default function DashboardHeader({ toggleSidebar }) {
                     <span>My Profile</span>
                   </a>
                 </li>
-               
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <a onClick={handleSignout} className="dropdown-item d-flex align-items-center" href="#">
-                    <i className="bi bi-box-arrow-right" />
+                  <a
+                    className="dropdown-item d-flex align-items-center"
+                    href="#"
+                    onClick={handleSignout}
+                  >
+                    <i className="bi bi-box-arrow-left" />
                     <span>Sign Out</span>
                   </a>
                 </li>
@@ -176,13 +197,15 @@ export default function DashboardHeader({ toggleSidebar }) {
             {/* End Profile Nav */}
           </ul>
         </nav>
-        {/* End Icons Navigation */}
+        {/* End Navbar */}
       </header>
       {/* End Header */}
     </>
-
-  )
+  );
 }
 
-
-
+// Helper function to format date (you can use a library like date-fns for better formatting)
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+};
