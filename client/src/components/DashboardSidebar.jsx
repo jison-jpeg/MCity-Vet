@@ -121,12 +121,6 @@ export default function DashboardSidebar({ toggleSidebar }) {
                 </a>
               </li>
               <li>
-                <a href="/inventory/archive">
-                  <i className="bi bi-circle" />
-                  <span>Inventory</span>
-                </a>
-              </li>
-              <li>
                 <a href="/medical-record/archive">
                   <i className="bi bi-circle" />
                   <span>Medical Record</span>

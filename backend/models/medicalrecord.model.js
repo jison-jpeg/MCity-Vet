@@ -24,6 +24,10 @@ const medicalRecordSchema = new mongoose.Schema({
     updatedAt: {
         type: String,
     },
+    archive: {
+        type: Boolean,
+        default: false, // By default, a medical record is not archived
+    },
 });
 
 // Pre-save middleware to format createdAt before saving the document

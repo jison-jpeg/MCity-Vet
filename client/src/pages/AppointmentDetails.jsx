@@ -4,6 +4,7 @@ import DashboardSidebar from '../components/DashboardSidebar';
 import UpdateAppointment from '../components/modals/UpdateAppointment';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Preloader from '../components/Preloader';
 
 export default function AppointmentDetails() {
@@ -49,7 +50,6 @@ export default function AppointmentDetails() {
       return technicianData;
     } catch (error) {
       console.error(error);
-      // Handle error, e.g., show an error message to the user
     }
   };
 
@@ -67,7 +67,7 @@ export default function AppointmentDetails() {
 
         setAppointment({
           ...appointmentData,
-          technicianName: technicianData.firstName + ' ' + technicianData.lastName,
+          technicianName: `${technicianData.firstName} ${technicianData.lastName}`,
         });
       } catch (error) {
         console.error(error);
@@ -96,10 +96,13 @@ export default function AppointmentDetails() {
       }
 
       const updatedAppointment = await response.json();
-      setAppointment(updatedAppointment);
+      setAppointment((prevAppointment) => ({
+        ...prevAppointment,
+        ...updatedAppointment,
+        technicianName: prevAppointment.technicianName,
+      }));
     } catch (error) {
       console.error(error);
-      // Handle error, e.g., show an error message to the user
     }
   };
 
@@ -121,16 +124,18 @@ export default function AppointmentDetails() {
       }
 
       const updatedAppointment = await response.json();
-      setAppointment(updatedAppointment);
+      setAppointment((prevAppointment) => ({
+        ...prevAppointment,
+        ...updatedAppointment,
+        technicianName: prevAppointment.technicianName,
+      }));
     } catch (error) {
       console.error(error);
-      // Handle error, e.g., show an error message to the user
     }
   };
 
   // Cancel appointment
   const cancelAppointment = async () => {
-    // Display confirmation alert
     const userConfirmed = window.confirm('Are you sure you want to cancel this appointment?');
 
     if (userConfirmed) {
@@ -150,10 +155,13 @@ export default function AppointmentDetails() {
         }
 
         const updatedAppointment = await response.json();
-        setAppointment(updatedAppointment);
+        setAppointment((prevAppointment) => ({
+          ...prevAppointment,
+          ...updatedAppointment,
+          technicianName: prevAppointment.technicianName,
+        }));
       } catch (error) {
         console.error(error);
-        // Handle error, e.g., show an error message to the user
       }
     }
   };
@@ -161,8 +169,6 @@ export default function AppointmentDetails() {
   // Toggle archive status with a single button
   const toggleArchive = async () => {
     try {
-      console.log('Toggling archive status...');
-
       const response = await fetch(`/backend/appointment/archive/${id}`, {
         method: 'PUT',
         headers: {
@@ -178,25 +184,53 @@ export default function AppointmentDetails() {
       }
 
       const updatedAppointment = await response.json();
-      console.log('Archive status toggled successfully:', updatedAppointment);
-
-      setAppointment(updatedAppointment);
+      setAppointment((prevAppointment) => ({
+        ...prevAppointment,
+        ...updatedAppointment,
+        technicianName: prevAppointment.technicianName,
+      }));
     } catch (error) {
       console.error('Error toggling archive status:', error);
-      // Handle error, e.g., show an error message to the user
     }
   };
-
-
-
-
-
-
 
   const isDisabled =
     appointment &&
     (['Cancelled', 'Completed'].includes(appointment.status) ||
       (currentUser.role === 'customer' && appointment.status === 'Approved'));
+
+
+  const navigate = useNavigate();
+
+  // Create Medical Record
+  const createMedicalRecord = async () => {
+    try {
+      // Perform the necessary API call to create a medical record based on the appointment ID
+      const response = await fetch('/backend/medical-record/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          appointmentId: id, // Pass the current appointment ID
+          // Add other required data for the medical record creation if needed
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error creating medical record: ${response.statusText}`);
+      }
+
+      const createdMedicalRecord = await response.json();
+      console.log('Medical Record created successfully:', createdMedicalRecord);
+
+      // After creating the medical record, navigate to the corresponding medical record details page
+      navigate(`/medical-record/${createdMedicalRecord._id}`);
+    } catch (error) {
+      console.error('Error creating medical record:', error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
 
   return (
     <>
@@ -224,20 +258,36 @@ export default function AppointmentDetails() {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-body mb-2">
-              <div className="d-flex justify-content-between align-items-center">
-  <h5 className="card-title">My Appointment</h5>
-  {appointment.status === 'Completed' && (currentUser.role === 'technician' || currentUser.role === 'admin' || currentUser.role === 'secretary') && (
-    <button
-      className={`btn btn-primary-dashboard btn-sm rounded-pill ${
-        appointment.archive ? 'btn-danger' : 'btn-primary'
-      }`}
-      type="button"
-      onClick={toggleArchive}
-    >
-      {appointment.archive ? 'Unarchive' : 'Archive'}
-    </button>
-  )}
-</div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <h5 className="card-title">My Appointment</h5>
+                  <div className="d-flex gap-2 justify-content-end">
+                    {(currentUser.role === 'technician' || currentUser.role === 'admin' || currentUser.role === 'secretary') && (
+                      <>
+                        {appointment.status === 'Completed' && (
+                          <button
+                            className="btn btn-primary-dashboard btn-sm rounded-pill"
+                            type="button"
+                            onClick={createMedicalRecord}
+                          >
+                            Create Medical Record
+                          </button>
+                        )}
+
+                        <button
+                          className={`btn btn-primary-dashboard btn-sm rounded-pill ${appointment?.archive ? 'btn-danger' : 'btn-primary'
+                            }`}
+                          type="button"
+                          onClick={toggleArchive}
+                        >
+                          {appointment?.archive ? 'Unarchive' : 'Archive'}
+                        </button>
+                      </>
+                    )}
+
+
+
+                  </div>
+                </div>
 
 
                 <div className="mb-3 row">

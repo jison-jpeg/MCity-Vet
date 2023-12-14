@@ -47,12 +47,29 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
+    if (imagePercent > 0 && imagePercent < 100) {
+      // Use a timeout to delay the state update and trigger a re-render
+      const timeoutId = setTimeout(() => {
+        setImagePercent(imagePercent);
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [imagePercent]);
+
+  useEffect(() => {
     if (image) {
+      // Display the selected image immediately
+      const imageUrl = URL.createObjectURL(image);
+      setFormData({ ...formData, profilePicture: imageUrl });
       handleFileUpload(image);
     }
   }, [image]);
 
   const handleFileUpload = async (image) => {
+    // Reset error state when attempting a new upload
+    setImageError(false);
+
     if (image.size > 2 * 1024 * 1024) {
       setImageError(true);
       return;

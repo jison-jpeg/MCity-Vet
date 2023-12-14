@@ -16,31 +16,22 @@ export default function AppointmentTableArchive({ appointments, currentUserRole 
           <div className="card-body">
 
             <h5 className="card-title">
-              {isCustomer ? 'Appointment History' : 'Appointments'}
+              {isCustomer ? 'Appointment History' : 'Archived Appointments'}
             </h5>
 
 
-            {appointments.length === 0 ? (
-              <div className="card-body pt-4 d-flex flex-column align-items-center">
+            {archivedAppointments.length === 0 ? (
+              <div className="pt-4 d-flex flex-column align-items-center mb-5 mt-5 p-5">
 
-                <img src="assets/images/cow.gif" alt="" />
+                <img src="/assets/images/cow.gif" alt="" />
                 <div className="text-center">
-                  <h5 className="card-title">No Appointments Yet</h5>
-                  <p className="card-text">{isCustomer ? 'You have no appointments yet. Book an appointment now!' : 'You have no appointments yet.'}</p>
+                  <h5 className="card-title">Hmm. Seems like nothing's in here but me.</h5>
+                  <p className="card-text">
+                    {isCustomer
+                      ? 'You have no appointments records.'
+                      : 'No archived appointments found.'}
+                  </p>
                 </div>
-
-
-                {isCustomer ? <a href="/book-appointment" className="btn btn-primary-dashboard btn-lg rounded-pill mt-3" id='book-appointment-button'>Book Appointment</a> : <button
-                  type="button"
-                  className="btn btn-primary-dashboard btn-lg rounded-pill"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addModal"
-                  id='book-appointment-button'
-                >
-                  Create Appointment
-                </button>}
-
-
               </div>
             ) : (
               <div className="table-responsive-xl">

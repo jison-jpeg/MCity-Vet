@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import AddAppointment from '../components/modals/AddAppointment';
@@ -78,7 +79,7 @@ export default function Appointments() {
     fetchAppointments();
   }, [currentUser, currentUserRole]);
 
-
+  const location = useLocation();
   return (
     <>
       <Preloader />
@@ -99,18 +100,20 @@ export default function Appointments() {
           </nav>
         </div>
 
-        {currentUser.role !== 'technician' && (
-          <div className="btn-header">
-            <button
-              type="button"
-              className="btn btn-primary-dashboard btn-lg rounded-pill"
-              data-bs-toggle="modal"
-              data-bs-target="#addModal"
-            >
-              {currentUser.role === 'customer' ? 'Book Appointment' : 'Create Appointment'}
-            </button>
-          </div>
-        )}
+        <>
+      {currentUser.role !== 'technician' && !location.pathname.includes('/appointments/archive') && (
+        <div className="btn-header">
+          <button
+            type="button"
+            className="btn btn-primary-dashboard btn-lg rounded-pill"
+            data-bs-toggle="modal"
+            data-bs-target="#addModal"
+          >
+            {currentUser.role === 'customer' ? 'Book Appointment' : 'Create Appointment'}
+          </button>
+        </div>
+      )}
+    </>
         
         <AddAppointment />
 

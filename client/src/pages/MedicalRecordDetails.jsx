@@ -128,8 +128,97 @@ export default function MedicalRecordDetails() {
       // Handle error, e.g., show an error message to the user
     }
   };
-  
-  const isDisabled = medicalRecord && medicalRecord.status === 'Completed';
+
+  // Toggle archive status with a single button
+
+
+  const printMedicalRecordSummary = () => {
+    const printContent = `
+      <div style="text-align: center; font-size: 20px; margin-bottom: 20px;">
+        <p>Medical Record Summary</p>
+      </div>
+
+      <div>
+        <p><strong>Appointment ID:</strong> ${appointment?._id || 'N/A'}</p>
+        <p><strong>Technician:</strong> ${appointment?.technician?.firstName || 'N/A'} ${appointment?.technician?.lastName || 'N/A'}</p>
+        <p><strong>Schedule:</strong> ${appointment?.schedule || 'N/A'}</p>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <h5>Information</h5>
+        <p><strong>Customer's Name:</strong> ${appointment?.firstName || 'N/A'} ${appointment?.lastName || 'N/A'}</p>
+        <p><strong>Address:</strong> ${appointment?.address || 'N/A'}</p>
+        <p><strong>Landmark:</strong> ${appointment?.landmark || 'N/A'}</p>
+        <p><strong>Service(s):</strong> ${appointment?.services?.join(', ') || 'N/A'}</p>
+        <p><strong>Animal(s):</strong> ${getAnimalDetails(appointment?.patient) || 'N/A'}</p>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <h5>Medical Record Details</h5>
+        <p><strong>Diagnosis:</strong> ${medicalRecord?.diagnosis || 'N/A'}</p>
+        <p><strong>Treatment:</strong> ${medicalRecord?.treatment || 'N/A'}</p>
+        <p><strong>Prescription:</strong> Download ${medicalRecord?.prescription || 'N/A'}</p>
+        <p><strong>Created By:</strong> ${medicalRecord?.createdBy || 'N/A'}</p>
+        <p><strong>Updated At:</strong> ${medicalRecord?.updatedAt || 'N/A'}</p>
+      </div>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Medical Record Summary</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+            }
+          </style>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const getAnimalDetails = (patients) => {
+    if (!Array.isArray(patients)) return 'N/A';
+
+    return patients
+      .map((patient, index) => `(${patient.numberOfHeads}) ${patient.typeOfAnimal}${index < patients.length - 1 ? ', ' : ''}`)
+      .join('');
+  };
+
+  // Toggle archive status with a single button
+  const toggleArchive = async () => {
+    try {
+      console.log('Toggling archive status...');
+
+      const response = await fetch(`/backend/medical-record/archive/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          archive: !medicalRecord.archive,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error toggling archive status: ${response.statusText}`);
+      }
+
+      const updatedMedicalRecord = await response.json();
+      console.log('Archive status toggled successfully:', updatedMedicalRecord);
+
+      setMedicalRecord(updatedMedicalRecord);
+    } catch (error) {
+      console.error('Error toggling archive status:', error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
 
 
   return (
@@ -161,12 +250,23 @@ export default function MedicalRecordDetails() {
                 <div className="d-flex justify-content-between align-items-center">
                   <h5 className="card-title">Medical Record Summary</h5>
                   <div className="d-flex gap-2 justify-content-end">
-                    <button className="btn btn-primary-dashboard btn-sm rounded-pill">
+                    <button className="btn btn-primary-dashboard btn-sm rounded-pill"
+                      onClick={printMedicalRecordSummary}
+                    >
                       <i className='bi bi-printer-fill'></i>
                     </button>
                     <button className="btn btn-primary-dashboard btn-sm rounded-pill">
                       <i className='bi bi-download'></i>
                     </button>
+                    {currentUser.role !== 'customer' && (
+                      <button
+                        className={`btn btn-primary-dashboard btn-sm rounded-pill ${medicalRecord.archive ? 'btn-danger' : 'btn-primary'}`}
+                        type="button"
+                        onClick={toggleArchive}
+                      >
+                        {medicalRecord.archive ? 'Unarchive' : 'Archive'}
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -291,50 +391,50 @@ export default function MedicalRecordDetails() {
 
                 {/* Form Section */}
                 {/* You can add or modify the fields in the form as needed */}
-                <form>
-                  <div className="mb-3 row">
-                    <label htmlFor="diagnosis" className="col-sm-4 col-md-4 mt-2">Diagnosis</label>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <textarea
-                        className="form-control"
-                        placeholder="Enter a short description of the diagnosis..."
-                        id="diagnosis"
-                        style={{ height: 80 }}
-                        value={formValues.diagnosis}
-                        onChange={(e) => setFormValues({ ...formValues, diagnosis: e.target.value })}
-                      />
+                {currentUser.role !== 'customer' && (
+                  <form>
+                    <div className="mb-3 row">
+                      <label htmlFor="diagnosis" className="col-sm-4 col-md-4 mt-2">Diagnosis</label>
+                      <div className="col-sm-8 col-md-8 mt-2">
+                        <textarea
+                          className="form-control"
+                          placeholder="Enter a short description of the diagnosis..."
+                          id="diagnosis"
+                          style={{ height: 80 }}
+                          value={formValues.diagnosis}
+                          onChange={(e) => setFormValues({ ...formValues, diagnosis: e.target.value })}
+                        />
+                      </div>
+
+                      <label htmlFor="treatment" className="col-sm-4 col-md-4 mt-2">Treatment</label>
+                      <div className="col-sm-8 col-md-8 mt-2">
+                        <textarea
+                          className="form-control"
+                          placeholder="Enter a short description of the treatment..."
+                          id="treatment"
+                          style={{ height: 80 }}
+                          value={formValues.treatment}
+                          onChange={(e) => setFormValues({ ...formValues, treatment: e.target.value })}
+                        />
+                      </div>
                     </div>
 
-                    <label htmlFor="treatment" className="col-sm-4 col-md-4 mt-2">Treatment</label>
-                    <div className="col-sm-8 col-md-8 mt-2">
-                      <textarea
-                        className="form-control"
-                        placeholder="Enter a short description of the treatment..."
-                        id="treatment"
-                        style={{ height: 80 }}
-                        value={formValues.treatment}
-                        onChange={(e) => setFormValues({ ...formValues, treatment: e.target.value })}
-                      />
+                    <div className="d-grid gap-2 d-sm-flex justify-content-sm-end">
+                      <button
+                        className="btn btn-primary-dashboard btn-sm rounded-pill"
+                        type="button"
+                        onClick={() => {
+                          updateMedicalRecord({
+                            diagnosis: formValues.diagnosis,
+                            treatment: formValues.treatment,
+                          });
+                        }}
+                      >
+                        Save Changes
+                      </button>
                     </div>
-                  </div>
-
-                  <div className="d-grid gap-2 d-sm-flex justify-content-sm-end">
-                    <button
-                      className="btn btn-primary-dashboard btn-sm rounded-pill"
-                      type="button"
-                      onClick={() => {
-                        updateMedicalRecord({
-                          diagnosis: formValues.diagnosis,
-                          treatment: formValues.treatment,
-                          // createdBy: currentUser.id,
-                        });
-                      }}
-                      disabled={isDisabled}
-                    >
-                      Save Changes
-                    </button>
-                  </div>
-                </form>
+                  </form>
+                )}
               </div>
             </div>
           </div>

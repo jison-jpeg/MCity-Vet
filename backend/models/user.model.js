@@ -45,7 +45,10 @@ const userSchema = new mongoose.Schema({
     availability: {
         type: Boolean,
         default: true, // By default, a technician is available
-      },
+    },
+    notification: {
+        type: String,
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

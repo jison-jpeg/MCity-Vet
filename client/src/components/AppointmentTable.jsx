@@ -7,6 +7,10 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
   const isCustomer = currentUser.role === 'customer';
   const isAdmin = currentUser.role === 'admin';
 
+  const filteredAppointments = appointments.filter(
+    (appointment) => !appointment.archive
+  );
+
   return (
     <>
       <div className="col-lg-12">
@@ -18,10 +22,10 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
             </h5>
 
 
-            {appointments.length === 0 ? (
-              <div className="card-body pt-4 d-flex flex-column align-items-center">
+            {filteredAppointments.length === 0 ? (
+              <div className="pt-4 d-flex flex-column align-items-center mb-5">
 
-                <img src="assets/images/cow.gif" alt="" />
+                <img src="/assets/images/cow.gif" alt="" />
                 <div className="text-center">
                   <h5 className="card-title">No Appointments Yet</h5>
                   <p className="card-text">{isCustomer ? 'You have no appointments yet. Book an appointment now!' : 'You have no appointments yet.'}</p>
@@ -58,7 +62,7 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {appointments.map((appointment) => (
+                    {filteredAppointments.map((appointment) => (
                       <tr key={appointment._id}>
                         <th scope="row">{appointment._id}</th>
                         <td>{appointment.createdAt}</td>

@@ -52,7 +52,7 @@ const appointmentSchema = new mongoose.Schema({
     },
     archive: {
         type: Boolean,
-        default: false, // By default, a appointment is available
+        default: false, // By default, a appointment is  not archived
     },
 }, {
     timestamps: true // Add this to include createdAt and updatedAt timestamps

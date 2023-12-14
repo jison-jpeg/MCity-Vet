@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-export default function MedicalRecordTable() {
+export default function MedicalRecordTableArchive() {
   const [medicalRecords, setMedicalRecords] = useState([]);
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
@@ -13,10 +13,8 @@ export default function MedicalRecordTable() {
       try {
         let response;
         if (isCustomer) {
-          // Fetch medical records for customers
           response = await fetch(`/backend/medical-record/${currentUser._id}/medical-record`);
         } else if (isAdmin) {
-          // Fetch all medical records for admin
           response = await fetch('/backend/medical-record/all');
         } else {
           console.error('Invalid user role:', currentUser.role);
@@ -37,24 +35,21 @@ export default function MedicalRecordTable() {
     fetchMedicalRecords();
   }, [currentUser, isCustomer, isAdmin]);
 
-  // Filter medical records where archive is false
-  const filteredMedicalRecords = medicalRecords.filter(
-    (record) => !record.archive
+  const archivedMedicalRecords = medicalRecords.filter(
+    (record) => record.archive === true
   );
 
   return (
     <>
-      {filteredMedicalRecords.length === 0 ? (
-        <div className="pt-4 d-flex flex-column align-items-center mb-5">
-          <img src="/assets/images/cow.gif" alt="" />
-          <div className="text-center">
-            <h5 className="card-title">No Medical Records</h5>
-            <p className="card-text">
+      {archivedMedicalRecords.length === 0 ? (
+        <div className="pt-4 d-flex flex-column align-items-center mb-5 mt-5 p-5">
+          <img src="/assets/images/cow.gif" alt="No Archived Medical Records" />
+          <h5 className="card-title">Hmm. Seems like nothing's in here but me.</h5>
+          <p className="card-text">
             {isCustomer
               ? 'You have no archived medical records.'
               : 'No archived medical records found.'}
           </p>
-          </div>
         </div>
       ) : (
         <table className="table">
@@ -68,7 +63,7 @@ export default function MedicalRecordTable() {
             </tr>
           </thead>
           <tbody>
-            {filteredMedicalRecords.map((record) => (
+            {archivedMedicalRecords.map((record) => (
               <tr key={record._id}>
                 <td>{record._id}</td>
                 <td>{record.appointmentId ? record.appointmentId._id || 'N/A' : 'N/A'}</td>

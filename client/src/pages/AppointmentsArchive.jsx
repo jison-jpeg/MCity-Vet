@@ -101,22 +101,7 @@ export default function AppointmentsArchive() {
             </ol>
           </nav>
         </div>
-
-        {currentUser.role !== 'technician' && (
-          <div className="btn-header">
-            <button
-              type="button"
-              className="btn btn-primary-dashboard btn-lg rounded-pill"
-              data-bs-toggle="modal"
-              data-bs-target="#addModal"
-            >
-              {currentUser.role === 'customer' ? 'Book Appointment' : 'Create Appointment'}
-            </button>
-          </div>
-        )}
-        
-        <AddAppointment />
-
+        <br/>
         <section className="section dashboard">
           <div className="row">
             <AppointmentTableArchive appointments={appointments} currentUserRole={currentUserRole} />
