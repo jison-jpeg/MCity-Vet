@@ -7,9 +7,45 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
   const isCustomer = currentUser.role === 'customer';
   const isAdmin = currentUser.role === 'admin';
 
-  // Filter medical records where archive is false
-  const filteredAppointments = Array.isArray(appointments) ? appointments.filter((appointment) => !appointment.archive) : [];
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
 
+  useEffect(() => {
+    // Filter medical records where archive is false
+    const filtered = Array.isArray(appointments)
+      ? appointments.filter((appointment) => !appointment.archive)
+      : [];
+    setFilteredAppointments(filtered);
+  }, [appointments]);
+
+  const handleArchive = async (appointmentId) => {
+    const confirmArchive = window.confirm('Are you sure you want to archive this appointment?');
+  
+    if (!confirmArchive) {
+      return; // User canceled the operation
+    }
+  
+    try {
+      const response = await fetch(`/backend/appointment/archive/${appointmentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        // Update the state with the filtered appointments
+        setFilteredAppointments((prevAppointments) =>
+          prevAppointments.filter((appointment) => appointment._id !== appointmentId)
+        );
+        console.log('Appointment archived successfully.');
+      } else {
+        console.error('Failed to archive appointment.');
+      }
+    } catch (error) {
+      console.error('An error occurred while archiving appointment:', error);
+    }
+  };
+  
 
   return (
     <>
@@ -127,11 +163,6 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                           </span>
                         </td>
 
-
-
-
-
-
                         <td>
                           <div className='d-grid gap-2 d-sm-flex justify-content-sm-center'>
 
@@ -141,15 +172,23 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                             >
                               View
                             </a>
-                            {isCustomer ? null : (
-                              <>
-                                {/* <span> | </span> */}
-                                <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
-                                  {isAdmin ? 'Delete' : 'Reschedule'}
-                                </button>
 
-                              </>
+                            {currentUserRole === 'admin' && (
+                              <button
+                              type="button"
+                              className="btn btn-secondary-dashboard-action btn-sm"
+                              onClick={() => handleArchive(appointment._id)}
+                              >
+                                Archive
+                              </button>
                             )}
+
+                            {(currentUserRole === 'technician' || currentUserRole === 'secretary') && (
+                              <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
+                                Reschedule
+                              </button>
+                            )}
+
                           </div>
                         </td>
                       </tr>

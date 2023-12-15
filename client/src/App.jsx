@@ -18,6 +18,7 @@ import AppointmentDetails from './pages/AppointmentDetails';
 import MedicalRecordDetails from './pages/MedicalRecordDetails';
 import AppointmentsArchive from './pages/AppointmentsArchive';
 import MedicalRecordArchive from './pages/MedicalRecordArchive';
+import ProfileView from './pages/ProfileView';
 
 export default function App() {
   return (
@@ -65,6 +66,10 @@ export default function App() {
           <Route
             path="/account-management"
             element={<AccountManagement />}
+          />
+          <Route
+            path="/account-management/:id"
+            element={<ProfileView />}
           />
           <Route
             path="/system-logs"

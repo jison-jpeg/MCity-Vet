@@ -6,8 +6,8 @@ export default function InventoryTable() {
   const [inventoryData, setInventoryData] = useState([]);
   const [userDisplayNames, setUserDisplayNames] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null); // Initialize selectedItem
-
   const { currentUser } = useSelector((state) => state.user);
+
 
   useEffect(() => {
     fetch('/backend/inventory/all')
@@ -50,6 +50,36 @@ export default function InventoryTable() {
   const getStatusBadgeClass = (status) => {
     return status === 'In Stock' ? 'bg-success' : 'bg-danger';
   };
+
+  const handleDelete = async (itemId) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this item?');
+
+    if (!confirmDelete) {
+      return; // User canceled the operation
+    }
+
+    try {
+      const response = await fetch(`/backend/inventory/delete/${itemId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Update the state with the filtered items
+        setInventoryData((prevInventory) =>
+          prevInventory.filter((item) => item._id !== itemId)
+        );
+        console.log('Item deleted successfully.');
+      } else {
+        console.error('Failed to delete item.');
+      }
+    } catch (error) {
+      console.error('An error occurred while deleting item:', error);
+    }
+  };
+
   
 
   return (
@@ -100,7 +130,11 @@ export default function InventoryTable() {
                             >
                               Update
                             </button>
-                            <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
+                            <button
+                            type="button"
+                            className="btn btn-secondary-dashboard-action btn-sm"
+                            onClick={() => handleDelete(item._id)}
+                            >
                               Delete
                             </button>
                           </div>

@@ -64,6 +64,11 @@ export default function AccountManagement() {
   useEffect(() => {
     fetchAccounts(); // Fetch accounts when the component mounts
   }, []);
+  
+  
+  const handleViewProfile = (accountId) => {
+    window.location.href = `/account-management/${accountId}`;
+  };
 
   return (
     <>
@@ -127,8 +132,14 @@ export default function AccountManagement() {
                                 <td>{account.email}</td>
                                 <td>{account.createdAt}</td>
                                 <td>
-                                  <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                                  <span> | </span>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary-dashboard-action btn-sm"
+                                    onClick={() => handleViewProfile(account._id)}
+                                >
+                                    View
+                                </button>
+
                                   <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
                                 </td>
                               </tr>

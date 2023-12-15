@@ -199,3 +199,17 @@ export const archiveMedicalRecord = async (req, res, next) => {
 };
 
 // Delete Medical Record
+export const deleteMedicalRecord = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const medicalRecord = await MedicalRecord.findByIdAndDelete(id);
+    if (!medicalRecord) {
+      return res.status(404).json({ message: 'Medical Record not found' });
+    }
+
+    res.status(200).json(medicalRecord);
+  } catch (error) {
+    next(error);
+  }
+};

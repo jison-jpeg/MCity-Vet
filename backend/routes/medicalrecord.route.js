@@ -9,6 +9,7 @@ import {
     updateMedicalRecord,
     archiveMedicalRecord,
     requestCreateMedicalRecord,
+    deleteMedicalRecord,
 
 } from '../controllers/medicalrecord.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';
@@ -23,6 +24,8 @@ router.post('/create', verifyToken, createMedicalRecord);
 router.put('/update/:id', verifyToken, updateMedicalRecord);
 router.put('/archive/:id', verifyToken, archiveMedicalRecord);
 router.put('/request/:id', verifyToken, requestCreateMedicalRecord);
+router.delete('/delete/:id', verifyToken, deleteMedicalRecord);
+
 
 
 

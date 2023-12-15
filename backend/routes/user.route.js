@@ -5,6 +5,7 @@ import {
   updateUser,
   deleteUser,
   getUserById,
+  getUserProfileById,
   getAllUsers,
   getRoleStatistics,
   getAppointmentsByUser,
@@ -17,6 +18,7 @@ router.get('/all', verifyToken, getAllUsers);
 router.get('/role-stats', verifyToken, getRoleStatistics);
 router.get('/:id/appointments', verifyToken, getAppointmentsByUser);
 router.get('/:id', verifyToken, getUserById);
+router.get('/:id/profile', verifyToken, getUserProfileById);
 
 router.get('/', test);
 router.post('/create', verifyToken, createUser);

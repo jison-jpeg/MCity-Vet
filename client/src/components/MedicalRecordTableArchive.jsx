@@ -40,6 +40,35 @@ export default function MedicalRecordTableArchive() {
     ? medicalRecords.filter((record) => record.archive)
     : [];
 
+  const handleDelete = async (recordId) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this medical record?');
+
+    if (!confirmDelete) {
+      return; // User canceled the operation
+    }
+
+    try {
+      const response = await fetch(`/backend/medical-record/delete/${recordId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Update the state with the filtered medical records
+        setMedicalRecords((prevRecords) =>
+          prevRecords.filter((record) => record._id !== recordId)
+        );
+        console.log('Medical record deleted successfully.');
+      } else {
+        console.error('Failed to delete medical record.');
+      }
+    } catch (error) {
+      console.error('An error occurred while deleting medical record:', error);
+    }
+  }
+
   return (
     <>
       {archivedMedicalRecords.length === 0 ? (
@@ -77,9 +106,17 @@ export default function MedicalRecordTableArchive() {
                     View
                   </Link>
                   <span> | </span>
-                  <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
+
+                  {isAdmin && ( 
+                  <button
+                  type="button"
+                  className="btn btn-secondary-dashboard-action btn-sm"
+                  onClick={() => handleDelete(record._id)}
+                  >
                     Delete
                   </button>
+                  )}
+
                 </td>
               </tr>
             ))}

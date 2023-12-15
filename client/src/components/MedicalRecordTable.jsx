@@ -42,6 +42,34 @@ export default function MedicalRecordTable() {
   ? medicalRecords.filter((record) => !record.archive)
   : [];
 
+  const handleArchive = async (recordId) => {
+    const confirmArchive = window.confirm('Are you sure you want to archive this medical record?');
+
+    if (!confirmArchive) {
+      return; // User canceled the operation
+    }
+
+    try {
+      const response = await fetch(`/backend/medical-record/archive/${recordId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Update the state with the filtered medical records
+        setMedicalRecords((prevRecords) =>
+          prevRecords.filter((record) => record._id !== recordId)
+        );
+        console.log('Medical record archived successfully.');
+      } else {
+        console.error('Failed to archive medical record.');
+      }
+    } catch (error) {
+      console.error('An error occurred while archiving medical record:', error);
+    }
+  };
 
   return (
     <>
@@ -82,9 +110,17 @@ export default function MedicalRecordTable() {
                     View
                   </Link>
                   <span> | </span>
-                  <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
-                    Delete
+
+                  {isAdmin && ( 
+                    <button
+                    type="button"
+                    className="btn btn-secondary-dashboard-action btn-sm"
+                    onClick={() => handleArchive(record._id)}
+                    >
+                    Archive
                   </button>
+                    )}
+                                 
                 </td>
               </tr>
             ))}

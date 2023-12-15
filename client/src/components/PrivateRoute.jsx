@@ -17,7 +17,7 @@ export default function PrivateRoute() {
     '/dashboard': ['admin', 'customer', 'technician', 'secretary'],
     '/appointments': ['admin', 'customer', 'technician', 'secretary'],
     '/appointments/view': ['admin', 'customer', 'technician', 'secretary'],
-    '/inventory': ['admin'],
+    '/inventory': ['admin', 'technician', 'secretary' ],
     '/medical-record': ['admin', 'customer', 'technician', 'secretary'],
     '/profile': ['admin', 'customer', 'technician', 'secretary'],
     '/account-management': ['admin'],

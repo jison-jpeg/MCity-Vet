@@ -102,9 +102,8 @@ export const updateUser = async (req, res, next) => {
 
 
 // Delete User
-
 export const deleteUser = async (req, res, next) => {
-    console.log("User Role:", req.user.role);
+    console.log("A user is attempting to delete an account. \nUser Role:", req.user.role);
     console.log("User ID:", req.user.id);
     console.log("Target User ID:", req.params.id);
 
@@ -174,6 +173,35 @@ export const getUserById = async (req, res, next) => {
         next(error);
     }
 };
+
+// View User Profile by ID
+export const getUserProfileById = async (req, res, next) => {
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const { password, ...rest } = user._doc;
+        res.status(200).json(rest);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// View User Profile
+export const viewUserProfile = async (req, res, next) => {
+    try {
+        const { password, ...rest } = req.user._doc;
+        res.status(200).json(rest);
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 // Get Appointments by User
 export const getAppointmentsByUser = async (req, res, next) => {

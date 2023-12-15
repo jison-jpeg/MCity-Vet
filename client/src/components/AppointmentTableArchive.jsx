@@ -2,12 +2,47 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 export default function AppointmentTableArchive({ appointments, currentUserRole }) {
-
-  // const archivedAppointments = appointments.filter(appointment => appointment.archive === true);
-  const archivedAppointments = Array.isArray(appointments) ? appointments.filter((appointment) => appointment.archive) : [];
+  const [archivedAppointments, setArchivedAppointments] = useState([]);
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
   const isAdmin = currentUser.role === 'admin';
+
+  useEffect(() => {
+    // Filter archived appointments
+    const archived = Array.isArray(appointments)
+      ? appointments.filter((appointment) => appointment.archive)
+      : [];
+    setArchivedAppointments(archived);
+  }, [appointments]);
+
+  const handleDelete = async (appointmentId) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this appointment?');
+
+    if (!confirmDelete) {
+      return; // User canceled the operation
+    }
+
+    try {
+      const response = await fetch(`/backend/appointment/delete/${appointmentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Update the state with the filtered appointments
+        setArchivedAppointments((prevAppointments) =>
+          prevAppointments.filter((appointment) => appointment._id !== appointmentId)
+        );
+        console.log('Appointment deleted successfully.');
+      } else {
+        console.error('Failed to delete appointment.');
+      }
+    } catch (error) {
+      console.error('An error occurred while deleting appointment:', error);
+    }
+  };
 
   return (
     <>
@@ -130,15 +165,17 @@ export default function AppointmentTableArchive({ appointments, currentUserRole 
                             >
                               View
                             </a>
-                            {isCustomer ? null : (
-                              <>
-                                {/* <span> | </span> */}
-                                <button type="button" className="btn btn-secondary-dashboard-action btn-sm">
-                                  {isAdmin ? 'Delete' : 'Reschedule'}
-                                </button>
 
-                              </>
+                            {currentUserRole === 'admin' && (
+                              <button
+                              type="button"
+                              className="btn btn-secondary-dashboard-action btn-sm"
+                              onClick={() => handleDelete(appointment._id)}
+                              >
+                                Delete
+                              </button>
                             )}
+                            
                           </div>
                         </td>
                       </tr>
