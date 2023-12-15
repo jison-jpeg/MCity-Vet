@@ -38,9 +38,10 @@ export default function MedicalRecordTable() {
   }, [currentUser, isCustomer, isAdmin]);
 
   // Filter medical records where archive is false
-  const filteredMedicalRecords = medicalRecords.filter(
-    (record) => !record.archive
-  );
+  const filteredMedicalRecords = Array.isArray(medicalRecords)
+  ? medicalRecords.filter((record) => !record.archive)
+  : [];
+
 
   return (
     <>

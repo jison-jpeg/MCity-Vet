@@ -7,9 +7,9 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
   const isCustomer = currentUser.role === 'customer';
   const isAdmin = currentUser.role === 'admin';
 
-  const filteredAppointments = appointments.filter(
-    (appointment) => !appointment.archive
-  );
+  // Filter medical records where archive is false
+  const filteredAppointments = Array.isArray(appointments) ? appointments.filter((appointment) => !appointment.archive) : [];
+
 
   return (
     <>

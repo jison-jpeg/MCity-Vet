@@ -12,11 +12,17 @@ export const test = (req, res) => {
 export const getAllAppointments = async (req, res, next) => {
   try {
     const appointments = await Appointment.find();
+
+    if (appointments.length === 0) {
+      return res.status(200).json({ message: "No appointments found." });
+    }
+
     res.status(200).json(appointments);
   } catch (error) {
     next(error);
   }
 };
+
 
 // Get Appointment by ID
 export const getAppointmentById = async (req, res, next) => {

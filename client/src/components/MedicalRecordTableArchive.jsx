@@ -35,9 +35,10 @@ export default function MedicalRecordTableArchive() {
     fetchMedicalRecords();
   }, [currentUser, isCustomer, isAdmin]);
 
-  const archivedMedicalRecords = medicalRecords.filter(
-    (record) => record.archive === true
-  );
+  // Filter medical records where archive is true
+  const archivedMedicalRecords = Array.isArray(medicalRecords)
+    ? medicalRecords.filter((record) => record.archive)
+    : [];
 
   return (
     <>

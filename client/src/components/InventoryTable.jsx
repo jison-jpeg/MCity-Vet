@@ -58,7 +58,7 @@ export default function InventoryTable() {
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Items Inventory</h5>
-            {inventoryData.length === 0 ? (
+            {Array.isArray(inventoryData) && inventoryData.length === 0 ? (
               <p>No Items</p>
             ) : (
               <div className="table-responsive-md">

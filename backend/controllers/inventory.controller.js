@@ -7,20 +7,24 @@ export const test = (req, res) => {
     });
 };
 
+
 // Get All Inventory
 export const getAllInventory = async (req, res) => {
     try {
         const inventory = await Inventory.find();
-        
-        if (inventory.length === 0) {
-            res.status(404).json({ message: "No Inventory" });
-        } else {
-            res.json(inventory);
+
+        if (!Array.isArray(inventory)) {
+            throw new Error('Invalid data returned from the database');
         }
+
+        res.json(inventory);
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching inventory:', error.message);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
 
 
 

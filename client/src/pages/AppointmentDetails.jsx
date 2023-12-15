@@ -78,92 +78,92 @@ export default function AppointmentDetails() {
     fetchAppointmentDetails();
   }, [id]);
 
-// Accept appointment
-const acceptAppointment = async () => {
-  try {
-    const response = await fetch(`/backend/appointment/update/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        status: 'Approved',
-      }),
-    });
+  // Accept appointment
+  const acceptAppointment = async () => {
+    try {
+      const response = await fetch(`/backend/appointment/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'Approved',
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Error accepting appointment: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Error accepting appointment: ${response.statusText}`);
+      }
+
+      const updatedAppointment = await response.json();
+
+      // Notify the customer that their appointment is accepted
+      await fetch('/backend/notification/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: updatedAppointment.createdBy, // Customer's user ID
+          message: 'Your appointment has been accepted!',
+          type: 'success',
+          appointmentId: id,
+        }),
+      });
+
+      setAppointment((prevAppointment) => ({
+        ...prevAppointment,
+        ...updatedAppointment,
+        technicianName: prevAppointment.technicianName,
+      }));
+    } catch (error) {
+      console.error(error);
     }
-
-    const updatedAppointment = await response.json();
-
-    // Notify the customer that their appointment is accepted
-    await fetch('/backend/notification/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId: updatedAppointment.createdBy, // Customer's user ID
-        message: 'Your appointment has been accepted!',
-        type: 'success',
-        appointmentId: id,
-      }),
-    });
-
-    setAppointment((prevAppointment) => ({
-      ...prevAppointment,
-      ...updatedAppointment,
-      technicianName: prevAppointment.technicianName,
-    }));
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
 
-// Complete appointment
-const completeAppointment = async () => {
-  try {
-    const response = await fetch(`/backend/appointment/update/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        status: 'Completed',
-      }),
-    });
+  // Complete appointment
+  const completeAppointment = async () => {
+    try {
+      const response = await fetch(`/backend/appointment/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: 'Completed',
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Error completing appointment: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Error completing appointment: ${response.statusText}`);
+      }
+
+      const updatedAppointment = await response.json();
+
+      // Notify the customer that their appointment is completed
+      await fetch('/backend/notification/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: updatedAppointment.createdBy, // Customer's user ID
+          message: 'Your appointment has been completed!',
+          type: 'success',
+          appointmentId: id,
+        }),
+      });
+
+      setAppointment((prevAppointment) => ({
+        ...prevAppointment,
+        ...updatedAppointment,
+        technicianName: prevAppointment.technicianName,
+      }));
+    } catch (error) {
+      console.error(error);
     }
-
-    const updatedAppointment = await response.json();
-
-    // Notify the customer that their appointment is completed
-    await fetch('/backend/notification/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        userId: updatedAppointment.createdBy, // Customer's user ID
-        message: 'Your appointment has been completed!',
-        type: 'success',
-        appointmentId: id,
-      }),
-    });
-
-    setAppointment((prevAppointment) => ({
-      ...prevAppointment,
-      ...updatedAppointment,
-      technicianName: prevAppointment.technicianName,
-    }));
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
   // Cancel appointment
   const cancelAppointment = async () => {
@@ -262,6 +262,35 @@ const completeAppointment = async () => {
       // Handle error, e.g., show an error message to the user
     }
   };
+  
+ // Request to create a Medical Record and Send Notification
+ const requestMedicalRecord = async () => {
+  try {
+    const response = await fetch(`/backend/medical-record/request/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        // Add other required data for the medical record creation if needed
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error requesting medical record: ${response.statusText}`);
+    }
+
+    const requestedMedicalRecord = await response.json();
+    console.log('Medical Record request sent successfully:', requestedMedicalRecord);
+
+    // Handle the response as needed, e.g., show a success message to the user
+  } catch (error) {
+    console.error('Error requesting medical record:', error);
+    // Handle error, e.g., show an error message to the user
+  }
+};
+
+  
 
   return (
     <>
@@ -313,6 +342,17 @@ const completeAppointment = async () => {
                           {appointment?.archive ? 'Unarchive' : 'Archive'}
                         </button>
                       </>
+                    )}
+
+                    {(currentUser.role === 'customer' && appointment.status === 'Completed') && (
+                      <button
+                        className="btn btn-primary-dashboard btn-sm rounded-pill"
+                        type="button"
+                        onClick={requestMedicalRecord}
+                        // disabled={isDisabled}
+                      >
+                        Request a Medical Record
+                      </button>
                     )}
 
 

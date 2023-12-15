@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 export default function AppointmentTableArchive({ appointments, currentUserRole }) {
 
-  const archivedAppointments = appointments.filter(appointment => appointment.archive === true);
-
+  // const archivedAppointments = appointments.filter(appointment => appointment.archive === true);
+  const archivedAppointments = Array.isArray(appointments) ? appointments.filter((appointment) => appointment.archive) : [];
   const { currentUser } = useSelector((state) => state.user);
   const isCustomer = currentUser.role === 'customer';
   const isAdmin = currentUser.role === 'admin';
