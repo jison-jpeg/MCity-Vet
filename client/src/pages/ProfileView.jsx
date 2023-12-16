@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
-import { useSelector } from 'react-redux';
 import Preloader from '../components/Preloader';
 import { useParams } from 'react-router-dom';
 
 export default function ProfileView() {
   const { id } = useParams();
+  const [formData, setFormData] = useState({});
   const [userProfile, setUserProfile] = useState(null);
 
   // State to manage the sidebar visibility
@@ -45,6 +45,47 @@ export default function ProfileView() {
       .then((data) => setUserProfile(data))
       .catch((error) => console.error('Error fetching user profile:', error));
   }, [id]);
+
+// Function to handle form submission
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Display confirmation alert
+  const isConfirmed = window.confirm('Are you sure you want to update this profile?');
+
+  if (!isConfirmed) {
+    // If the user cancels the update, do nothing
+    return;
+  }
+
+  try {
+    const response = await fetch(`/backend/user/update/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      // Update local state with modified data
+      setUserProfile((prevProfile) => ({
+        ...prevProfile,
+        ...formData,
+      }));
+
+      alert('Profile updated successfully!');
+    } else {
+      alert('Failed to update profile.');
+    }
+  } catch (error) {
+    console.error('Error updating profile:', error);
+  }
+};
+  // Function to handle form changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
   return (
     <>
@@ -105,16 +146,6 @@ export default function ProfileView() {
                         Edit Profile
                       </button>
                     </li>
-
-                    <li className="nav-item">
-                      <button
-                        className="nav-link"
-                        data-bs-toggle="tab"
-                        data-bs-target="#profile-change-password"
-                      >
-                        Change Password
-                      </button>
-                    </li>
                   </ul>
                   <div className="tab-content pt-2">
                     <div
@@ -125,30 +156,30 @@ export default function ProfileView() {
                       <h5 className="card-title">Profile Details</h5>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label ">Full Name</div>
-                        <div className="col-lg-9 col-md-8">"lastName", "firstName" "middleName"</div>
+                        <div className="col-lg-9 col-md-8">{userProfile?.lastName} , {userProfile?.firstName} {userProfile?.middleName}</div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Birthday</div>
                         <div className="col-lg-9 col-md-8">
-                          MM/DD/YYYY
+                        {userProfile?.birthdate}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Address</div>
                         <div className="col-lg-9 col-md-8">
-                          Address
+                        {userProfile?.address}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Phone</div>
                         <div className="col-lg-9 col-md-8">
-                          09123434454
+                        {userProfile?.phone}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Email</div>
                         <div className="col-lg-9 col-md-8">
-                         email@email.com
+                        {userProfile?.email}
                         </div>
                       </div>
                     </div>
@@ -157,96 +188,7 @@ export default function ProfileView() {
                       id="profile-edit"
                     >
                       {/* Profile Edit Form */}
-                      {/* <form onSubmit={handleSubmit}>
-
-                        <input type="file" ref={fileRef} hidden accept='image/*'
-                          onChange={(e) => setImage(e.target.files[0])} />
-
-
-                        {imageError ? (
-                          <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                            Error uploading image (file size must be less than 2 MB)
-                            <button
-                              type="button"
-                              className="btn-close"
-                              data-bs-dismiss="alert"
-                              aria-label="Close"
-                            />
-                          </div>
-                        ) : imagePercent > 0 && imagePercent < 100 ? (
-                          <div>
-                            <div className="progress mt-3">
-                              <div
-                                className="progress-bar"
-                                role="progressbar"
-                                style={{ width: `${imagePercent}%` }}
-                                aria-valuenow={imagePercent}
-                                aria-valuemin={0}
-                                aria-valuemax={100}
-                              >
-                                {imagePercent}%
-                              </div>
-                            </div>
-                            <br />
-                          </div>
-                        ) : imagePercent === 100 ? (
-                          <div className="alert alert-success alert-dismissible fade show" role="alert">
-                            Image uploaded successfully!
-                            <button
-                              type="button"
-                              className="btn-close"
-                              data-bs-dismiss="alert"
-                              aria-label="Close"
-                            />
-                          </div>
-                        ) : null}
-
-
-                        {error &&
-                          <div>
-                            <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                              Something went wrong!
-                              <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="alert"
-                                aria-label="Close"
-                              />
-                            </div>
-                          </div>
-                        }
-
-                        {updateSuccess &&
-                          <div>
-                            <div className="alert alert-success alert-dismissible fade show" role="alert">
-                              User is updated success!
-                              <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="alert"
-                                aria-label="Close"
-                              />
-                            </div>
-                          </div>
-                        }
-
-
-
-
-
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="profileImage"
-                            className="col-md-4 col-lg-3 "
-                          >
-                            Profile Image
-                          </label>
-                          <div className="col-md-8 col-lg-9 d-flex flex-column align-items-center">
-                            <img src={formData.profilePicture || userProfile.profilePicture} alt="Profile"
-                              onClick={() => fileRef.current.click()}
-                            />
-                          </div>
-                        </div>
+                      <form onSubmit={handleSubmit}>
 
                         <div className="row mb-3">
                           <label
@@ -262,8 +204,7 @@ export default function ProfileView() {
                               className="form-control"
                               id="firstName"
                               placeholder='Enter your first name'
-                              defaultValue="firstName"
-                              onChange={handleChange}
+                              defaultValue={userProfile?.firstName} onChange={handleChange}
 
                             />
                           </div>
@@ -283,8 +224,7 @@ export default function ProfileView() {
                               className="form-control"
                               id="lastName"
                               placeholder='Enter your last name'
-                              defaultValue="lastName"
-                              onChange={handleChange}
+                              defaultValue={userProfile?.lastName} onChange={handleChange}
 
                             />
                           </div>
@@ -305,8 +245,7 @@ export default function ProfileView() {
                               className="form-control"
                               id="middleName"
                               placeholder='Optional'
-                              defaultValue="middleName"
-                              onChange={handleChange}
+                              defaultValue={userProfile?.middleName} onChange={handleChange}
                             />
                           </div>
                         </div>
@@ -324,8 +263,7 @@ export default function ProfileView() {
                               type="date"
                               className="form-control"
                               id="birthdate"
-                              defaultValue="MM/DD/YYYY"
-                              onChange={handleChange}
+                              defaultValue={userProfile?.birthdate} onChange={handleChange}
                             />
                           </div>
                         </div>
@@ -345,8 +283,7 @@ export default function ProfileView() {
                               className="form-control"
                               id="address"
                               placeholder='Enter your home address'
-                              defaultValue="address"
-                              onChange={handleChange}
+                              defaultValue={userProfile?.address} onChange={handleChange}
                             />
                           </div>
                         </div>
@@ -364,8 +301,7 @@ export default function ProfileView() {
                               className="form-control"
                               id="phone"
                               placeholder='09'
-                              defaultValue='09123434454'
-                              
+                              defaultValue={userProfile?.phone} onChange={handleChange}
                             />
                           </div>
                         </div>
@@ -382,91 +318,21 @@ export default function ProfileView() {
                               type="email"
                               className="form-control"
                               id="email"
-                              defaultValue="email"
+                              defaultValue={userProfile?.email}
                               disabled
                             />
                           </div>
                         </div>
 
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                          <button className="btn btn-primary" type="submit" disabled={loading}>
-                            {loading ? (
-                              <>
-                                <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" />
-                                Saving Changes
-                              </>
-                            ) : (
-                              'Save Changes'
-                            )}
+                          <button className="btn btn-primary" type="submit">     
+                                Save Changes           
                           </button>
                         </div>
+                      </form>
 
-       
-                      </form> */}
                       {/* End Profile Edit Form */}
-                    </div>
 
-                    <div
-                      className="tab-pane fade pt-3"
-                      id="profile-change-password"
-                    >
-                      {/* Change Password Form */}
-                      {/* <form>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="currentPassword"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Current Password
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="password"
-                              type="password"
-                              className="form-control"
-                              id="currentPassword"
-                            />
-                          </div>
-                        </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="newPassword"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            New Password
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="newpassword"
-                              type="password"
-                              className="form-control"
-                              id="newPassword"
-                            />
-                          </div>
-                        </div>
-                        <div className="row mb-3">
-                          <label
-                            htmlFor="renewPassword"
-                            className="col-md-4 col-lg-3 col-form-label"
-                          >
-                            Re-enter New Password
-                          </label>
-                          <div className="col-md-8 col-lg-9">
-                            <input
-                              name="renewpassword"
-                              type="password"
-                              className="form-control"
-                              id="renewPassword"
-                            />
-                          </div>
-                        </div>
-                        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                          <button className="btn btn-primary" type="button">
-                            Change Password
-                          </button>
-                        </div>
-                      </form> */}
-                      {/* End Change Password Form */}
                     </div>
                   </div>
                   {/* End Bordered Tabs */}

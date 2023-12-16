@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-export default function AddAppointment() {
+export default function AddAppointment({ appointments, setAppointments }) {
     const { currentUser } = useSelector((state) => state.user);
     const [technicians, setTechnicians] = useState([]);
     const [animalInfo, setAnimalInfo] = useState([{ typeOfAnimal: '', age: '', numberOfHeads: '' }]);
@@ -100,7 +100,10 @@ export default function AddAppointment() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Appointment created:', data);
-
+                setAppointments((prevAppointments) => {
+                    const updatedAppointments = prevAppointments ? [...prevAppointments, data] : [data];
+                    return updatedAppointments;
+                });
                 // Add system log after creating the appointment
                 const systemLogResponse = await fetch('/backend/logs/add', {
                     method: 'POST',
@@ -145,6 +148,7 @@ export default function AddAppointment() {
             });
         }
     };
+
 
     return (
         <div className="modal fade" id="addModal" tabIndex={-1}>

@@ -27,6 +27,22 @@ export default function DashboardHeader({ toggleSidebar }) {
     fetchNotifications();
   }, [currentUser._id]);
 
+  const handleNotificationClick = async (notificationId) => {
+    try {
+      // Add an API call to mark the notification as read
+      await fetch(`/backend/notification/mark-as-read/${notificationId}`, {
+        method: 'PUT',
+        // Add any necessary headers or authentication tokens
+      });
+
+      // Update the state to reset the notification count
+      setNotifications([]);
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+
+
   const handleSignout = async () => {
     try {
       dispatch(signout());
@@ -114,33 +130,39 @@ const getNotificationColor = (type) => {
               </a>
               {/* End Notification Icon */}
               <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                <li className="dropdown-header">
-                  You have {notifications.length} new notifications
-                  <a href="#">
-                    <span className="badge rounded-pill bg-primary p-2 ms-2">
-                      View all
-                    </span>
-                  </a>
-                </li>
-                {notifications.map((notification) => (
-                  <li key={notification._id} className="notification-item">
-                    <Link to={`/appointments/${notification.appointmentId}`}>
-                      <i className={getNotificationIcon(notification.type)} />
-                    </Link>
-                    <div>
-                      <h4 className={getNotificationColor(notification.type)}>
-                        <Link to={`/appointments/${notification.appointmentId}`}>
-                          {notification.message}
-                        </Link>
-                      </h4>
-                      <p>{formatDate(notification.timestamp)}</p>
-                    </div>
-                  </li>
-                ))}
-                <li className="dropdown-footer">
-                  <a href="#">Show all notifications</a>
-                </li>
-              </ul>
+        <li className="dropdown-header">
+          You have {notifications.length} new notifications
+          <a href="#">
+            <span className="badge rounded-pill bg-primary p-2 ms-2">
+              View all
+            </span>
+          </a>
+        </li>
+        {notifications.slice(0, 4).reverse().map((notification) => (
+          <li key={notification._id} className="notification-item">
+            <Link
+              to={`/appointments/${notification.appointmentId}`}
+              onClick={() => handleNotificationClick(notification._id)}
+            >
+              <i className={getNotificationIcon(notification.type)} />
+            </Link>
+            <div>
+              <h4 className={getNotificationColor(notification.type)}>
+                <Link
+                  to={`/appointments/${notification.appointmentId}`}
+                  onClick={() => handleNotificationClick(notification._id)}
+                >
+                  {notification.message}
+                </Link>
+              </h4>
+              <p>{formatDate(notification.timestamp)}</p>
+            </div>
+          </li>
+        ))}
+        <li className="dropdown-footer">
+          <a href="#">Show all notifications</a>
+        </li>
+      </ul>
               {/* End Notification Dropdown Items */}
             </li>
             {/* End Notification Nav */}

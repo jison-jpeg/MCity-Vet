@@ -9,6 +9,7 @@ import {
     updateNotification,
     deleteNotification,
     deleteAllNotifications,
+    markNotificationAsRead,
 
 } from '../controllers/notification.controller.js';
 
@@ -22,5 +23,6 @@ router.post('/create', createNotification);
 router.put('/update/:id', updateNotification);
 router.delete('/delete/:id', deleteNotification);
 router.delete('/delete/all', deleteAllNotifications);
+router.put('/mark-as-read/:id', markNotificationAsRead);
 
 export default router;

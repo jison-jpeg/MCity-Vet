@@ -9054,7 +9054,7 @@ input[type="password"] {
   background-color: #fff;
 }
 .step-bar .nav-step {
-  display: inline-block;
+  /* display: inline-block; */
   position: relative;
   width: 100%;
   text-align: justify;
