@@ -104,6 +104,7 @@ export default function AddAppointment({ appointments, setAppointments }) {
                     const updatedAppointments = prevAppointments ? [...prevAppointments, data] : [data];
                     return updatedAppointments;
                 });
+                
                 // Add system log after creating the appointment
                 const systemLogResponse = await fetch('/backend/logs/add', {
                     method: 'POST',
