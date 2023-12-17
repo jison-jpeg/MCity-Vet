@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function AddAppointment({ appointments, setAppointments }) {
     const { currentUser } = useSelector((state) => state.user);
@@ -100,11 +103,22 @@ export default function AddAppointment({ appointments, setAppointments }) {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Appointment created:', data);
+
+                // Show a toast after successful appointment creation
+                toast.success('Appointment created successfully!', {
+                    position: 'top-right',
+                    autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+
                 setAppointments((prevAppointments) => {
                     const updatedAppointments = prevAppointments ? [...prevAppointments, data] : [data];
                     return updatedAppointments;
                 });
-                
+
                 // Add system log after creating the appointment
                 const systemLogResponse = await fetch('/backend/logs/add', {
                     method: 'POST',
@@ -129,9 +143,29 @@ export default function AddAppointment({ appointments, setAppointments }) {
                 // You can reset the form or perform other actions after successful creation.
             } else {
                 console.error('Error creating appointment:', response.statusText);
+
+                // Show a toast after failed appointment creation
+                toast.error('Failed to create appointment!', {
+                    position: 'top-right',
+                    autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             }
         } catch (error) {
             console.error('Error creating appointment:', error);
+            // Show an error toast for general errors
+
+            toast.error('An error occurred. Please try again later.', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
         }
     };
 
@@ -371,6 +405,7 @@ export default function AddAppointment({ appointments, setAppointments }) {
                                 <button type="submit" className="btn btn-primary">
                                     Save changes
                                 </button>
+                                <ToastContainer />
                             </div>
 
                         </form>

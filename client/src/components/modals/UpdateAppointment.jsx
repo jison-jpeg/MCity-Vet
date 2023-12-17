@@ -115,12 +115,6 @@ export default function UpdateAppointment({ appointment }) {
             [name]: value,
         }));
     };
-    
-
-
-
-
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
