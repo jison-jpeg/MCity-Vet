@@ -115,11 +115,13 @@ export default function Appointments() {
       )}
     </>
         
-        <AddAppointment />
+    <AddAppointment appointments={appointments} setAppointments={setAppointments} />
 
         <section className="section dashboard">
           <div className="row">
-            <AppointmentTable appointments={appointments} currentUserRole={currentUserRole} />
+            <AppointmentTable
+            appointments={appointments}
+            currentUserRole={currentUserRole} />
           </div>
         </section>
       </main>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AppointmentTableArchive({ appointments, currentUserRole }) {
   const [archivedAppointments, setArchivedAppointments] = useState([]);
@@ -36,16 +38,45 @@ export default function AppointmentTableArchive({ appointments, currentUserRole 
           prevAppointments.filter((appointment) => appointment._id !== appointmentId)
         );
         console.log('Appointment deleted successfully.');
+        // Success Toast
+        toast.success('Appointment deleted successfully!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+  
       } else {
         console.error('Failed to delete appointment.');
+        // Error Toast
+        toast.error('Failed to delete appointment.', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     } catch (error) {
       console.error('An error occurred while deleting appointment:', error);
+      // Error Toast
+      toast.error('An error occurred while deleting appointment.', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 
   return (
     <>
+      <ToastContainer />
       <div className="col-lg-12">
         <div className="card">
           <div className="card-body">

@@ -1,6 +1,7 @@
 import Appointment from "../models/appointment.model.js";
 import User from "../models/user.model.js";
 import Notification from "../models/notification.model.js";
+import { sendAppointmentConfirmationEmail, sendAppointmentCancellationEmail } from "./email.controller.js";
 
 export const test = (req, res) => {
   res.json({
@@ -161,6 +162,9 @@ export const createAppointment = async (req, res, next) => {
       appointmentId,
   });
   
+  // Send email to the customer
+  await sendAppointmentConfirmationEmail({ firstName, email, schedule });
+
 } catch (error) {
   next(error);
 }
@@ -197,6 +201,8 @@ export const updateAppointment = async (req, res, next) => {
         appointmentId: id,
       });
     }
+
+    await sendAppointmentCancellationEmail({ firstName: appointment.firstName, email: appointment.email });
 
     const updatedAppointment = await Appointment.findByIdAndUpdate(
       id,
@@ -259,3 +265,29 @@ export const deleteAppointment = async (req, res, next) => {
   }
 };
 
+// Check if the technician is available for the specified schedule
+export const checkAvailability = async (req, res, next) => {
+  const { technicianName, schedule } = req.body;
+
+  try {
+    if (!technicianName || !schedule) {
+      return res.status(400).json({ message: 'TechnicianName and schedule are required query parameters.' });
+    }
+
+    // Check if the technician is available
+    const technician = await User.findOne({ _id: technicianName, availability: true });
+    if (!technician) {
+      return res.status(400).json({ message: 'Technician is not available for appointments.' });
+    }
+
+    // Check if the schedule is available for scheduling
+    const existingAppointment = await Appointment.findOne({ technicianName, schedule });
+    if (existingAppointment) {
+      return res.status(400).json({ message: 'Appointment slot is already booked.' });
+    }
+
+    res.status(200).json({ message: 'Technician is available for the specified schedule.' });
+  } catch (error) {
+    next(error);
+  }
+};

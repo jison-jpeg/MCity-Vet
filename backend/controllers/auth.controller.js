@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
+import { sendSignupConfirmationEmail } from "./email.controller.js";
 import jwt from "jsonwebtoken";
 
 // Sign up
@@ -10,6 +11,7 @@ export const signup = async (req, res, next) => {
     const newUser = new User({ firstName, lastName, email, role: 'customer', password: hashedPassword });
     try {
         await newUser.save()
+        await sendSignupConfirmationEmail(newUser);
         res.status(201).json({ message: "User created successfully" });
     } catch (error) {
         next(error);

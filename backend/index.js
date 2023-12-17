@@ -10,6 +10,7 @@ import serviceRoutes from './routes/service.route.js';
 import systemlogsRoutes from './routes/systemlogs.route.js';
 import medicalrecordRoutes from './routes/medicalrecord.route.js';
 import notificationRoutes from './routes/notification.route.js';
+import emailRoutes from './routes/email.route.js';
 
 import cookieParser from 'cookie-parser';
 // import path from 'path';
@@ -40,6 +41,7 @@ app.use("/backend/service", serviceRoutes);
 app.use("/backend/logs", systemlogsRoutes);
 app.use("/backend/medical-record", medicalrecordRoutes);
 app.use("/backend/notification", notificationRoutes);
+app.use("/backend/email", emailRoutes);
 
 app.use((error, req, res, next) => {
     const statusCode = error.statusCode || 500;

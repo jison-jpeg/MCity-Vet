@@ -3617,6 +3617,42 @@ ul.sub-menu li.li-with-arrow i.fa-caret-right {
   
 }
 
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-control-input {
+  display: none; /* Hide the default checkbox */
+}
+
+.checkbox-control-label {
+  position: relative;
+  padding-left: 30px; /* Space for the custom checkbox */
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  color: #333; /* Default text color */
+}
+
+.checkbox-control-label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px; /* Adjust the size of the checkbox */
+  height: 20px; /* Adjust the size of the checkbox */
+  border: 2px solid #b2dded; /* Border color for the checkbox */
+  border-radius: 50%; /* Make it a circle */
+  background-color: #fff; /* Background color of the checkbox */
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.checkbox-control-input:checked + .checkbox-control-label:before {
+  background-color: #ff594d; /* Change the color when checked */
+  border-color: #ff594d; /* Change the border color when checked */
+}
+
 .arrow {
   width: 0;
   height: 0;
@@ -9054,7 +9090,7 @@ input[type="password"] {
   background-color: #fff;
 }
 .step-bar .nav-step {
-  display: inline-block;
+  /* display: inline-block; */
   position: relative;
   width: 100%;
   text-align: justify;

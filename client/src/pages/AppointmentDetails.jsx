@@ -5,6 +5,8 @@ import UpdateAppointment from '../components/modals/UpdateAppointment';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Preloader from '../components/Preloader';
 
 export default function AppointmentDetails() {
@@ -111,6 +113,16 @@ export default function AppointmentDetails() {
         }),
       });
 
+      // Show a success toast
+      toast.success('Appointment accepted successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
       setAppointment((prevAppointment) => ({
         ...prevAppointment,
         ...updatedAppointment,
@@ -154,6 +166,17 @@ export default function AppointmentDetails() {
           appointmentId: id,
         }),
       });
+
+      // Show a success toast
+      toast.success('Appointment completed successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
 
       setAppointment((prevAppointment) => ({
         ...prevAppointment,
@@ -209,12 +232,23 @@ export default function AppointmentDetails() {
           archive: !appointment.archive,
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`Error toggling archive status: ${response.statusText}`);
       }
-
+  
       const updatedAppointment = await response.json();
+  
+      // Show a success toast
+      toast.success(`Appointment ${updatedAppointment.archive ? 'archived' : 'unarchived'} successfully!`, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+  
       setAppointment((prevAppointment) => ({
         ...prevAppointment,
         ...updatedAppointment,
@@ -262,41 +296,42 @@ export default function AppointmentDetails() {
       // Handle error, e.g., show an error message to the user
     }
   };
-  
- // Request to create a Medical Record and Send Notification
- const requestMedicalRecord = async () => {
-  try {
-    const response = await fetch(`/backend/medical-record/request/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        // Add other required data for the medical record creation if needed
-      }),
-    });
 
-    if (!response.ok) {
-      throw new Error(`Error requesting medical record: ${response.statusText}`);
+  // Request to create a Medical Record and Send Notification
+  const requestMedicalRecord = async () => {
+    try {
+      const response = await fetch(`/backend/medical-record/request/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          // Add other required data for the medical record creation if needed
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error requesting medical record: ${response.statusText}`);
+      }
+
+      const requestedMedicalRecord = await response.json();
+      console.log('Medical Record request sent successfully:', requestedMedicalRecord);
+
+      // Handle the response as needed, e.g., show a success message to the user
+    } catch (error) {
+      console.error('Error requesting medical record:', error);
+      // Handle error, e.g., show an error message to the user
     }
+  };
 
-    const requestedMedicalRecord = await response.json();
-    console.log('Medical Record request sent successfully:', requestedMedicalRecord);
 
-    // Handle the response as needed, e.g., show a success message to the user
-  } catch (error) {
-    console.error('Error requesting medical record:', error);
-    // Handle error, e.g., show an error message to the user
-  }
-};
-
-  
 
   return (
     <>
       <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
+      <ToastContainer />
 
       <main id="main" className="main">
         <div className="pagetitle">
@@ -349,7 +384,7 @@ export default function AppointmentDetails() {
                         className="btn btn-primary-dashboard btn-sm rounded-pill"
                         type="button"
                         onClick={requestMedicalRecord}
-                        // disabled={isDisabled}
+                      // disabled={isDisabled}
                       >
                         Request a Medical Record
                       </button>

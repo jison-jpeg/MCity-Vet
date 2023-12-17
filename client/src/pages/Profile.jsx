@@ -6,6 +6,8 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { app } from "../firebase";
 import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Preloader from '../components/Preloader';
 
 export default function Profile() {
@@ -17,6 +19,7 @@ export default function Profile() {
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  
   // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -122,17 +125,46 @@ export default function Profile() {
       if (data.success === false) {
         dispatch(updateUserFailure(data));
         setUpdateSuccess(true);
+        // Show an error toast
+        toast.error('Error updating profile!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
         return;
       }
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
+      // Show a success toast
+      toast.success('Profile updated successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
     } catch (error) {
       dispatch(updateUserFailure(error));
+      toast.error('Error updating profile!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 
   return (
     <>
+      <ToastContainer />
       <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />

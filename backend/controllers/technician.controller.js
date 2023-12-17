@@ -93,3 +93,46 @@ export const getRoleStatistics = async (req, res, next) => {
     }
 };
 
+// Check if the technician is available for the specified schedule
+export const checkAvailability = async (req, res, next) => {
+    const { date } = req.params; // Change here from req.query to req.params
+  
+    try {
+      if (!date) {
+        return res.status(400).json({ message: 'Date is a required query parameter.' });
+      }
+  
+      const appointments = await Appointment.find({ schedule: { $regex: date } });
+      const bookedTechnicians = new Set();
+  
+      appointments.forEach((appointment) => {
+        const { technicianName, status } = appointment;
+        if (status !== 'Cancelled' && status !== 'Completed') {
+          bookedTechnicians.add(technicianName.toString());
+        }
+      });
+  
+      const allTechnicians = await User.find({ role: 'technician' });
+  
+      const availableTechnicians = allTechnicians.filter(
+        (technician) => !bookedTechnicians.has(technician._id.toString()) && technician.availability
+      );
+  
+      const availableTechnicianList = availableTechnicians.map((technician) => ({
+        _id: technician._id,
+        firstName: technician.firstName,
+        lastName: technician.lastName,
+        middleName: technician.middleName,
+        email: technician.email,
+        profilePicture: technician.profilePicture,
+        role: technician.role,
+        availability: technician.availability,
+        __v: technician.__v,
+      }));
+  
+      return res.status(200).json(availableTechnicianList);
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };

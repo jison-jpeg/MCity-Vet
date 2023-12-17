@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function UpdateItem({ selectedItem }) {
     const { currentUser } = useSelector((state) => state.user);
@@ -117,15 +119,43 @@ export default function UpdateItem({ selectedItem }) {
                     }),
                 });
                 if (systemLogResponse.ok) {
+                    // Success Toast
+                    toast.success('Item updated successfully!', {
+                        position: 'top-right',
+                        autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+
                     console.log('System log added:', await systemLogResponse.json());
                 } else {
                     console.error('Error adding system log:', systemLogResponse.statusText);
                 }
             } else {
                 console.error('Error updating item:', response.statusText);
+                // Error Toast
+                toast.error('Error updating item!', {
+                    position: 'top-right',
+                    autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             }
         } catch (error) {
             console.error('Error updating item:', error);
+            // Error Toast
+            toast.error('An Error Occured while updating item!', {
+                position: 'top-right',
+                autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
         }
     };
 

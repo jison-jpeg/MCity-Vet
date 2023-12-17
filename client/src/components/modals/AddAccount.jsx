@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddAccount() {
     const { currentUser } = useSelector((state) => state.user);
@@ -38,6 +40,15 @@ export default function AddAccount() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('User created:', data);
+                // Success Toast
+                toast.success('Account created successfully!', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    pauseOnHover: true,
+                    closeOnClick: true,
+                    draggable: true,
+                });
 
                 // Add system log after creating the user
                 const systemLogResponse = await fetch('/backend/logs/add', {
@@ -63,13 +74,32 @@ export default function AddAccount() {
                 // Reset the form or perform other actions after successful creation.
             } else {
                 console.error('Error creating user:', response.statusText);
+                // Error Toast
+                toast.error('Error creating user!', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    pauseOnHover: true,
+                    closeOnClick: true,
+                    draggable: true,
+                });
             }
         } catch (error) {
             console.error('Error creating user:', error);
+            // Error Toast
+            toast.error('Error creating user!', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                pauseOnHover: true,
+                closeOnClick: true,
+                draggable: true,
+            });
         }
     };
     return (
         <>
+            <ToastContainer />
             <div className="modal fade" id="addModal" tabIndex={-1}>
                 <div className="modal-dialog modal-xl modal-dialog-centered">
                     <div className="modal-content">

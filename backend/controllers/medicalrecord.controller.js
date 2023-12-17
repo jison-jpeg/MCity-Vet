@@ -87,6 +87,7 @@ export const createMedicalRecord = async (req, res, next) => {
       createdAt: new Date().toLocaleDateString(),
     });
 
+
     res.status(201).json(medicalRecord);
   } catch (error) {
     next(error);

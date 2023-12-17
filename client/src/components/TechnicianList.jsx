@@ -1,6 +1,11 @@
 import React from 'react';
 
-export default function TechnicianList({ technicians }) {
+export default function TechnicianList({ technicians, setSelectedTechnician, setCurrentStep }) {
+  // Check if technicians array is empty
+  if (technicians.length === 0) {
+    return <div className="message">No technicians available at the moment.</div>;
+  }
+
   return (
     <div className="row d-flex justify-content-center">
       {technicians.map((technician) => (
@@ -28,9 +33,15 @@ export default function TechnicianList({ technicians }) {
                   <i className="far fa-caret-right" />
                 </div>
               </div>
-              <a href="#" className="btn btn-form btn-secondary-color">
+              <button
+                className="btn btn-form btn-secondary-color"
+                onClick={() => {
+                  setSelectedTechnician(technician);
+                  setCurrentStep(2);
+                }}
+              >
                 <span>Book</span>
-              </a>
+              </button>
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddItem() {
     const { currentUser } = useSelector((state) => state.user);
@@ -78,6 +80,17 @@ export default function AddItem() {
                 });
 
                 if (systemLogResponse.ok) {
+
+                    // Show a toast notification if the system log was added successfully
+                    toast.success('Item added successfully', {
+                        position: 'top-right',
+                        autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+
                     console.log('System log added:', await systemLogResponse.json());
                 } else {
                     console.error('Error adding system log:', systemLogResponse.statusText);
@@ -86,14 +99,33 @@ export default function AddItem() {
                 // You can reset the form or perform other actions after successful creation.
             } else {
                 console.error('Error adding item:', response.statusText);
+                // Error Toast notification
+                toast.warning('Item Already Exist', {
+                    position: 'top-right',
+                    autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             }
         } catch (error) {
             console.error('Error adding item:', error);
+            // Error Toast notification. 
+            toast.danger('An Error occured while adding item', {
+                position: 'top-right',
+                autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
         }
     };
 
     return (
         <>
+            <ToastContainer />  
             <div className="modal fade" id="addModal" tabIndex={-1}>
                 <div className="modal-dialog modal-xl modal-dialog-centered">
                     <div className="modal-content">
@@ -114,11 +146,11 @@ export default function AddItem() {
                                         Item Name
                                     </label>
                                     <input
-                                    type="text"
-                                    className="form-control"
-                                    id="itemName"
-                                    value={itemName}
-                                    onChange={handleInputChange}
+                                        type="text"
+                                        className="form-control"
+                                        id="itemName"
+                                        value={itemName}
+                                        onChange={handleInputChange}
                                     />
                                 </div>
                                 <div className="col-md-4">
@@ -147,7 +179,7 @@ export default function AddItem() {
                                         >
                                             +
                                         </button>
-                                        
+
                                     </div>
                                 </div>
                                 <div className="col-4">
