@@ -17,7 +17,19 @@ const appointmentSchema = new mongoose.Schema({
     phone: {
         type: String,
     },
-    patient: {
+    email: {
+        type: String,
+    },
+    services: [{
+        type: String,
+    }],
+    address: {
+        type: String,
+    },
+    landmark: {
+        type: String,
+    },
+    patient: [{
         _id: mongoose.Schema.Types.ObjectId,
         typeOfAnimal: {
             type: String,
@@ -28,16 +40,7 @@ const appointmentSchema = new mongoose.Schema({
         age: {
             type: Number,
         },
-        services: [{
-            type: String,
-        }],
-        address: {
-            type: String,
-        },
-        landmark: {
-            type: String,
-        },
-    },
+    }],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -46,7 +49,11 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         enum: ['Pending', 'Approved', 'Rescheduled', 'Cancelled', 'Completed'],
         default: 'Pending',
-    }
+    },
+    archive: {
+        type: Boolean,
+        default: false, // By default, a appointment is  not archived
+    },
 }, {
     timestamps: true // Add this to include createdAt and updatedAt timestamps
 });

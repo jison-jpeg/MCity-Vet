@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export default function AddAppointment() {
+
+export default function AddAppointment({ appointments, setAppointments }) {
+    const { currentUser } = useSelector((state) => state.user);
     const [technicians, setTechnicians] = useState([]);
+    const [animalInfo, setAnimalInfo] = useState([{ typeOfAnimal: '', age: '', numberOfHeads: '' }]);
     const [services, setServices] = useState([]);
     const [formData, setFormData] = useState({
         date: '',
@@ -17,6 +23,19 @@ export default function AddAppointment() {
         age: '',
         phoneNumber: '',
     });
+
+    const handleAnimalInfoChange = (index, propertyName, value) => {
+        const newAnimalInfo = [...animalInfo];
+        newAnimalInfo[index] = { ...newAnimalInfo[index], [propertyName]: value };
+        setAnimalInfo(newAnimalInfo);
+
+        console.log('Updated animalInfo:', newAnimalInfo);
+    };
+
+
+    const handleAddMore = () => {
+        setAnimalInfo([...animalInfo, { typeOfAnimal: '', age: '', numberOfHeads: '' }]);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,6 +55,7 @@ export default function AddAppointment() {
         fetchData();
     }, []);
 
+
     const handleInputChange = (event) => {
         const { id, value } = event.target;
         setFormData({
@@ -47,21 +67,29 @@ export default function AddAppointment() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const userRole = currentUser.role;
+        let firstName = userRole === 'customer' ? currentUser.firstName : formData.firstName;
+        let lastName = userRole === 'customer' ? currentUser.lastName : formData.lastName;
+        let email = userRole === 'customer' ? currentUser.email : formData.email;
+
         const appointmentData = {
             schedule: formData.date,
             technicianName: formData.technician,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
+            firstName: firstName,
+            lastName: lastName,
             phone: formData.phoneNumber,
-            patient: {
-                typeOfAnimal: formData.typeOfAnimal,
-                numberOfHeads: formData.numberOfHeads,
-                age: formData.age,
-                services: formData.services,
-                address: formData.address,
-                landmark: formData.landmark,
-            },
+            email: email,
+            services: formData.services,
+            address: formData.address,
+            landmark: formData.landmark,
+            patient: animalInfo.map(animal => ({
+                typeOfAnimal: animal.typeOfAnimal,
+                numberOfHeads: animal.numberOfHeads,
+                age: animal.age,
+            })),
         };
+        console.log('Submitted appointmentData:', appointmentData);
+
 
         try {
             const response = await fetch('/backend/appointment/create', {
@@ -75,12 +103,69 @@ export default function AddAppointment() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Appointment created:', data);
+
+                // Show a toast after successful appointment creation
+                toast.success('Appointment created successfully!', {
+                    position: 'top-right',
+                    autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+
+                setAppointments((prevAppointments) => {
+                    const updatedAppointments = prevAppointments ? [...prevAppointments, data] : [data];
+                    return updatedAppointments;
+                });
+
+                // Add system log after creating the appointment
+                const systemLogResponse = await fetch('/backend/logs/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: currentUser._id,
+                        name: `${currentUser.firstName} ${currentUser.lastName}`, // Include lastName in the name field
+                        role: currentUser.role,
+                        dateTime: new Date(),
+                        activity: `Created an appointment this coming ${appointmentData.schedule} for ${appointmentData.firstName} ${appointmentData.lastName}`,
+                    }),
+                });
+
+                if (systemLogResponse.ok) {
+                    console.log('System log added:', await systemLogResponse.json());
+                } else {
+                    console.error('Error adding system log:', systemLogResponse.statusText);
+                }
+
                 // You can reset the form or perform other actions after successful creation.
             } else {
                 console.error('Error creating appointment:', response.statusText);
+
+                // Show a toast after failed appointment creation
+                toast.error('Failed to create appointment!', {
+                    position: 'top-right',
+                    autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             }
         } catch (error) {
             console.error('Error creating appointment:', error);
+            // Show an error toast for general errors
+
+            toast.error('An error occurred. Please try again later.', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
         }
     };
 
@@ -98,6 +183,7 @@ export default function AddAppointment() {
             });
         }
     };
+
 
     return (
         <div className="modal fade" id="addModal" tabIndex={-1}>
@@ -123,8 +209,9 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="firstName"
-                                    value={formData.firstName}
+                                    value={currentUser.role === 'customer' ? currentUser.firstName : formData.firstName}
                                     onChange={handleInputChange}
+                                    disabled={currentUser.role === 'customer'}
                                 />
                             </div>
 
@@ -136,8 +223,9 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="lastName"
-                                    value={formData.lastName}
+                                    value={currentUser.role === 'customer' ? currentUser.lastName : formData.lastName}
                                     onChange={handleInputChange}
+                                    disabled={currentUser.role === 'customer'}
                                 />
                             </div>
 
@@ -175,10 +263,6 @@ export default function AddAppointment() {
                                 />
                             </div>
 
-
-
-
-
                             <div className="col-md-3">
                                 <label htmlFor="address" className="form-label">
                                     Address
@@ -187,7 +271,7 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="address"
-                                    placeholder="1234 Main St"
+                                    placeholder="Ex. 1234 Main St"
                                     value={formData.address}
                                     onChange={handleInputChange}
                                 />
@@ -201,7 +285,7 @@ export default function AddAppointment() {
                                     type="text"
                                     className="form-control"
                                     id="landmark"
-                                    placeholder="Juan's Store"
+                                    placeholder="Ex. Juan's Store"
                                     value={formData.landmark}
                                     onChange={handleInputChange}
                                 />
@@ -212,17 +296,19 @@ export default function AddAppointment() {
                                     Email
                                 </label>
                                 <input
-                                    type="text"
+                                    type="email"
                                     className="form-control"
                                     id="email"
                                     placeholder="example@gmail.com"
-                                    value={formData.email}
+                                    value={currentUser.role === 'customer' ? currentUser.email : formData.email}
                                     onChange={handleInputChange}
+                                    disabled={currentUser.role === 'customer'}
+
                                 />
                             </div>
 
                             <div className="col-md-3">
-                                <label htmlFor="inputZip" className="form-label">
+                                <label htmlFor="phoneNumber" className="form-label">
                                     Phone Number
                                 </label>
                                 <input
@@ -235,51 +321,60 @@ export default function AddAppointment() {
                                 />
                             </div>
 
-                            <div className="col-md-3">
-                                <label htmlFor="typeOfAnimal" className="form-label">
-                                    Animal Type
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="typeOfAnimal"
-                                    value={formData.typeOfAnimal}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
 
-                            <div className="col-md-3">
-                                <label htmlFor="typeOfAnimal" className="form-label">
-                                    Age
-                                </label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    id="age"
-                                    value={formData.age}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
+                            {animalInfo.map((animal, index) => (
+                                <div key={index} className='row g-3'>
+                                    <div className="col-3">
+                                        <label htmlFor={`typeOfAnimal_${index}`} className="form-label">
+                                            Animal Type
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id={`typeOfAnimal_${index}`}
+                                            value={animal.typeOfAnimal}
+                                            onChange={(event) => handleAnimalInfoChange(index, 'typeOfAnimal', event.target.value)}
+                                        />
+                                    </div>
 
-                            <div className="col-md-3">
-                                <label htmlFor="numberOfHeads" className="form-label">
-                                    Number of Heads
-                                </label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    id="numberOfHeads"
-                                    value={formData.numberOfHeads}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
+                                    <div className="col-3">
+                                        <label htmlFor={`age_${index}`} className="form-label">
+                                            Age
+                                        </label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            id={`age_${index}`}
+                                            value={animal.age}
+                                            onChange={(event) => handleAnimalInfoChange(index, 'age', event.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="col-3">
+                                        <label htmlFor={`numberOfHeads_${index}`} className="form-label">
+                                            Number of Heads
+                                        </label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            id={`numberOfHeads_${index}`}
+                                            value={animal.numberOfHeads}
+                                            onChange={(event) => handleAnimalInfoChange(index, 'numberOfHeads', event.target.value)}
+                                        />
+                                    </div>
+
+                                    {index === animalInfo.length - 1 && (
+                                        <div className="col-md-3 align-self-end">
+                                            <button type="button" className="btn btn-outline-primary" onClick={handleAddMore}>
+                                                Add More
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
 
 
-                            <div className="col-md-3">
-                                <button type="button" className="btn btn-outline-primary">
-                                    Add More
-                                </button>
-                            </div>
+
 
                             <div className="col-md-6">
                                 <label htmlFor="services" className="form-label">
@@ -310,6 +405,7 @@ export default function AddAppointment() {
                                 <button type="submit" className="btn btn-primary">
                                     Save changes
                                 </button>
+                                <ToastContainer />
                             </div>
 
                         </form>

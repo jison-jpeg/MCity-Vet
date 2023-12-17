@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
-import AddAppointment from '../components/modals/AddItem';
+import { useSelector } from 'react-redux';
+import MedicalRecordTable from '../components/MedicalRecordTable';
+import Preloader from '../components/Preloader';
 
 
 export default function MedicalRecord() {
@@ -35,8 +37,12 @@ export default function MedicalRecord() {
         dashboardBootstrap.removeAttribute('disabled');
     }, []);
 
+    const { currentUser } = useSelector((state) => state.user);
+
+
     return (
         <>
+            <Preloader />
             <DashboardHeader toggleSidebar={toggleSidebar} />
             <DashboardSidebar toggleSidebar={toggleSidebar} />
 
@@ -55,64 +61,17 @@ export default function MedicalRecord() {
                     </nav>
                 </div>
 
-
-
-                <div className="btn-header">
-                    <button
-                        type="button"
-                        className="btn btn-primary-dashboard btn-lg rounded-pill"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addModal">Create Record
-                    </button>
-                </div>
-
-                <AddAppointment />
-
                 <section className="section dashboard">
                     <div className="row">
-
-                        {/* add data table */}
-
                         <div className="col-lg-12">
                             <div className="card">
                                 <div className="card-body">
                                     <h5 className="card-title">Medical Records</h5>
-                                    {/* Default Table */}
                                     <div className="table-responsive-md">
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Record ID</th>
-                                                    <th scope="col">Appointment ID</th>
-                                                    <th scope="col">Date</th>
-                                                    <th scope="col">Client Name</th>
-                                                    <th scope="col">Animal</th>
-                                                    <th scope="col">Total</th>
-                                                    <th scope="col">Service</th>
-                                                    <th scope="col">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>REC-abc123</td>
-                                                    <td>APP-abc123</td>
-                                                    <td>10/15/2023</td>
-                                                    <td>Jayson T.</td>
-                                                    <td>Cow</td>
-                                                    <td>2</td>
-                                                    <td>A.I</td>
-                                                    <td>
-                                                        <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                                                        <span> | </span>
-                                                        <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                                                    </td>
 
-                                                </tr>
+                                        <MedicalRecordTable />
 
-                                            </tbody>
-                                        </table>
                                     </div>
-                                    {/* End Default Table Example */}
                                 </div>
                             </div>
                         </div>

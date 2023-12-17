@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddAccount() {
+    const { currentUser } = useSelector((state) => state.user);
+
     const [user, setUser] = useState({
         firstName: '',
         lastName: '',
         middleName: '',
-        // role: 'customer',
         address: '',
         gender: '',
         birthdate: '',
@@ -20,7 +24,7 @@ export default function AddAccount() {
             [e.target.id]: e.target.value,
         });
     };
-    console.log(user)
+    // console.log(user)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,21 +36,70 @@ export default function AddAccount() {
                 },
                 body: JSON.stringify(user),
             });
-            //   console.log(user)
+
             if (response.ok) {
                 const data = await response.json();
                 console.log('User created:', data);
+                // Success Toast
+                toast.success('Account created successfully!', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    pauseOnHover: true,
+                    closeOnClick: true,
+                    draggable: true,
+                });
+
+                // Add system log after creating the user
+                const systemLogResponse = await fetch('/backend/logs/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: currentUser._id,
+                        name: `${currentUser.firstName} ${currentUser.lastName}`,
+                        role: currentUser.role,
+                        dateTime: new Date(),
+                        activity: `Created an account for ${user.firstName} ${user.lastName}`,
+                    }),
+                });
+
+                if (systemLogResponse.ok) {
+                    console.log('System log added:', await systemLogResponse.json());
+                } else {
+                    console.error('Error adding system log:', systemLogResponse.statusText);
+                }
+
                 // Reset the form or perform other actions after successful creation.
             } else {
                 console.error('Error creating user:', response.statusText);
+                // Error Toast
+                toast.error('Error creating user!', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    pauseOnHover: true,
+                    closeOnClick: true,
+                    draggable: true,
+                });
             }
         } catch (error) {
             console.error('Error creating user:', error);
+            // Error Toast
+            toast.error('Error creating user!', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                pauseOnHover: true,
+                closeOnClick: true,
+                draggable: true,
+            });
         }
     };
-
     return (
         <>
+            <ToastContainer />
             <div className="modal fade" id="addModal" tabIndex={-1}>
                 <div className="modal-dialog modal-xl modal-dialog-centered">
                     <div className="modal-content">

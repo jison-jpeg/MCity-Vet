@@ -1,30 +1,25 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, Navigate } from 'react-router-dom';
+import { signout } from '../redux/user/userSlice';
 
 export default function PrivateRoute() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, refreshToken } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   if (!currentUser) {
     // If the user is not logged in, redirect to the sign-in page
     return <Navigate to="/signin" />;
   }
 
-  // Check if the token has expired
-  const tokenExpiration = new Date(currentUser.expiryDate);
-  const currentTime = new Date();
-
-  if (tokenExpiration <= currentTime) {
-    // Token has expired; redirect to sign-in page
-    return <Navigate to="/signin" />;
-  }
 
   // Define allowed roles for specific routes
   const allowedRoles = {
-    '/dashboard': ['admin', 'customer'],
-    '/appointments': ['admin', 'customer'],
-    '/inventory': ['admin'],
-    '/medical-record': ['admin', 'customer'],
-    '/profile': ['admin', 'customer'],
+    '/dashboard': ['admin', 'customer', 'technician', 'secretary'],
+    '/appointments': ['admin', 'customer', 'technician', 'secretary'],
+    '/appointments/view': ['admin', 'customer', 'technician', 'secretary'],
+    '/inventory': ['admin', 'technician', 'secretary' ],
+    '/medical-record': ['admin', 'customer', 'technician', 'secretary'],
+    '/profile': ['admin', 'customer', 'technician', 'secretary'],
     '/account-management': ['admin'],
     '/system-logs': ['admin'],
   };

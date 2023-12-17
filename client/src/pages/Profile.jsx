@@ -6,6 +6,9 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { app } from "../firebase";
 import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Preloader from '../components/Preloader';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -16,6 +19,7 @@ export default function Profile() {
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  
   // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -46,12 +50,29 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
+    if (imagePercent > 0 && imagePercent < 100) {
+      // Use a timeout to delay the state update and trigger a re-render
+      const timeoutId = setTimeout(() => {
+        setImagePercent(imagePercent);
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [imagePercent]);
+
+  useEffect(() => {
     if (image) {
+      // Display the selected image immediately
+      const imageUrl = URL.createObjectURL(image);
+      setFormData({ ...formData, profilePicture: imageUrl });
       handleFileUpload(image);
     }
   }, [image]);
 
   const handleFileUpload = async (image) => {
+    // Reset error state when attempting a new upload
+    setImageError(false);
+
     if (image.size > 2 * 1024 * 1024) {
       setImageError(true);
       return;
@@ -104,17 +125,47 @@ export default function Profile() {
       if (data.success === false) {
         dispatch(updateUserFailure(data));
         setUpdateSuccess(true);
+        // Show an error toast
+        toast.error('Error updating profile!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
         return;
       }
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
+      // Show a success toast
+      toast.success('Profile updated successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
     } catch (error) {
       dispatch(updateUserFailure(error));
+      toast.error('Error updating profile!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 
   return (
     <>
+      <ToastContainer />
+      <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
       <main id="main" className="main">
@@ -141,7 +192,7 @@ export default function Profile() {
                     alt="Profile"
                     className="rounded-circle"
                   />
-                  <h2>  {currentUser?.firstName} {currentUser?.lastName} {currentUser?.middleName ? ` ${currentUser.middleName[0]}.` : ''}</h2>
+                  <h2>  {currentUser?.firstName} {currentUser?.middleName ? ` ${currentUser.middleName[0]}.` : ''} {currentUser?.lastName}</h2>
                   <h3>{currentUser?.role}</h3>
 
 
@@ -296,18 +347,18 @@ export default function Profile() {
                           </div>
                         }
 
-  
+
 
 
 
                         <div className="row mb-3">
                           <label
                             htmlFor="profileImage"
-                            className="col-md-4 col-lg-3 col-form-label"
+                            className="col-md-4 col-lg-3 "
                           >
                             Profile Image
                           </label>
-                          <div className="col-md-8 col-lg-9">
+                          <div className="col-md-8 col-lg-9 d-flex flex-column align-items-center">
                             <img src={formData.profilePicture || currentUser.profilePicture} alt="Profile"
                               onClick={() => fileRef.current.click()}
                             />
@@ -449,14 +500,19 @@ export default function Profile() {
                         </div>
 
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                          <button className="btn btn-primary" type="submit">
-                            Save Changes
+                          <button className="btn btn-primary" type="submit" disabled={loading}>
+                            {loading ? (
+                              <>
+                                <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" />
+                                Saving Changes
+                              </>
+                            ) : (
+                              'Save Changes'
+                            )}
                           </button>
                         </div>
 
-
-
-
+       
                       </form>
                       {/* End Profile Edit Form */}
                     </div>

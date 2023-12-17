@@ -3,11 +3,10 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import AccountStat from '../components/AccountStat';
 import AddAccount from '../components/modals/AddAccount';
-
-
+import { useSelector } from 'react-redux';
+import Preloader from '../components/Preloader';
 
 export default function AccountManagement() {
-
   // State to manage the sidebar visibility
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -38,6 +37,7 @@ export default function AccountManagement() {
   }, []);
 
   const [accounts, setAccounts] = useState([]); // State to store account data
+  const { loading } = useSelector((state) => state.user); // Get loading state from Redux
 
   const getRoleBadgeColor = (role) => {
     switch (role) {
@@ -54,7 +54,6 @@ export default function AccountManagement() {
     }
   };
 
-  
   const fetchAccounts = () => {
     fetch('/backend/user/all') // Replace with your actual API endpoint
       .then((response) => response.json())
@@ -65,14 +64,18 @@ export default function AccountManagement() {
   useEffect(() => {
     fetchAccounts(); // Fetch accounts when the component mounts
   }, []);
+  
+  
+  const handleViewProfile = (accountId) => {
+    window.location.href = `/account-management/${accountId}`;
+  };
 
   return (
     <>
+      <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
 
-
-      {/* ======= Main ======= */}
       <main id="main" className="main">
         <div className="pagetitle">
           <h1>Account Management</h1>
@@ -93,72 +96,70 @@ export default function AccountManagement() {
         <AddAccount />
 
         <br />
-        {/* End Page Title */}
 
         <section className="section dashboard">
           <div className="row">
-
             <AccountStat />
-
-            {/* add data table */}
-
-
 
             <div className="col-lg-12">
               <div className="card">
                 <div className="card-body">
                   <h5 className="card-title">User Accounts</h5>
-                  {/* Default Table */}
-                  <div className="table-responsive-md">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">Account ID</th>
-                          <th scope="col">Role</th>
-                          <th scope="col">Name</th>
-                          <th scope="col">Email</th>
-                          <th scope="col">Created On</th>
-                          <th scope="col">Action</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {accounts.map((account) => (
-                          <tr key={account._id}>
-                            <th scope="row">{account._id}</th>
-                            <td>
-                              <span className={`badge rounded-pill ${getRoleBadgeColor(account.role)}`}>{account.role}</span>
-                            </td>
-                            <td>{account.firstName} {account.lastName}</td>
-                            <td>{account.email}</td>
-                            <td>{account.createdAt}</td>
-                            <td>
-                              <button type="button" className="btn btn-primary-dashboard-action btn-sm">View</button>
-                              <span> | </span>
-                              <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
-                            </td>
-
+                  {loading ? ( // Display a loading message while loading
+                    <p>Loading accounts...</p>
+                  ) : (
+                    <div className="table-responsive-md">
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Account ID</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Created On</th>
+                            <th scope="col">Action</th>
                           </tr>
-                        ))}
-                      </tbody>
+                        </thead>
+                        <tbody>
+                          {Array.isArray(accounts) && accounts.length > 0 ? (
+                            accounts.map((account) => (
+                              <tr key={account._id}>
+                                <th scope="row">{account._id}</th>
+                                <td>
+                                  <span className={`badge rounded-pill ${getRoleBadgeColor(account.role)}`}>{account.role}</span>
+                                </td>
+                                <td>{account.firstName} {account.lastName}</td>
+                                <td>{account.email}</td>
+                                <td>{account.createdAt}</td>
+                                <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary-dashboard-action btn-sm"
+                                    onClick={() => handleViewProfile(account._id)}
+                                >
+                                    View
+                                </button>
 
-                    </table>
-                  </div>
-                  {/* End Default Table Example */}
+                                  <button type="button" className="btn btn-secondary-dashboard-action btn-sm">Delete</button>
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan="6">No accounts found.</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-
-
-
           </div>
         </section>
-
-
       </main>
-      {/* End #main */}
 
-      {/* ======= Footer ======= */}
       <footer id="footer" className="footer">
         <div className="copyright">
           © Copyright{" "}
@@ -167,18 +168,16 @@ export default function AccountManagement() {
           </strong>
         </div>
         <div className="credits">
-
           All Rights Reserved
         </div>
       </footer>
-      {/* End Footer */}
+
       <a
         href="#"
         className="back-to-top d-flex align-items-center justify-content-center"
       >
         <i className="bi bi-arrow-up-short" />
       </a>
-
     </>
   );
 }

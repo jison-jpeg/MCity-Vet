@@ -5,7 +5,12 @@ import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import technicianRoutes from './routes/technician.route.js';
 import appointmentRoutes from './routes/appointment.route.js';
+import inventoryRoutes from './routes/inventory.route.js';
 import serviceRoutes from './routes/service.route.js';
+import systemlogsRoutes from './routes/systemlogs.route.js';
+import medicalrecordRoutes from './routes/medicalrecord.route.js';
+import notificationRoutes from './routes/notification.route.js';
+import emailRoutes from './routes/email.route.js';
 
 import cookieParser from 'cookie-parser';
 // import path from 'path';
@@ -30,9 +35,13 @@ app.listen(3000, () => {
 app.use("/backend/user", userRoutes);
 app.use("/backend/auth", authRoutes);
 app.use("/backend/appointment", appointmentRoutes);
+app.use("/backend/inventory", inventoryRoutes);
 app.use("/backend/technician", technicianRoutes);
 app.use("/backend/service", serviceRoutes);
-
+app.use("/backend/logs", systemlogsRoutes);
+app.use("/backend/medical-record", medicalrecordRoutes);
+app.use("/backend/notification", notificationRoutes);
+app.use("/backend/email", emailRoutes);
 
 app.use((error, req, res, next) => {
     const statusCode = error.statusCode || 500;

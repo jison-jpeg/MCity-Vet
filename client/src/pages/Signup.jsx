@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OAuth from '../components/OAuth';
+import Preloader from '../components/Preloader';
 
 
 export default function Signup() {
@@ -54,13 +55,7 @@ export default function Signup() {
 
   return (
     <>
-      <div className="loading-overlay">
-        <div className="bounce-loader">
-          <div className="bounce1" />
-          <div className="bounce2" />
-          <div className="bounce3" />
-        </div>
-      </div>
+      <Preloader />
 
       {/* <Header /> */}
       {/*----------------------------------------------

@@ -3617,6 +3617,42 @@ ul.sub-menu li.li-with-arrow i.fa-caret-right {
   
 }
 
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-control-input {
+  display: none; /* Hide the default checkbox */
+}
+
+.checkbox-control-label {
+  position: relative;
+  padding-left: 30px; /* Space for the custom checkbox */
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  color: #333; /* Default text color */
+}
+
+.checkbox-control-label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px; /* Adjust the size of the checkbox */
+  height: 20px; /* Adjust the size of the checkbox */
+  border: 2px solid #b2dded; /* Border color for the checkbox */
+  border-radius: 50%; /* Make it a circle */
+  background-color: #fff; /* Background color of the checkbox */
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.checkbox-control-input:checked + .checkbox-control-label:before {
+  background-color: #ff594d; /* Change the color when checked */
+  border-color: #ff594d; /* Change the border color when checked */
+}
+
 .arrow {
   width: 0;
   height: 0;
@@ -6631,7 +6667,7 @@ body:not(.loaded) * {
 .filter-form.review-filter-form .input-group ul {
   min-width: auto;
 }
-.doctor-filter-form .filter-item {
+.technician-filter-form .filter-item {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -6644,23 +6680,23 @@ body:not(.loaded) * {
   padding-left: 3rem;
   margin: 1rem 1rem 0 0;
 }
-.doctor-filter-form .filter-item span {
+.technician-filter-form .filter-item span {
   margin-right: 1.8rem;
   font-weight: 500;
 }
-.doctor-filter-form .filter-item .input-group {
+.technician-filter-form .filter-item .input-group {
   width: 206px;
 }
-.doctor-filter-form .filter-item .form-control {
+.technician-filter-form .filter-item .form-control {
   background-color: #fff;
 }
-.doctor-filter-form .btn-form {
+.technician-filter-form .btn-form {
   margin-top: 1rem;
   margin-left: 1rem;
   max-width: 170px;
 }
 @media (max-width: 991px) {
-  .doctor-filter-form .btn-form {
+  .technician-filter-form .btn-form {
     max-width: 100%;
   }
 }
@@ -6808,7 +6844,7 @@ input[type="password"] {
   font-size: 2rem !important;
 }
 @media (max-width: 1199px) {
-  .doctor-filter-form .filter-item {
+  .technician-filter-form .filter-item {
     width: 100%;
     height: 100%;
     -webkit-box-orient: vertical;
@@ -6818,7 +6854,7 @@ input[type="password"] {
     background-color: transparent;
     padding: 0;
   }
-  .doctor-filter-form .filter-item span {
+  .technician-filter-form .filter-item span {
     width: 100%;
     height: 100%;
     background-color: #ebf6fa;
@@ -6828,11 +6864,11 @@ input[type="password"] {
     padding: 1rem 0 4.5rem 3rem;
     display: block;
   }
-  .doctor-filter-form .filter-item .input-group {
+  .technician-filter-form .filter-item .input-group {
     width: 100%;
     margin-top: -3.4rem;
   }
-  .doctor-filter-form .btn-form {
+  .technician-filter-form .btn-form {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -8542,35 +8578,35 @@ input[type="password"] {
     position: relative;
   }
 }
-.doctor-menu {
+.technician-menu {
   border-top: 2px dotted #b2dded;
 }
-.doctor-menu .blog-doctor {
+.technician-menu .blog-technician {
   border-bottom: 2px dotted #b2dded;
 }
-.blog.blog-doctor {
+.blog.blog-technician {
   position: relative;
   padding: 3.6rem 0 3.2rem;
 }
-.blog.blog-doctor figure {
+.blog.blog-technician figure {
   margin-right: 3rem;
 }
-.blog.blog-doctor .blog-content .technician-name {
+.blog.blog-technician .blog-content .technician-name {
   line-height: 3.4rem;
 }
-.blog.blog-doctor .blog-content .ratings,
-.blog.blog-doctor .blog-content .ratings-val,
-.blog.blog-doctor .blog-content .doctor-info,
-.blog.blog-doctor .blog-content .doctor-availivility {
+.blog.blog-technician .blog-content .ratings,
+.blog.blog-technician .blog-content .ratings-val,
+.blog.blog-technician .blog-content .doctor-info,
+.blog.blog-technician .blog-content .doctor-availivility {
   font-size: 1.6rem;
   line-height: 3.4rem;
   margin-bottom: 0;
 }
-.blog.blog-doctor .btn-link a {
+.blog.blog-technician .btn-link a {
   font-size: 1.4rem;
   line-height: 3.4rem;
 }
-.blog.blog-doctor .btn-form {
+.blog.blog-technician .btn-form {
   position: absolute;
   right: 0;
   top: 50%;
@@ -8580,7 +8616,7 @@ input[type="password"] {
   margin-top: 0;
 }
 @media (max-width: 991px) {
-  .blog.blog-doctor {
+  .blog.blog-technician {
     text-align: center;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -8590,7 +8626,7 @@ input[type="password"] {
     -ms-flex-align: center;
     align-items: center;
   }
-  .blog.blog-doctor .btn-form {
+  .blog.blog-technician .btn-form {
     position: relative;
     left: initial;
     right: initial;
@@ -8602,10 +8638,10 @@ input[type="password"] {
   .blog.blog-preview .btn-xs {
     position: relative;
   }
-  .blog.blog-doctor {
+  .blog.blog-technician {
     text-align: center;
   }
-  .blog.blog-doctor .btn-form {
+  .blog.blog-technician .btn-form {
     position: relative;
     -webkit-transform: translateY(0);
     transform: translateY(0);
@@ -9054,7 +9090,7 @@ input[type="password"] {
   background-color: #fff;
 }
 .step-bar .nav-step {
-  display: inline-block;
+  /* display: inline-block; */
   position: relative;
   width: 100%;
   text-align: justify;
@@ -9421,7 +9457,7 @@ input[type="password"] {
   }
 }
 .bg-section-1 {
-  background-image: url("../images/demos/demo-1/banner/banner-hero-1.png");
+  background-image: url("../img/banner-hero-1.png");
   background-position: 50% top;
 }
 .bg-section-2 {
@@ -9474,8 +9510,8 @@ input[type="password"] {
 .bg-section-16 {
   background-image: url("../images/demos/demo-7/banner/banner-big-2.jpg");
 }
-.bg-section-17 {
-  background-image: url("../images/backgrounds/background-1.png");
+.bg-section-signin {
+  background-image: url("../img/signin/background-1.png");
 }
 .bg-section-18 {
   background-image: url("../images/backgrounds/background-2.png");
@@ -10143,26 +10179,26 @@ input[type="password"] {
     width: 100%;
   }
 }
-.doctor-filter-section {
+.technician-filter-section {
   padding-top: 14.1rem;
   padding-bottom: 15rem;
 }
-.doctor-filter-section span {
+.technician-filter-section span {
   font-weight: 500;
 }
-.doctor-filter-section .technician-Availability {
+.technician-filter-section .technician-Availability {
   margin-bottom: 0;
 }
 @media (max-width: 991px) {
-  .doctor-filter-section {
+  .technician-filter-section {
     padding-top: 4.1rem;
     padding-bottom: 5rem;
   }
-  .doctor-filter-section > h2,
-  .doctor-filter-section > span {
+  .technician-filter-section > h2,
+  .technician-filter-section > span {
     margin-left: 2rem;
   }
-  .doctor-filter-section .pagination {
+  .technician-filter-section .pagination {
     -webkit-box-pack: center !important;
     -ms-flex-pack: center !important;
     justify-content: center !important;

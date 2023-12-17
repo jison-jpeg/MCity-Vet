@@ -2,16 +2,37 @@
 - .gitignore
 - backend
   - controllers
+    - appointment.controller.js
     - auth.controller.js
+    - inventory.controller.js
+    - medicalrecord.controller.js
+    - notification.controller.js
+    - service.controller.js
+    - systemlogs.controller.js
+    - technician.controller.js
     - user.controller.js
   - index.js
+  - index.js.dev
   - models
+    - appointment.model.js
+    - inventory.model.js
+    - medicalrecord.model.js
+    - notification.model.js
+    - service.model.js
+    - systemlogs.model.js
     - user.model.js
   - public
     - img
       - profilePicture.png
   - routes
+    - appointment.route.js
     - auth.route.js
+    - inventory.route.js
+    - medicalrecord.route.js
+    - notification.route.js
+    - service.route.js
+    - systemlogs.route.js
+    - technician.route.js
     - user.route.js
   - utils
     - error.js
@@ -23,47 +44,67 @@
   - package-lock.json
   - package.json
   - postcss.config.js
-  - public
   - src
     - App.jsx
     - components
       - AccountStat.jsx
+      - AppointmentStat.jsx
+      - AppointmentTable.jsx
+      - AppointmentTableArchive.jsx
       - DashboardFooter.jsx
       - DashboardHeader.jsx
       - DashboardSidebar.jsx
+      - FacebookMsg.jsx
       - Footer.jsx
       - Header.jsx
+      - InventoryTable.jsx
+      - MedicalRecordTable.jsx
+      - MedicalRecordTableArchive.jsx
       - modals
         - AddAccount.jsx
+        - AddAppointment copy.jsx
         - AddAppointment.jsx
         - AddItem.jsx
+        - UpdateAppointment.jsx
+        - UpdateItem.jsx
       - OAuth.jsx
       - Preloader.jsx
       - PrivateRoute.jsx
-      - TechStat.jsx
+      - RecentAppointment.jsx
+      - TechnicianList.jsx
+      - ViewAppointment.jsx
     - firebase.js
     - index.css
     - main.jsx
     - pages
       - About.jsx
       - AccountManagement.jsx
+      - AppointmentDetails.jsx
       - Appointments.jsx
+      - AppointmentsArchive.jsx
+      - BookAppointment copy.jsx
       - BookAppointment.jsx
       - Dashboard.jsx
       - Home.jsx
       - Inventory.jsx
       - MedicalRecord.jsx
+      - MedicalRecordArchive.jsx
+      - MedicalRecordDetails.jsx
+      - NotFound.jsx
       - Profile.jsx
+      - ProfileView.jsx
       - Signin.jsx
       - Signup.jsx
       - SystemLogs.jsx
-      - UserDashboard.jsx
+      - UnauthorizedPage.jsx
     - redux
       - store.js
       - user
         - userSlice.js
   - tailwind.config.js
+  - vite.config copy.js
   - vite.config.js
 - package-lock.json
 - package.json
+- project_structure.text
 - README.md
