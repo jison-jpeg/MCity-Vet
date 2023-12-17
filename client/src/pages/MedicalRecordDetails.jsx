@@ -3,6 +3,8 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Preloader from '../components/Preloader';
 
 export default function MedicalRecordDetails() {
@@ -123,8 +125,29 @@ export default function MedicalRecordDetails() {
       setMedicalRecord(updatedMedicalRecord);
       // Optionally, you can clear the form values after saving
       setFormValues({ diagnosis: '', treatment: '' });
+
+      // Show a success toast
+      toast.success('Medical record updated successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
     } catch (error) {
       console.error(error);
+      // Handle error, e.g., show an error toast
+      toast.error('Error updating medical record!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
       // Handle error, e.g., show an error message to the user
     }
   };
@@ -212,11 +235,27 @@ export default function MedicalRecordDetails() {
 
       const updatedMedicalRecord = await response.json();
       console.log('Archive status toggled successfully:', updatedMedicalRecord);
+      // Show a success toast
+      toast.success(`Medical record ${medicalRecord.archive ? 'unarchived' : 'archived'} successfully!`, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
 
       setMedicalRecord(updatedMedicalRecord);
     } catch (error) {
       console.error('Error toggling archive status:', error);
-      // Handle error, e.g., show an error message to the user
+      toast.error('An error occured while archiving', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 
@@ -224,6 +263,7 @@ export default function MedicalRecordDetails() {
   return (
     <>
       <Preloader />
+      <ToastContainer />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />
 

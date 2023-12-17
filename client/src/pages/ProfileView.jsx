@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
 import DashboardSidebar from '../components/DashboardSidebar';
 import Preloader from '../components/Preloader';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
 
 export default function ProfileView() {
@@ -74,12 +76,40 @@ const handleSubmit = async (e) => {
         ...formData,
       }));
 
-      alert('Profile updated successfully!');
+      // alert('Profile updated successfully!');
+      //Success toast
+      toast.success('Profile updated successfully!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
     } else {
-      alert('Failed to update profile.');
+      // alert('Failed to update profile.');
+      //Error toast
+      toast.error('Failed to update profile.', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   } catch (error) {
     console.error('Error updating profile:', error);
+    // Error toast
+    toast.error('Error updating profile.', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
   }
 };
   // Function to handle form changes
@@ -89,6 +119,7 @@ const handleSubmit = async (e) => {
 
   return (
     <>
+      <ToastContainer />
       <Preloader />
       <DashboardHeader toggleSidebar={toggleSidebar} />
       <DashboardSidebar toggleSidebar={toggleSidebar} />

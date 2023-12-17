@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function UpdateAppointment({ appointment }) {
     const { currentUser } = useSelector((state) => state.user);
@@ -78,14 +80,14 @@ export default function UpdateAppointment({ appointment }) {
     }, [appointment]);
 
     const handleServiceChange = (event) => {
-    const { name, checked } = event.target;
-    setFormData((prevFormData) => ({
-        ...prevFormData,
-        services: checked
-            ? [...prevFormData.services, name]
-            : prevFormData.services.filter((service) => service !== name),
-    }));
-};
+        const { name, checked } = event.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            services: checked
+                ? [...prevFormData.services, name]
+                : prevFormData.services.filter((service) => service !== name),
+        }));
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -108,7 +110,7 @@ export default function UpdateAppointment({ appointment }) {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         console.log('Input Field:', name, 'Value:', value);
-    
+
         setFormData((prevFormData) => ({
             ...prevFormData,
             technicianName: name === 'technician' ? value : prevFormData.technicianName,
@@ -175,6 +177,17 @@ export default function UpdateAppointment({ appointment }) {
 
             const updatedAppointment = await response.json();
             console.log('Updated Appointment:', updatedAppointment);
+
+            // Show a success toast
+            toast.success('Appointment updated successfully!', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+
         } catch (error) {
             console.error(error);
         }
@@ -182,6 +195,8 @@ export default function UpdateAppointment({ appointment }) {
 
 
     return (
+
+        
         <div className="modal fade" id="updateModal" tabIndex={-1}>
             <div className="modal-dialog modal-xl modal-dialog-centered">
                 <div className="modal-content">
@@ -195,6 +210,7 @@ export default function UpdateAppointment({ appointment }) {
                             aria-label="Close"
                         />
                     </div>
+                    <ToastContainer />
                     <div className="modal-body">
 
                         <form className="row g-3" onSubmit={handleSubmit}>
