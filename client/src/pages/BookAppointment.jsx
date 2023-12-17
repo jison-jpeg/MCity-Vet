@@ -3,19 +3,43 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import TechnicianList from '../components/TechnicianList';
 import "react-datepicker/dist/react-datepicker.css";
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signinStart, signinSuccess, signinFailure, setRefreshToken } from '../redux/user/userSlice';
+
 
 export default function BookAppointment() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Step 1 state
   const [technicians, setTechnicians] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTechnician, setSelectedTechnician] = useState(null);
   const [showTechnicianList, setShowTechnicianList] = useState(false);
 
-  // Form state for Step 2
+  // Step 2 state
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Step 3 state
+  const [selectedAnimalType, setSelectedAnimalType] = useState('');
+  const [dropdownStates, setDropdownStates] = useState({});
+  const [selectedServices, setSelectedServices] = useState([]);
+
+  const animalTypes = ['Cow', 'Carabao', 'Pig', 'Goat'];
+  const services = ['Artificial Insemination', 'Hormone Induction', 'Castration', 'Iron Supplementation', 'Deworming', 'Vaccination'];
+
+  // Fetch technicians on page load
+  useEffect(() => {
+    if (showTechnicianList) {
+      fetchTechnicians();
+    }
+  }, [showTechnicianList]);
+
+  // Fetch technicians
   const fetchTechnicians = async () => {
     try {
       const formattedDate = selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : '';
@@ -35,12 +59,6 @@ export default function BookAppointment() {
     }
   };
 
-  // Fetch technicians when showTechnicianList changes
-  useEffect(() => {
-    if (showTechnicianList) {
-      fetchTechnicians();
-    }
-  }, [showTechnicianList]);
 
   // Handle Form Change
   const handleChange = (e) => {
@@ -70,6 +88,30 @@ export default function BookAppointment() {
         return;
       }
 
+      // After successful signup, perform login
+      dispatch(signinStart());
+      const loginResponse = await fetch('/backend/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const loginData = await loginResponse.json();
+
+      if (loginData.success === false) {
+        setError(true);
+        return;
+      }
+
+      // Dispatch the signinSuccess action with the user data
+      dispatch(signinSuccess(loginData));
+      dispatch(setRefreshToken(loginData.refreshToken));
+
       // Proceed to Step 3
       setCurrentStep(3);
     } catch (err) {
@@ -78,6 +120,90 @@ export default function BookAppointment() {
       setError(true);
     }
   };
+
+  // Step 3 Dropdown
+  const toggleDropdown = (dropdownName) => {
+    setDropdownStates((prevState) => ({
+      ...prevState,
+      [dropdownName]: !prevState[dropdownName],
+    }));
+  };
+
+  const isDropdownOpen = (dropdownName) => {
+    return dropdownStates[dropdownName] || false;
+  };
+
+  // Handle Animal Type Select
+  const handleAnimalTypeSelect = (type) => {
+    setSelectedAnimalType(type);
+    toggleDropdown('animalTypeDropdown');
+  };
+
+  // Handle Service Change
+  const handleServiceChange = (event) => {
+    const { value, checked } = event.target;
+  
+    if (checked) {
+      setSelectedServices((prevSelectedServices) => [...prevSelectedServices, value]);
+    } else {
+      setSelectedServices((prevSelectedServices) =>
+        prevSelectedServices.filter((serviceName) => serviceName !== value)
+      );
+    }
+  };
+
+  // Step 3 Form Submit
+  const handleStep3Submit = async (e) => {
+    e.preventDefault();
+    try {
+      // Additional logic for Step 3 form submission here
+      const appointmentData = {
+        schedule: selectedDate,
+        technicianName: selectedTechnician._id,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        email: formData.email,
+        services: selectedServices,
+        address: e.target.address.value,
+        landmark: e.target.landmark.value,
+        patient: [
+          {
+            typeOfAnimal: selectedAnimalType,
+            numberOfHeads: parseInt(e.target.numberOfHeads.value),
+            age: parseInt(e.target.age.value),
+          },
+        ],
+        createdBy: formData.technicianName, // Assuming you want to associate the appointment with the technician who booked it
+        status: "Pending",
+      };
+
+      console.log('Appointment Data:', appointmentData);
+
+      // Create the appointment
+      const response = await fetch('/backend/appointment/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData),
+      });
+
+      if (response.ok) {
+        // Redirect to the dashboard after successful appointment creation
+        navigate('/dashboard');
+      } else {
+        console.error('Error creating appointment:', response.statusText);
+      }
+    } catch (err) {
+      console.error('Step 3 Form Submission Error:', err);
+    }
+  };
+
+  // Handle Step 3 Form Change
+  const handleChangeStep3 = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  }
 
   // Handle Step Click
   const handleStepClick = (stepNumber) => {
@@ -92,14 +218,19 @@ export default function BookAppointment() {
   };
 
   // Console log to check the state
-  console.log('currentStep:', currentStep);
-  console.log('selectedDate:', selectedDate);
-  console.log('selectedTechnician:', selectedTechnician);
+  // console.log('currentStep:', currentStep);
+  // console.log('selectedDate:', selectedDate);
+  // console.log('selectedTechnician:', selectedTechnician);
 
-  // Step 2 Console log to check the state
-  console.log('formData:', formData);
-  console.log('error:', error);
-  console.log('loading:', loading);
+  // // Step 2 Console log to check the state
+  // console.log('formData:', formData);
+  // console.log('error:', error);
+  // console.log('loading:', loading);
+
+  // // Step 3 Console log to check the state
+  // console.log('selectedAnimalType:', selectedAnimalType);
+  // console.log('dropdownStates:', dropdownStates);
+  // console.log('selectedServices:', selectedServices);
 
   return (
     <>
@@ -271,7 +402,7 @@ export default function BookAppointment() {
                   >
                     <span>{loading ? 'Signing Up...' : 'Signing Up'}</span>
                   </button>
-                  
+
                   <div className="term-privacy d-flex justify-content-center m-b-3">
                     <span>Already have an account?</span>
                     <div className="btn-link">
@@ -297,7 +428,7 @@ export default function BookAppointment() {
               <div className="col-lg-12 offset-lg-0 col-sm-8 offset-sm-2 col-10 offset-1">
 
                 <div>
-                  <form className="appoint-form mt-3 mb-5">
+                  <form onSubmit={handleStep3Submit} className="appoint-form mt-3 mb-5">
                     <div className="row row-joined">
                       <div className="col-md-12 col-lg-6">
                         <div className="input-group input-light">
@@ -307,6 +438,8 @@ export default function BookAppointment() {
                             type="text"
                             className="form-control"
                             placeholder="First"
+                            onChange={handleChangeStep3}
+                            required
                           />
                         </div>
                       </div>
@@ -318,49 +451,59 @@ export default function BookAppointment() {
                             type="text"
                             className="form-control"
                             placeholder="First"
+                            onChange={handleChangeStep3}
+                            required
                           />
                         </div>
                       </div>
 
+                      {/* Animal Type */}
                       <div className="col-md-12 col-lg-4">
                         <div className="input-group input-light">
                           <h6 className="input-title">Animal Type</h6>
-                          <div className="form-control select-control">
-                            March
+                          <div className="form-control select-control" onClick={() => toggleDropdown('animalTypeDropdown')}>
+                            {selectedAnimalType || 'Select Animal Type'}
                             <i className="far fa-angle-down" />
                           </div>
-                          <ul className="option-menu">
-                            <li className="option-list">
-                              <span className="option">
-                                <i className="far fa-caret-right" />
-                                January
-                              </span>
-                            </li>
-                            <li className="option-list">
-                              <span className="option">
-                                <i className="far fa-caret-right" />
-                                February
-                              </span>
-                            </li>
-                            <li className="option-list">
-                              <span className="option">
-                                <i className="far fa-caret-right" />
-                                March
-                              </span>
-                            </li>
+                          <ul className={`option-menu ${isDropdownOpen('animalTypeDropdown') ? 'show' : ''}`}>
+                            {animalTypes.map((type) => (
+                              <li className="option-list" key={type} onClick={() => handleAnimalTypeSelect(type)}>
+                                <span className="option">
+                                  <i className="far fa-caret-right" />
+                                  {type}
+                                </span>
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       </div>
+
+
+
                       <div className="col-md-12 col-lg-4">
                         <div className="input-group input-light">
                           <h6 className="input-title">Age</h6>
-                          <input type="number" className="form-control" placeholder="Ex. 1" />
+                          <input
+                            type="number"
+                            id='age'
+                            className="form-control"
+                            placeholder="Ex. 1"
+                            onChange={handleChangeStep3}
+                            required
+                          />
                         </div>
                       </div>
                       <div className=" col-md-12 col-lg-4">
                         <div className="input-group input-light">
                           <h6 className="input-title">Number of Heads</h6>
-                          <input type="number" className="form-control" placeholder="Ex. 1" />
+                          <input
+                            id='numberOfHeads'
+                            type="number"
+                            className="form-control"
+                            placeholder="Ex. 1"
+                            onChange={handleChangeStep3}
+                            required
+                          />
                         </div>
                       </div>
                       <div className="btn-link mt-2 col-md-12 col-lg-12 ml-1">
@@ -368,58 +511,32 @@ export default function BookAppointment() {
                         <i className="far fa-caret-right" />
                       </div>
 
-
-                      <div className="col-md-12 col-lg-12">
-
+                      {/* Services */}
+                      <div className="col-md-12 col-lg-12 mb-5">
                         <div className="input-group input-light justify-content-between">
                           <h6 className="input-title">Services</h6>
-                          <div>
-                            <input
-                              type="checkbox"
-                              className="checkbox-control-input"
-                              id="services1" // Unique id for the first checkbox
-                            />
-                            <label className="checkbox-control-label ml-1 mr-1" htmlFor="services1">
-                              Artificial Insemination
-                            </label>
-                          </div>
-                          <div>
-                            <input
-                              type="checkbox"
-                              className="checkbox-control-input"
-                              id="services2" // Unique id for the second checkbox
-                            />
-                            <label className="checkbox-control-label ml-1 mr-1" htmlFor="services2">
-                              Artificial Insemination
-                            </label>
-                          </div>
-                          <div>
-                            <input
-                              type="checkbox"
-                              className="checkbox-control-input"
-                              id="services3" // Unique id for the third checkbox
-                            />
-                            <label className="checkbox-control-label ml-1 mr-1" htmlFor="services3">
-                              Artificial Insemination
-                            </label>
-                          </div>
-                          <div>
-                            <input
-                              type="checkbox"
-                              className="checkbox-control-input"
-                              id="services4" // Unique id for the third checkbox
-                            />
-                            <label className="checkbox-control-label ml-1 mr-1" htmlFor="services4">
-                              Artificial Insemination
-                            </label>
-                          </div>
+                          {services.map((service, index) => (
+                            <div key={`service${index}`}>
+                              <input
+                                type="checkbox"
+                                className="checkbox-control-input"
+                                id={`service${index}`}
+                                value={service}
+                                checked={selectedServices.includes(service)}
+                                onChange={handleServiceChange}
+                              />
+                              <label className="checkbox-control-label ml-1 mr-1" htmlFor={`service${index}`}>
+                                {service}
+                              </label>
+                            </div>
+                          ))}
                         </div>
-
                       </div>
+
                     </div>
 
                     <button type="submit"
-                      className="btn btn-secondary-color btn-form d-flex ml-auto mb-1 mt-2">
+                      className="btn btn-secondary-color btn-form d-flex ml-auto mr-auto mb-1 mt-2">
                       <span>Create Appointment</span>
                     </button>
                   </form>
