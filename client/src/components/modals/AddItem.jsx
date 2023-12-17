@@ -41,6 +41,20 @@ export default function AddItem() {
     const handleFormSubmit = async (event) => {
         event.preventDefault();
 
+        // Validate input fields
+    if (!itemName || !quantity || !category) {
+        // Display an error toast for missing fields
+        toast.error('Please fill in all required fields.', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
+        return;
+    }
+
         const addedBy = currentUser._id; // Assuming currentUser has _id property
 
         const itemData = {

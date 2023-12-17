@@ -80,8 +80,15 @@ export default function AppointmentDetails() {
     fetchAppointmentDetails();
   }, [id]);
 
+  const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
+  const [isLoadingCancel, setIsLoadingCancel] = useState(false);
+  const [isLoadingAccept, setIsLoadingAccept] = useState(false);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+
   // Accept appointment
   const acceptAppointment = async () => {
+    setIsLoadingAccept(true);
+
     try {
       const response = await fetch(`/backend/appointment/update/${id}`, {
         method: 'PUT',
@@ -130,12 +137,15 @@ export default function AppointmentDetails() {
       }));
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoadingAccept(false);
     }
   };
 
 
   // Complete appointment
   const completeAppointment = async () => {
+    setIsLoadingComplete(true);
     try {
       const response = await fetch(`/backend/appointment/update/${id}`, {
         method: 'PUT',
@@ -185,11 +195,14 @@ export default function AppointmentDetails() {
       }));
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoadingComplete(false);
     }
   };
 
   // Cancel appointment
   const cancelAppointment = async () => {
+    setIsLoadingCancel(true);
     const userConfirmed = window.confirm('Are you sure you want to cancel this appointment?');
 
     if (userConfirmed) {
@@ -360,12 +373,13 @@ export default function AppointmentDetails() {
                       <>
                         {appointment.status === 'Completed' && (
                           <button
-                            className="btn btn-primary-dashboard btn-sm rounded-pill"
-                            type="button"
-                            onClick={createMedicalRecord}
-                          >
-                            Create Medical Record
-                          </button>
+                          className="btn btn-primary-dashboard btn-sm rounded-pill"
+                          type="button"
+                          onClick={cancelAppointment}
+                          disabled={isDisabled || isLoadingCancel}
+                        >
+                          {isLoadingCancel ? 'Cancelling...' : 'Cancel Appointment'}
+                        </button>
                         )}
 
                         <button

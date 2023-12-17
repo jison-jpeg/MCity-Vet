@@ -120,6 +120,24 @@ export default function UpdateAppointment({ appointment }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Check if the form data is valid
+        // Perform date validation
+        const selectedDate = new Date(formData.schedule);
+        const currentDate = new Date();
+
+        if (selectedDate < currentDate) {
+            // If the selected date is in the past, show an error toast and return
+            toast.error('Please select a future date for the appointment.', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            return;
+        }
         console.log('Form Data to be Submitted:', formData);
 
         try {
@@ -196,7 +214,7 @@ export default function UpdateAppointment({ appointment }) {
 
     return (
 
-        
+
         <div className="modal fade" id="updateModal" tabIndex={-1}>
             <div className="modal-dialog modal-xl modal-dialog-centered">
                 <div className="modal-content">

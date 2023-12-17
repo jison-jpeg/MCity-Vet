@@ -9,6 +9,8 @@ export default function AddAppointment({ appointments, setAppointments }) {
     const [technicians, setTechnicians] = useState([]);
     const [animalInfo, setAnimalInfo] = useState([{ typeOfAnimal: '', age: '', numberOfHeads: '' }]);
     const [services, setServices] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
     const [formData, setFormData] = useState({
         date: '',
         technician: '',
@@ -67,6 +69,36 @@ export default function AddAppointment({ appointments, setAppointments }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const selectedDate = new Date(formData.date);
+        const currentDate = new Date();
+        setIsLoading(true);
+        // Perform validation
+        if (!formData.date || !formData.technician || !formData.address || !formData.email || !formData.phoneNumber || animalInfo.some(animal => !animal.typeOfAnimal || !animal.age || !animal.numberOfHeads) || formData.services.length === 0) {
+            // If any required field is missing, show an error toast and return
+            toast.error('Please fill in all required fields.', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            return;
+        }
+
+        if (selectedDate < currentDate) {
+            // If the selected date is in the past, show an error toast and return
+            toast.error('Please select a future date for your appointment.', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            return;
+        }
+    
         const userRole = currentUser.role;
         let firstName = userRole === 'customer' ? currentUser.firstName : formData.firstName;
         let lastName = userRole === 'customer' ? currentUser.lastName : formData.lastName;
@@ -166,6 +198,9 @@ export default function AddAppointment({ appointments, setAppointments }) {
                 pauseOnHover: true,
                 draggable: true,
             });
+        } finally {
+            // Set loading state to false after the request is completed (success or failure)
+            setIsLoading(false);
         }
     };
 
@@ -183,6 +218,8 @@ export default function AddAppointment({ appointments, setAppointments }) {
             });
         }
     };
+
+
 
 
     return (
@@ -212,6 +249,7 @@ export default function AddAppointment({ appointments, setAppointments }) {
                                     value={currentUser.role === 'customer' ? currentUser.firstName : formData.firstName}
                                     onChange={handleInputChange}
                                     disabled={currentUser.role === 'customer'}
+                                    required
                                 />
                             </div>
 
@@ -226,6 +264,7 @@ export default function AddAppointment({ appointments, setAppointments }) {
                                     value={currentUser.role === 'customer' ? currentUser.lastName : formData.lastName}
                                     onChange={handleInputChange}
                                     disabled={currentUser.role === 'customer'}
+                                    required
                                 />
                             </div>
 
@@ -402,8 +441,18 @@ export default function AddAppointment({ appointments, setAppointments }) {
                                 >
                                     Close
                                 </button>
-                                <button type="submit" className="btn btn-primary">
-                                    Save changes
+                                <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                                    {isLoading && (
+                                        <>
+                                            <span
+                                                className="spinner-border spinner-border-sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                            />
+                                            Loading...
+                                        </>
+                                    )}
+                                    {!isLoading && 'Create Appointment'}
                                 </button>
                                 <ToastContainer />
                             </div>

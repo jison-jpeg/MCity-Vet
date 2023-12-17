@@ -48,49 +48,61 @@ export default function ProfileView() {
       .catch((error) => console.error('Error fetching user profile:', error));
   }, [id]);
 
-// Function to handle form submission
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  // Function to handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Display confirmation alert
-  const isConfirmed = window.confirm('Are you sure you want to update this profile?');
+    // Display confirmation alert
+    const isConfirmed = window.confirm('Are you sure you want to update this profile?');
 
-  if (!isConfirmed) {
-    // If the user cancels the update, do nothing
-    return;
-  }
+    if (!isConfirmed) {
+      // If the user cancels the update, do nothing
+      return;
+    }
 
-  try {
-    const response = await fetch(`/backend/user/update/${id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (response.ok) {
-      // Update local state with modified data
-      setUserProfile((prevProfile) => ({
-        ...prevProfile,
-        ...formData,
-      }));
-
-      // alert('Profile updated successfully!');
-      //Success toast
-      toast.success('Profile updated successfully!', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
+    try {
+      const response = await fetch(`/backend/user/update/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
-    } else {
-      // alert('Failed to update profile.');
-      //Error toast
-      toast.error('Failed to update profile.', {
+      if (response.ok) {
+        // Update local state with modified data
+        setUserProfile((prevProfile) => ({
+          ...prevProfile,
+          ...formData,
+        }));
+
+        // alert('Profile updated successfully!');
+        //Success toast
+        toast.success('Profile updated successfully!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
+      } else {
+        // alert('Failed to update profile.');
+        //Error toast
+        toast.error('Failed to update profile.', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      // Error toast
+      toast.error('Error updating profile.', {
         position: 'top-right',
         autoClose: 3000,
         hideProgressBar: false,
@@ -99,19 +111,7 @@ const handleSubmit = async (e) => {
         draggable: true,
       });
     }
-  } catch (error) {
-    console.error('Error updating profile:', error);
-    // Error toast
-    toast.error('Error updating profile.', {
-      position: 'top-right',
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-  }
-};
+  };
   // Function to handle form changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -192,25 +192,25 @@ const handleSubmit = async (e) => {
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Birthday</div>
                         <div className="col-lg-9 col-md-8">
-                        {userProfile?.birthdate}
+                          {userProfile?.birthdate}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Address</div>
                         <div className="col-lg-9 col-md-8">
-                        {userProfile?.address}
+                          {userProfile?.address}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Phone</div>
                         <div className="col-lg-9 col-md-8">
-                        {userProfile?.phone}
+                          {userProfile?.phone}
                         </div>
                       </div>
                       <div className="row">
                         <div className="col-lg-3 col-md-4 label">Email</div>
                         <div className="col-lg-9 col-md-8">
-                        {userProfile?.email}
+                          {userProfile?.email}
                         </div>
                       </div>
                     </div>
@@ -280,6 +280,30 @@ const handleSubmit = async (e) => {
                             />
                           </div>
                         </div>
+
+                        <div className="row mb-3">
+                          <label
+                            htmlFor="role"
+                            className="col-md-4 col-lg-3 col-form-label"
+                          >
+                            Account Type
+                          </label>
+                          <div className="col-md-8 col-lg-9">
+                            <select
+                              name="role"
+                              className="form-select"
+                              id="role"
+                              defaultValue={userProfile?.role}
+                              onChange={handleChange}
+                            >
+                              <option value="admin">Admin</option>
+                              <option value="secretary">Secretary</option>
+                              <option value="technician">Technician</option>
+                              <option value="customer">Customer</option>
+                            </select>
+                          </div>
+                        </div>
+
 
                         <div className="row mb-3">
                           <label
@@ -356,8 +380,8 @@ const handleSubmit = async (e) => {
                         </div>
 
                         <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                          <button className="btn btn-primary" type="submit">     
-                                Save Changes           
+                          <button className="btn btn-primary" type="submit">
+                            Save Changes
                           </button>
                         </div>
                       </form>

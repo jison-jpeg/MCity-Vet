@@ -75,6 +75,20 @@ export default function UpdateItem({ selectedItem }) {
     const handleFormSubmit = async (event) => {
         event.preventDefault();
 
+        // Check if any field is empty
+        if (!itemName || !description || !category || !quantity) {
+            // Error Toast
+            toast.error('Please fill in all fields!', {
+                position: 'top-right',
+                autoClose: 3000, // Set the duration for which the toast will be displayed (in milliseconds)
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            return;
+        }
+
         const updatedBy = currentUser._id; // Assuming currentUser has _id property
 
         const updatedItemData = {

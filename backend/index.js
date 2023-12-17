@@ -11,24 +11,19 @@ import systemlogsRoutes from './routes/systemlogs.route.js';
 import medicalrecordRoutes from './routes/medicalrecord.route.js';
 import notificationRoutes from './routes/notification.route.js';
 import emailRoutes from './routes/email.route.js';
-import path from 'path';
 
 import cookieParser from 'cookie-parser';
 // import path from 'path';
 dotenv.config();
 
-const __dirname = path.resolve();
+
 const app = express();
 
-app.use(express.static(path.join(__dirname, '/client/dist')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-});
 app.use(express.json());
 app.use(cookieParser())
 
 mongoose.connect(process.env.MONGODB_URL).then(() => {
-    console.log('Connected to MongoDB');5
+    console.log('Connected to MongoDB');
 }).catch(error => {
     console.log(error);
 });
