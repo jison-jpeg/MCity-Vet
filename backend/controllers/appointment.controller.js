@@ -259,3 +259,29 @@ export const deleteAppointment = async (req, res, next) => {
   }
 };
 
+// Check if the technician is available for the specified schedule
+export const checkAvailability = async (req, res, next) => {
+  const { technicianName, schedule } = req.body;
+
+  try {
+    if (!technicianName || !schedule) {
+      return res.status(400).json({ message: 'TechnicianName and schedule are required query parameters.' });
+    }
+
+    // Check if the technician is available
+    const technician = await User.findOne({ _id: technicianName, availability: true });
+    if (!technician) {
+      return res.status(400).json({ message: 'Technician is not available for appointments.' });
+    }
+
+    // Check if the schedule is available for scheduling
+    const existingAppointment = await Appointment.findOne({ technicianName, schedule });
+    if (existingAppointment) {
+      return res.status(400).json({ message: 'Appointment slot is already booked.' });
+    }
+
+    res.status(200).json({ message: 'Technician is available for the specified schedule.' });
+  } catch (error) {
+    next(error);
+  }
+};

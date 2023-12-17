@@ -11,6 +11,7 @@ import {
     getAppointmentsByUser,
     updateAppointment,
     archiveAppointment,
+    checkAvailability,
 
 } from '../controllers/appointment.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';

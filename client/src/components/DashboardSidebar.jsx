@@ -41,7 +41,7 @@ export default function DashboardSidebar({ toggleSidebar }) {
           {/* End Appointment Page Nav */}
 
           {/* Inventory Page Nav */}
-          {isAdmin && (
+          {!isCustomer && (
             <li className="nav-item">
               <a className={`nav-link ${location.pathname === '/inventory' ? '' : 'collapsed'}`} href="/inventory">
 
@@ -97,7 +97,8 @@ export default function DashboardSidebar({ toggleSidebar }) {
           {/* End System Logs Page Nav */}
 
           {/* Archives Page Nav */}
-          <li className="nav-item">
+          {!isCustomer && ( 
+              <li className="nav-item">
             <a
               className="nav-link collapsed"
               data-bs-target="#icons-nav"
@@ -128,6 +129,8 @@ export default function DashboardSidebar({ toggleSidebar }) {
               </li>
             </ul>
           </li>
+          )}
+          
 
 
         </ul>
