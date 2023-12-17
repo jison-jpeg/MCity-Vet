@@ -2,6 +2,7 @@ import MedicalRecord from "../models/medicalrecord.model.js";
 import Notification from "../models/notification.model.js";
 import Appointment from "../models/appointment.model.js";
 import User from "../models/user.model.js";
+import { sendMedicalRecordCreationEmail } from "./email.controller.js";
 
 export const test = (req, res) => {
   res.json({
@@ -86,6 +87,8 @@ export const createMedicalRecord = async (req, res, next) => {
       prescription,
       createdAt: new Date().toLocaleDateString(),
     });
+
+    await sendMedicalRecordCreationEmail({ firstName: createdBy.firstName, email: createdBy.email });
 
     res.status(201).json(medicalRecord);
   } catch (error) {

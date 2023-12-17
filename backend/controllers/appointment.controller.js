@@ -1,6 +1,7 @@
 import Appointment from "../models/appointment.model.js";
 import User from "../models/user.model.js";
 import Notification from "../models/notification.model.js";
+import { sendAppointmentConfirmationEmail, sendAppointmentCancellationEmail } from "./email.controller.js";
 
 export const test = (req, res) => {
   res.json({
@@ -161,6 +162,9 @@ export const createAppointment = async (req, res, next) => {
       appointmentId,
   });
   
+  // Send email to the customer
+  await sendAppointmentConfirmationEmail({ firstName, email, schedule });
+
 } catch (error) {
   next(error);
 }
@@ -197,6 +201,8 @@ export const updateAppointment = async (req, res, next) => {
         appointmentId: id,
       });
     }
+
+    await sendAppointmentCancellationEmail({ firstName: appointment.firstName, email: appointment.email });
 
     const updatedAppointment = await Appointment.findByIdAndUpdate(
       id,
