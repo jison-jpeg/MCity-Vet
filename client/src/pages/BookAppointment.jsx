@@ -1,43 +1,105 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/Header'
-import Footer from '../components/Footer'
-import TechnicianList from '../components/TechnicianList'
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import TechnicianList from '../components/TechnicianList';
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function BookAppointment() {
   const [technicians, setTechnicians] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTechnician, setSelectedTechnician] = useState(null);
+  const [showTechnicianList, setShowTechnicianList] = useState(false);
 
-  useEffect(() => {
-    // Fetch technician data here
-    const fetchTechnicians = async () => {
-      try {
-        const response = await fetch('/backend/technician/all');
-        if (response.ok) {
-          const technicianData = await response.json();
-          setTechnicians(technicianData);
-        } else {
-          console.error('Error fetching technicians:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching technicians:', error);
+  // Form state for Step 2
+  const [formData, setFormData] = useState({});
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const fetchTechnicians = async () => {
+    try {
+      const formattedDate = selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : '';
+
+      const response = await fetch(`/backend/technician/availability/${formattedDate}`);
+      if (response.ok) {
+        const technicianData = await response.json();
+        setTechnicians(technicianData);
+
+        // Show technician list after fetching data if technicians are available
+        setShowTechnicianList(technicianData.length > 0);
+      } else {
+        console.error('Error fetching technicians:', response.statusText);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching technicians:', error);
+    }
+  };
 
-    fetchTechnicians();
-  }, []);
+  // Fetch technicians when showTechnicianList changes
+  useEffect(() => {
+    if (showTechnicianList) {
+      fetchTechnicians();
+    }
+  }, [showTechnicianList]);
+
+  // Handle Form Change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  // Handle Form Submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError(false);
+
+      const res = await fetch('/backend/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      console.log(data);
+      setLoading(false);
+      if (data.success === false) {
+        setError(true);
+        return;
+      }
+
+      // Proceed to Step 3
+      setCurrentStep(3);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      setError(true);
+    }
+  };
 
   // Handle Step Click
   const handleStepClick = (stepNumber) => {
     setCurrentStep(stepNumber);
   };
 
-
+  // Calculate Progress Width
   const calculateProgressWidth = () => {
     // Calculate the width of the progress bar based on the current step
     const progressPercentage = ((currentStep - 1) / 2) * 100; // Assuming 3 steps
     return `${progressPercentage}%`;
   };
+
+  // Console log to check the state
+  console.log('currentStep:', currentStep);
+  console.log('selectedDate:', selectedDate);
+  console.log('selectedTechnician:', selectedTechnician);
+
+  // Step 2 Console log to check the state
+  console.log('formData:', formData);
+  console.log('error:', error);
+  console.log('loading:', loading);
 
   return (
     <>
@@ -105,16 +167,27 @@ export default function BookAppointment() {
                     <span>Schedule:</span>
                     <div className="input-group input-light input-calendar-light">
                       <input
-                        type="text"
-                        id="form-calendar-light"
+                        type="date"
+                        id="date"
                         className="form-control"
-                        placeholder="12/21/2020"
+                        placeholder="MM/DD/YYYY"
+                        onChange={(e) => setSelectedDate(e.target.value)}
                       />
-                      <i className="far fa-calendar-alt" />
+                      {/* <i className="far fa-calendar-alt" /> */}
                     </div>
                   </div>
                   <div className="ml-auto mr-1">
-                    <button className="btn btn-form btn-primary-color">
+                    <button
+                      className="btn btn-form btn-primary-color"
+                      onClick={() => {
+                        if (!selectedDate) {
+                          alert("Please choose a schedule first.");
+                          return;
+                        }
+                        setShowTechnicianList(true); // Set showTechnicianList to true
+                        fetchTechnicians();
+                      }}
+                    >
                       <span>Apply</span>
                     </button>
                   </div>
@@ -123,7 +196,20 @@ export default function BookAppointment() {
             </div>
 
 
-            <TechnicianList technicians={technicians} />
+
+
+            {showTechnicianList && (
+              <div>
+                <TechnicianList
+                  technicians={technicians}
+                  selectedDate={selectedDate}
+                  setSelectedTechnician={setSelectedTechnician}
+                  setCurrentStep={setCurrentStep}
+                />
+              </div>
+            )}
+
+
 
           </div>
         )}
@@ -138,7 +224,7 @@ export default function BookAppointment() {
             </div>
             <div className="row">
               <div className="col-lg-12 offset-lg-0 col-sm-8 offset-sm-2 col-10 offset-1">
-                <form className="appoint-form mb-3">
+                <form onSubmit={handleSubmit} className="appoint-form mb-3">
                   <div className="input-group input-light">
                     <h6 className="input-title mt-0">Name</h6>
                     <input
@@ -146,35 +232,46 @@ export default function BookAppointment() {
                       id='firstName'
                       className="form-control"
                       placeholder="First name"
+                      onChange={handleChange}
 
                     />
                     <input type="text"
                       id='lastName'
                       className="form-control"
                       placeholder="Last name"
+                      onChange={handleChange}
                     />
                   </div>
 
                   <div className="input-group input-light">
                     <h6 className="input-title">Email</h6>
                     <input
+                      id='email'
                       type="email"
                       className="form-control"
                       placeholder="example@gmail.com"
+                      onChange={handleChange}
                     />
                   </div>
 
                   <div className="input-group input-light">
                     <h6 className="input-title">Password</h6>
-                    <input type="password" className="form-control" />
+                    <input
+                      id='password'
+                      type="password"
+                      className="form-control"
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <button
+                    disabled={loading}
                     type="submit"
                     className="btn btn-secondary-color btn-form d-flex mr-auto ml-auto mb-1 mt-2"
                   >
-                    <span>Create Profile</span>
+                    <span>{loading ? 'Signing Up...' : 'Signing Up'}</span>
                   </button>
+                  
                   <div className="term-privacy d-flex justify-content-center m-b-3">
                     <span>Already have an account?</span>
                     <div className="btn-link">
@@ -206,6 +303,7 @@ export default function BookAppointment() {
                         <div className="input-group input-light">
                           <h6 className="input-title">Address</h6>
                           <input
+                            id='address'
                             type="text"
                             className="form-control"
                             placeholder="First"
@@ -216,6 +314,7 @@ export default function BookAppointment() {
                         <div className="input-group input-light">
                           <h6 className="input-title">Landmark</h6>
                           <input
+                            id='landmark'
                             type="text"
                             className="form-control"
                             placeholder="First"
@@ -320,7 +419,7 @@ export default function BookAppointment() {
                     </div>
 
                     <button type="submit"
-                      class="btn btn-secondary-color btn-form d-flex ml-auto mb-1 mt-2">
+                      className="btn btn-secondary-color btn-form d-flex ml-auto mb-1 mt-2">
                       <span>Create Appointment</span>
                     </button>
                   </form>
