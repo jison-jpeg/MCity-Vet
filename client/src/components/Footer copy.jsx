@@ -7,12 +7,12 @@ export default function Footer() {
   {/*----------------------------------------------
 		footer - start
 		----------------------------------------------*/}
-  <footer className="footer bg-primary-color" id="DownScroll">
+  <footer className="footer bg-primary-color">
     <div className="container">
       <div className="footer-top">
         <div className="row d-flex align-items-center justify-content-center">
           <div className="col-lg-6 col-sm-7 col-10">
-            <a href="/" className="logo">
+            <a href="index.html" className="logo">
               <img src="assets/images/logo-sm.png" alt="Caremed Logo" width={185} height={48} />
             </a>
           </div>

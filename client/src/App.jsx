@@ -19,6 +19,7 @@ import MedicalRecordDetails from './pages/MedicalRecordDetails';
 import AppointmentsArchive from './pages/AppointmentsArchive';
 import MedicalRecordArchive from './pages/MedicalRecordArchive';
 import ProfileView from './pages/ProfileView';
+import About from './pages/About';
 
 export default function App() {
   return (
@@ -31,6 +32,8 @@ export default function App() {
         <Route path="/signin" element={<Signin />} />
         <Route path="/book-appointment" element={<BookAppointment />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
+        <Route path="/about" element={<About />} />
+
         <Route path="*" element={<NotFound />} />
 
         {/* Private Routes */}

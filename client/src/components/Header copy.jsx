@@ -1,8 +1,8 @@
 // import React from 'react'
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { signout } from '../redux/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function Header() {
@@ -21,19 +21,6 @@ export default function Header() {
       dashboardBootstrap.setAttribute('disabled', 'true');
     }
   }, []);
-
-  
-  const scrollToSection = (e, sectionId) => {
-    e.preventDefault();
-
-    const targetSection = document.getElementById(sectionId);
-    if (targetSection) {
-      window.scrollTo({
-        top: targetSection.offsetTop,
-        behavior: 'smooth',
-      });
-    }
-  };
 
 
   const handleSignout = async () => {
@@ -64,22 +51,16 @@ export default function Header() {
             <ul className="menu sf-arrows">
 
               <li>
-              <a href={`#${"TopScroll"}`} onClick={(e) => scrollToSection(e, "TopScroll")}>
-              Home
-            </a>
+                <a href="/">Home</a>
               </li>
               <li>
-              <a href={`#${"Scroll"}`} onClick={(e) => scrollToSection(e, "Scroll")}>
-              Services
-            </a>
+                <a href="/services">Services</a>
               </li>
               <li>
-                <a href="/about">About Us</a>
+                <a href="/about-us">About Us</a>
               </li>
               <li>
-              <a href={`#${"DownScroll"}`} onClick={(e) => scrollToSection(e, "DownScroll")}>
-              Contact
-            </a>
+                <a href="/contact">Contact</a>
               </li>
 
 

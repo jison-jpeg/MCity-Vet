@@ -19,7 +19,21 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
     setFilteredAppointments(filtered);
   }, [appointments]);
 
-  const handleArchive = async (appointmentId) => {
+  const handleArchive = async (appointmentId, appointmentStatus) => {
+
+    if (appointmentStatus === 'Pending' || appointmentStatus === 'Accepted') {
+      // Display a message or take appropriate action for appointments with "Pending" status
+      toast.warning('Cannot archive appointments with "Pending" status.', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      return;
+    }
+
     const confirmArchive = window.confirm('Are you sure you want to archive this appointment?');
   
     if (!confirmArchive) {
@@ -207,7 +221,7 @@ export default function AppointmentTable({ appointments, currentUserRole }) {
                               <button
                               type="button"
                               className="btn btn-secondary-dashboard-action btn-sm"
-                              onClick={() => handleArchive(appointment._id)}
+                              onClick={() => handleArchive(appointment._id, appointment.status)}
                               >
                                 Archive
                               </button>
